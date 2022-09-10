@@ -10,7 +10,7 @@ type ClientMetadata = { username: string };
 const clients = new Map<WebSocket.WebSocket, ClientMetadata>();
 
 function getUserWebsocket(username: string): WebSocket.WebSocket {
-  let ws: WebSocket.WebSocket = undefined;
+  let ws: WebSocket.WebSocket = undefined!;
 
   clients.forEach((x, k) => {
     if (x.username === username) ws = k;
@@ -50,6 +50,11 @@ function handleMessage(message: any, clientMetadata: ClientMetadata) {
 wss.on("connection", function connection(ws, req) {
   console.log(`[CONN] new client url="${req.url}"`);
 
+  if (!req.url) {
+    ws.close(4003, "missing username in path");
+    return;
+  }
+
   const metadata: ClientMetadata = {
     username: req.url.split("/")[1],
   };
@@ -64,6 +69,12 @@ wss.on("connection", function connection(ws, req) {
 
   ws.on("message", function (rawData) {
     const client = clients.get(ws);
+
+    if (!client) {
+      console.warn("received msg from unregistered websocket");
+      ws.close(4000, "this connection is not registered with server");
+      return;
+    }
 
     try {
       const data = JSON.parse(rawData.toString());
@@ -80,7 +91,9 @@ wss.on("connection", function connection(ws, req) {
   ws.on("close", function (code, reason) {
     const client = clients.get(ws);
     console.log(
-      `[CLOSED] clientId=${client.username} code=${code} reason=${reason}`
+      `[CLOSED] clientId=${
+        client?.username ?? ""
+      } code=${code} reason=${reason}`
     );
     clients.delete(ws);
   });
@@ -97,4 +110,7 @@ setInterval(() => {
   if (client) client.send("hey ethan, server here..");
 }, 5000);
 
-server.listen(8080);
+const serverPort = 8080;
+console.log(`Starting server on port ${serverPort}`);
+
+server.listen(serverPort);

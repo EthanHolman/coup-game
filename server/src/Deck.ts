@@ -14,10 +14,11 @@ export class Deck {
     // first assemble a deck
     const unshuffledDeck: Card[] = [];
     for (let i = 0; i < numCardsOfType; i++) {
+      // convert this to map
       for (const card in Object.keys(Card).filter(
-        (key) => !isNaN(Number(Card[key]))
+        (key) => !isNaN(Number(Card[key as any]))
       ))
-        unshuffledDeck.push(Card[Card[card]]);
+        unshuffledDeck.push(Card[Card[card] as any] as any);
     }
 
     // then shuffle it

@@ -112,6 +112,7 @@ export class GameRunner {
         const player = this._gameState.players.find(
           (x) => x.name === gameEvent.user
         );
+        if (!player) throw `unable to find player ${gameEvent.user}`;
         player.coins += 1;
         break;
       case GameActionMove.STEAL:
