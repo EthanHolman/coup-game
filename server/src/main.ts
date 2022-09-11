@@ -61,7 +61,7 @@ wss.on("connection", function connection(ws, req) {
 
   // prevent same username from joining twice
   if (getUserWebsocket(metadata.username)) {
-    ws.close(4003, "user already exists");
+    ws.close(4003, "player name already exists");
     return;
   }
 

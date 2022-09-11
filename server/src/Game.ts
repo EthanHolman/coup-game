@@ -51,29 +51,56 @@ export class GameRunner {
   onEvent(gameEvent: GameEvent) {
     switch (gameEvent.event) {
       case GameEventType.START_GAME:
+        if (this._gameState.players.length < 2)
+          throw "at least 2 players must join before you can play";
+
         this.startGame();
         break;
+
       case GameEventType.PLAYER_JOIN_GAME:
-        this.addPlayer(gameEvent.user);
+        if (
+          !this._gameState.gameStarted &&
+          !this._gameState.players.map((x) => x.name).includes(gameEvent.user)
+        )
+          this.addPlayer(gameEvent.user);
         break;
+
       case GameEventType.PROPOSE_ACTION:
         this._gameState.activeAction = gameEvent.data.action;
         this._messageAllFn(gameEvent);
         break;
+
       case GameEventType.CONFIRM_ACTION:
         if (gameEvent.data.action !== this._gameState.activeAction)
           throw "you cant change your mind now!";
+
         this.processPlay(gameEvent);
+        // send play message
         this.nextTurn();
         break;
+
       case GameEventType.NEVERMIND_ACTION:
         // send nevermind msg
         this.nextTurn();
         break;
+
       case GameEventType.CALL_BS:
-        break;
+        const requiredCardForAction = getRequiredCardForAction(
+          this._gameState.activeAction
+        );
+        if (
+          this._gameState.players[this._gameState.currentPlayer].cards.includes(
+            requiredCardForAction
+          )
+        ) {
+          // gameEvent.user -- prompt for which card to lose
+        } else {
+          // this._gameState.players[this._gameState.currentPlayer].name -- prompt which card to lose
+        }
+
       case GameEventType.BLOCK_ACTION:
         break;
+
       default:
         throw `cannot process unexpected action ${gameEvent.event}`;
     }
@@ -122,5 +149,20 @@ export class GameRunner {
       default:
         throw `cannot process unexpected action ${gameEvent.data.action}`;
     }
+  }
+}
+
+function getRequiredCardForAction(action: GameActionMove): Card {
+  switch (action) {
+    case GameActionMove.STEAL:
+      return Card.CAPTAIN;
+    case GameActionMove.ASSASSINATE:
+      return Card.ASSASSIN;
+    case GameActionMove.TAX:
+      return Card.DUKE;
+    case GameActionMove.EXCHANGE:
+      return Card.AMBASSADOR;
+    default:
+      throw `you dont need a card to perform ${action}`;
   }
 }
