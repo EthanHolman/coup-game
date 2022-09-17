@@ -2,9 +2,13 @@ import { Deck } from "./Deck";
 import { Card, GameActionMove, GameEventType } from "./enums";
 import { Player } from "./Player";
 
-type messagePlayerFn = (playerName: string, data: any) => void;
+export type messagePlayerFn = (playerName: string, data: any) => void;
 
-type messageAllFn = (data: any) => void;
+export type messageAllFn = (data: any) => void;
+
+type ServerEvent = {
+  event: GameEventType;
+};
 
 type GameEvent = {
   event: GameEventType;
@@ -13,7 +17,8 @@ type GameEvent = {
 };
 
 type GameState = {
-  currentPlayer: number;
+  currentPlayerId: number;
+  currentSecondaryPlayerId: number;
   activeAction: GameActionMove;
   gameStarted: boolean;
   deck: Deck;
@@ -22,7 +27,8 @@ type GameState = {
 
 function initNewGame(): GameState {
   return {
-    currentPlayer: 0,
+    currentPlayerId: 0,
+    currentSecondaryPlayerId: -1,
     activeAction: GameActionMove.NONE,
     gameStarted: false,
     deck: new Deck(),
@@ -48,6 +54,14 @@ export class GameRunner {
     this._gameState = initNewGame();
   }
 
+  get currentPlayer(): Player {
+    return this._gameState.players[this._gameState.currentPlayerId];
+  }
+
+  get currentSecondaryPlayer(): Player {
+    return this._gameState.players[this._gameState.currentSecondaryPlayerId];
+  }
+
   onEvent(gameEvent: GameEvent) {
     switch (gameEvent.event) {
       case GameEventType.START_GAME:
@@ -66,13 +80,14 @@ export class GameRunner {
         break;
 
       case GameEventType.PROPOSE_ACTION:
+        // might want to validate incoming action
         this._gameState.activeAction = gameEvent.data.action;
         this._messageAllFn(gameEvent);
         break;
 
       case GameEventType.CONFIRM_ACTION:
         if (gameEvent.data.action !== this._gameState.activeAction)
-          throw "you cant change your mind now!";
+          throw "you can't change your mind now!";
 
         this.processPlay(gameEvent);
         // send play message
@@ -88,15 +103,22 @@ export class GameRunner {
         const requiredCardForAction = getRequiredCardForAction(
           this._gameState.activeAction
         );
-        if (
-          this._gameState.players[this._gameState.currentPlayer].cards.includes(
-            requiredCardForAction
-          )
-        ) {
-          // gameEvent.user -- prompt for which card to lose
-        } else {
-          // this._gameState.players[this._gameState.currentPlayer].name -- prompt which card to lose
-        }
+        const event: ServerEvent = { event: GameEventType.PLAYER_LOSE_CARD };
+        const playerToLoseCard = this.currentPlayer.hasCard(
+          requiredCardForAction
+        )
+          ? gameEvent.user
+          : this.currentPlayer.name;
+
+        this._gameState.currentSecondaryPlayerId =
+          this._gameState.players.findIndex((x) => x.name === playerToLoseCard);
+        this._messagePlayer(playerToLoseCard, event);
+
+      case GameEventType.PLAYER_LOSE_CARD:
+        if (this.currentSecondaryPlayer.name === gameEvent.user) {
+          this.currentSecondaryPlayer.revealCard(gameEvent.data.card);
+          this.nextTurn();
+        } else throw `wrong user!`;
 
       case GameEventType.BLOCK_ACTION:
         break;
@@ -107,22 +129,24 @@ export class GameRunner {
   }
 
   addPlayer(name: string): void {
-    this._gameState.players.push({
-      name,
-      cards: [this._gameState.deck.drawCard(), this._gameState.deck.drawCard()],
-      coins: name === "ethan" ? 7 : 2,
-    });
+    const newPlayerCards = [
+      this._gameState.deck.drawCard(),
+      this._gameState.deck.drawCard(),
+    ];
+    const newPlayer = new Player(name, newPlayerCards);
+    this._gameState.players.push(newPlayer);
   }
 
   startGame(): void {
     this._gameState.gameStarted = true;
-    this._gameState.currentPlayer = 0;
+    this._gameState.currentPlayerId = 0;
   }
 
   nextTurn(): void {
-    this._gameState.currentPlayer =
-      (this._gameState.currentPlayer + 1) % this._gameState.players.length;
+    this._gameState.currentPlayerId =
+      (this._gameState.currentPlayerId + 1) % this._gameState.players.length;
     this._gameState.activeAction = GameActionMove.NONE;
+    this._gameState.currentSecondaryPlayerId = -1;
   }
 
   processPlay(gameEvent: GameEvent): void {

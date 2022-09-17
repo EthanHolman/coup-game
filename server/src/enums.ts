@@ -14,6 +14,8 @@ export enum GameEventType {
   NEVERMIND_ACTION,
   CALL_BS,
   BLOCK_ACTION,
+  PLAYER_LOSE_CARD,
+  PLAYER_REVEAL_CARD,
 }
 
 export enum GameActionMove {
