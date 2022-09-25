@@ -77,7 +77,7 @@ wss.on("connection", function connection(ws, req) {
     }
 
     try {
-      const data = JSON.parse(rawData.toString());
+      const data = JSON.parse(rawData.toString()); // make sure that username is in this!
       handleMessage(data, client);
     } catch (e) {
       ws.send(

@@ -90,12 +90,12 @@ export class GameRunner {
           throw "you can't change your mind now!";
 
         this.processPlay(gameEvent);
-        // send play message
+        this._messageAllFn(gameEvent);
         this.nextTurn();
         break;
 
       case GameEventType.NEVERMIND_ACTION:
-        // send nevermind msg
+        this._messageAllFn(gameEvent);
         this.nextTurn();
         break;
 
