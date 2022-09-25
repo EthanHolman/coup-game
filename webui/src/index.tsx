@@ -1,13 +1,22 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
+import React, { useState } from "react";
+import JoinGame from "./components/JoinGame";
 
-const App = () => (
-  <h1>My React and TypeScript App!! {new Date().toLocaleDateString()}</h1>
-);
+const App = () => {
+  const [username, setUsername] = useState("");
 
-ReactDOM.render(
+  return (
+    <div>
+      <h1>Coup ONLINE</h1>
+      {username ? <h2>The game will start shortly...</h2> : <JoinGame />}
+    </div>
+  );
+};
+
+const container = document.getElementById("root");
+const root = createRoot(container!);
+root.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );
