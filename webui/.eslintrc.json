@@ -4,11 +4,12 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "react-hooks"],
+  "plugins": ["@typescript-eslint", "react-hooks", "jest"],
   "extends": [
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:react/jsx-runtime"
+    "plugin:react/jsx-runtime",
+    "plugin:jest/recommended"
   ],
   "rules": {
     "react-hooks/rules-of-hooks": "error",
@@ -21,5 +22,8 @@
       "pragma": "React",
       "version": "detect"
     }
+  },
+  "env": {
+    "jest/globals": true
   }
 }

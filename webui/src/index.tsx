@@ -1,16 +1,9 @@
 import { createRoot } from "react-dom/client";
-import React, { useState } from "react";
-import JoinGame from "./components/JoinGame";
+import React from "react";
+import Game from "./components/Game";
 
 const App = () => {
-  const [username, setUsername] = useState("");
-
-  return (
-    <div>
-      <h1>Coup ONLINE</h1>
-      {username ? <h2>The game will start shortly...</h2> : <JoinGame />}
-    </div>
-  );
+  return <Game />;
 };
 
 const container = document.getElementById("root");
