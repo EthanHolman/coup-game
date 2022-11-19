@@ -69,14 +69,17 @@ export class GameRunner {
           throw "at least 2 players must join before you can play";
 
         this.startGame();
+        // TODO: send 'game started' event to all clients
         break;
 
       case GameEventType.PLAYER_JOIN_GAME:
         if (
           !this._gameState.gameStarted &&
           !this._gameState.players.map((x) => x.name).includes(gameEvent.user)
-        )
+        ) {
           this.addPlayer(gameEvent.user);
+          // TODO: send 'player joined' event to all clients
+        }
         break;
 
       case GameEventType.PROPOSE_ACTION:
@@ -113,10 +116,12 @@ export class GameRunner {
         this._gameState.currentSecondaryPlayerId =
           this._gameState.players.findIndex((x) => x.name === playerToLoseCard);
         this._messagePlayer(playerToLoseCard, event);
+      // TODO: message all players what happened
 
       case GameEventType.PLAYER_LOSE_CARD:
         if (this.currentSecondaryPlayer.name === gameEvent.user) {
           this.currentSecondaryPlayer.revealCard(gameEvent.data.card);
+          // TODO: message all users who lost what card
           this.nextTurn();
         } else throw `wrong user!`;
 
@@ -129,10 +134,7 @@ export class GameRunner {
   }
 
   addPlayer(name: string): void {
-    const newPlayerCards = [
-      this._gameState.deck.drawCard(),
-      this._gameState.deck.drawCard(),
-    ];
+    const newPlayerCards = this._gameState.deck.drawCard(2);
     const newPlayer = new Player(name, newPlayerCards);
     this._gameState.players.push(newPlayer);
   }

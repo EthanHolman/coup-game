@@ -1,6 +1,8 @@
 import { Card } from "./enums";
 import { getRandomNumber } from "./utils";
 
+// top of deck is index 0
+
 export class Deck {
   _deck: Card[];
 
@@ -37,10 +39,8 @@ export class Deck {
     return this._deck[position];
   }
 
-  drawCard(position?: number): Card {
-    if (!position) position = 0;
-
-    return this._deck.splice(position, 1)[0];
+  drawCard(count: number = 1): Card[] {
+    return this._deck.splice(0, count);
   }
 
   discardCard(card: Card): void {
