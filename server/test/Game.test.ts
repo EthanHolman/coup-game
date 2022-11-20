@@ -1,5 +1,6 @@
 import { assert } from "chai";
-import { GameRunner, messageAllFn, messagePlayerFn } from "../src/Game";
+import { GameRunner } from "../src/Game";
+import { messagePlayerFn, messageAllFn } from "../src/types";
 
 describe("gamerunner", function () {
   it("should be creatable", function () {

@@ -1,5 +1,5 @@
 import { Card } from "./enums";
-import { getRandomNumber } from "./utils";
+import { getRandomNumber } from "./utils/getRandomNumber";
 
 // top of deck is index 0
 
