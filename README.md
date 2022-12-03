@@ -14,7 +14,7 @@ As part of game initialization, a deck of cards is created and shuffled. New pla
 
 ### A Turn
 
-Current player proposes an action to take. They may choose any action, but if they don't have the card required for an action, they will be vulnerable if someone calls their bluff. If their action is not 'Income' or 'Coup', their action proposal will be sent to all other players -- who will have the option to 'allow' or 'call BS' on this action. If the action is blockable, a 'block' option will also be available. If the action is allowed to go thru, the player will be allowed to take the action after 5 seconds. After this, their turn is over.
+Current player proposes an action to take. They may choose any action, but if they don't have the card required for an action, they will be vulnerable if someone calls their bluff. If their action is not 'Income' or 'Coup', their action proposal will be sent to all other players -- who will have the option to 'allow' or 'call BS' on this action. If the action is blockable, a 'block' option will also be available. If the action is allowed to go thru, the player will be allowed to take the action after waiting a minimum of 5 seconds. After this, their turn is over.
 
 #### Calling BS on an Action
 
@@ -29,6 +29,10 @@ If someone blocks an action, they must choose which card they are using to block
 
 - If the block is allowed, nothing becomes of the entire turn
 - If the action is challenged, follow the same rules under "Calling BS on an Action"
+
+#### Losing a Card
+
+Players can lose a card when they are Assassinated, Coup'ed, or if they incorrectly call BS on another player's action. In any of these events, the player to lose a card becomes the 'current secondary player', and the game awaits them to chose a card to lose. If they only have one card remaining, they are out of the game immediately. x` x
 
 ### Available Actions
 
@@ -71,19 +75,24 @@ Player receives 3 coins.
 
 - playerJoined: {playerName, turnOrder, publicCards}
 - gameStarted: {}
-- proposeAction: {action, targetPlayer}
-- confirmAction: {action, targetPlayer}
+- PROPOSE_ACTION: {action, targetPlayer}
+- CONFIRM_ACTION: {targetPlayer}
 - passAction: {}
 - callBSResult: {accuser, wasCorrect}
 - revealCards: {playerName, card} // called after coup, calling BS, assassination, etc
 - nextTurn: {currentPlayerName}
 
+## Server events (broadcast to single player):
+
+- PLAYER_LOSE_CARD: {}
+
 ## Client events:
 
-- proposeAction: {action, targetPlayer}
-- confirmAction: {action, targetPlayer}
-- callBS: {}
-- blockAction: {blockAs: Card}
+- PROPOSE_ACTION: {action, targetPlayer}
+- CONFIRM_ACTION: {action, targetPlayer}
+- CALL_BS: {}
+- BLOCK_ACTION: {blockAs: Card}
+- PLAYER_LOSE_CARD: {card: Card}
 
 ## Easter eggs
 

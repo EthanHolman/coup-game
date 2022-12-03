@@ -11,6 +11,6 @@ export function getRequiredCardForAction(action: GameActionMove): Card {
     case GameActionMove.EXCHANGE:
       return Card.AMBASSADOR;
     default:
-      throw `you dont need a card to perform ${action}`;
+      throw `you don't need a card to perform ${action}`;
   }
 }

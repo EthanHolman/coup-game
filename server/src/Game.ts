@@ -45,7 +45,12 @@ export class GameRunner {
         break;
 
       case GameEventType.CONFIRM_ACTION:
-        confirmAction(this._gameState, gameEvent, this._messageAllFn);
+        confirmAction(
+          this._gameState,
+          gameEvent,
+          this._messageAllFn,
+          this._messagePlayer
+        );
         break;
 
       case GameEventType.NEVERMIND_ACTION:

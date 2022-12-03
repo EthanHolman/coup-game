@@ -27,4 +27,5 @@ export enum GameActionMove {
   ASSASSINATE,
   TAX,
   EXCHANGE,
+  LOSE_CARD,
 }

@@ -1,6 +1,7 @@
-import { GameEventType } from "../enums";
+import { dispatchPlayerLoseCard } from "../actionHandlers/dispatchPlayerLoseCard";
+import { GameActionMove } from "../enums";
 import { GameState } from "../GameState";
-import { GameEvent, messagePlayerFn, ServerEvent } from "../types";
+import { GameEvent, messagePlayerFn } from "../types";
 import { getRequiredCardForAction } from "../utils/getRequiredCardForAction";
 
 export function callBS(
@@ -9,14 +10,16 @@ export function callBS(
   messagePlayerFn: messagePlayerFn
 ) {
   const requiredCardForAction = getRequiredCardForAction(state.activeAction);
-  const event: ServerEvent = { event: GameEventType.PLAYER_LOSE_CARD };
   const playerToLoseCard = state.currentPlayer.hasCard(requiredCardForAction)
     ? gameEvent.user
     : state.currentPlayer.name;
 
-  state.currentSecondaryPlayerId = state.players.findIndex(
-    (x) => x.name === playerToLoseCard
+  dispatchPlayerLoseCard(
+    state,
+    playerToLoseCard,
+    GameActionMove.LOSE_CARD, // TODO: should we make new action for this case?
+    messagePlayerFn
   );
-  messagePlayerFn(playerToLoseCard, event);
+
   // TODO: message all players what happened
 }

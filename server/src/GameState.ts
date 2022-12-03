@@ -24,6 +24,21 @@ export class GameState {
   }
 
   get currentSecondaryPlayer(): Player {
+    if (this.currentSecondaryPlayerId === -1)
+      throw "there is not currently a secondary player in state";
+
     return this.players[this.currentSecondaryPlayerId];
+  }
+
+  setCurrentSecondaryPlayerByName(playerName: string) {
+    const index = this.players.findIndex((x) => x.name === playerName);
+    if (index === -1) throw `unable to find player ${playerName}`;
+    this.currentSecondaryPlayerId = index;
+  }
+
+  setCurrentSecondaryPlayerById(playerId: number) {
+    if (playerId > this.players.length - 1 || playerId < 0)
+      throw `playerId is out of range`;
+    this.currentSecondaryPlayerId = playerId;
   }
 }

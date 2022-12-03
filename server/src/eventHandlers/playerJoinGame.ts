@@ -10,5 +10,6 @@ export function playerJoinGame(state: GameState, gameEvent: GameEvent) {
     const newPlayerCards = state.deck.drawCard(2);
     const newPlayer = new Player(gameEvent.user, newPlayerCards);
     state.players.push(newPlayer);
+    // TODO: message all players that a new player joined
   }
 }

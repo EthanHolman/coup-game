@@ -6,6 +6,7 @@ export type messageAllFn = (data: any) => void;
 
 export type ServerEvent = {
   event: GameEventType;
+  data?: any;
 };
 
 export type GameEvent = {
