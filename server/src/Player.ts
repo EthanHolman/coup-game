@@ -11,6 +11,9 @@ export class Player {
   coins: number;
 
   constructor(name: string, cards: Card[]) {
+    if (!cards || cards.length !== 2) throw `player should start with 2 cards`;
+    if (!name) throw `player must have a name`;
+
     this.name = name;
     this._cards = cards.map((card) => ({ card, isRevealed: false }));
     this.coins = 2;

@@ -8,7 +8,7 @@ export class GameState {
   activeAction: GameActionMove;
   gameStarted: boolean;
   deck: Deck;
-  players: Player[];
+  private _players: Player[];
 
   constructor() {
     this.currentPlayerId = 0;
@@ -16,28 +16,36 @@ export class GameState {
     this.activeAction = GameActionMove.NONE;
     this.gameStarted = false;
     this.deck = new Deck();
-    this.players = [];
+    this._players = [];
   }
 
   get currentPlayer(): Player {
-    return this.players[this.currentPlayerId];
+    return this._players[this.currentPlayerId];
   }
 
   get currentSecondaryPlayer(): Player {
     if (this.currentSecondaryPlayerId === -1)
       throw "there is not currently a secondary player in state";
 
-    return this.players[this.currentSecondaryPlayerId];
+    return this._players[this.currentSecondaryPlayerId];
+  }
+
+  get players(): Player[] {
+    return this._players;
+  }
+
+  addPlayer(player: Player): void {
+    this._players.push(player);
   }
 
   setCurrentSecondaryPlayerByName(playerName: string) {
-    const index = this.players.findIndex((x) => x.name === playerName);
+    const index = this._players.findIndex((x) => x.name === playerName);
     if (index === -1) throw `unable to find player ${playerName}`;
     this.currentSecondaryPlayerId = index;
   }
 
   setCurrentSecondaryPlayerById(playerId: number) {
-    if (playerId > this.players.length - 1 || playerId < 0)
+    if (playerId > this._players.length - 1 || playerId < 0)
       throw `playerId is out of range`;
     this.currentSecondaryPlayerId = playerId;
   }
