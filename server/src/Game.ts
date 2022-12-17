@@ -30,8 +30,7 @@ export class GameRunner {
   onEvent(gameEvent: GameEvent) {
     switch (gameEvent.event) {
       case GameEventType.START_GAME:
-        startGame(this._gameState);
-        // TODO: send 'game started' event to all clients
+        startGame(this._gameState, this._messageAllFn);
         break;
 
       case GameEventType.PLAYER_JOIN_GAME:

@@ -74,7 +74,7 @@ Player receives 3 coins.
 ## Server events (broadcast to all):
 
 - playerJoined: {playerName, turnOrder, publicCards}
-- gameStarted: {}
+- START_GAME: {}
 - PROPOSE_ACTION: {action, targetPlayer}
 - CONFIRM_ACTION: {targetPlayer}
 - passAction: {}
