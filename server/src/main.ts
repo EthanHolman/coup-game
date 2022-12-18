@@ -1,5 +1,6 @@
 import { createServer } from "http";
 import WebSocket, { WebSocketServer } from "ws";
+import { GameEventType } from "./enums";
 import { GameRunner } from "./Game";
 
 const server = createServer();
@@ -42,15 +43,11 @@ const messageAll = (data: any) => {
 
 const gameRunner = new GameRunner({ messagePlayer, messageAll });
 
-function handleMessage(message: any, clientMetadata: ClientMetadata) {
-  console.debug(`[MESSAGE] ${clientMetadata.username} -- ${message.action}`);
-  gameRunner.onEvent(message);
-}
-
 wss.on("connection", function connection(ws, req) {
   console.log(`[CONN] new client url="${req.url}"`);
 
-  if (!req.url) {
+  if (!req.url || req.url === "/") {
+    console.log("[CONN] client disconnected -- missing username");
     ws.close(4003, "missing username in path");
     return;
   }
@@ -63,11 +60,15 @@ wss.on("connection", function connection(ws, req) {
   if (getUserWebsocket(metadata.username)) {
     ws.close(4003, "player name already exists");
     return;
+  } else {
+    clients.set(ws, metadata);
+    gameRunner.onEvent({
+      event: GameEventType.PLAYER_JOIN_GAME,
+      user: metadata.username,
+    });
   }
 
-  clients.set(ws, metadata);
-
-  ws.on("message", function (rawData) {
+  ws.on("message", function (receivedData) {
     const client = clients.get(ws);
 
     if (!client) {
@@ -77,21 +78,20 @@ wss.on("connection", function connection(ws, req) {
     }
 
     try {
-      const data = JSON.parse(rawData.toString()); // make sure that username is in this!
-      handleMessage(data, client);
-    } catch (e) {
-      ws.send(
-        JSON.stringify({
-          error: "error occurred processing message",
-          receivedData: rawData,
-        })
-      );
+      const data = JSON.parse(receivedData.toString());
+      data["user"] = client.username;
+      console.debug(`[DEBUG] ${client.username} -- ${JSON.stringify(data)}`);
+      gameRunner.onEvent(data);
+    } catch (error) {
+      console.warn("[WARN] exception in main runner:", error);
+      ws.send(JSON.stringify({ error, receivedData }));
     }
   });
+
   ws.on("close", function (code, reason) {
     const client = clients.get(ws);
     console.log(
-      `[CLOSED] clientId=${
+      `[CONN] closed clientId=${
         client?.username ?? ""
       } code=${code} reason=${reason}`
     );
@@ -105,10 +105,10 @@ server.on("upgrade", function upgrade(req, socket, head) {
   });
 });
 
-setInterval(() => {
-  const client = getUserWebsocket("ethan");
-  if (client) client.send("hey ethan, server here..");
-}, 5000);
+// setInterval(() => {
+//   const client = getUserWebsocket("ethan");
+//   if (client) client.send("hey ethan, server here..");
+// }, 5000);
 
 const serverPort = 8080;
 console.log(`Starting server on port ${serverPort}`);

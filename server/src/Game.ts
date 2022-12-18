@@ -34,8 +34,7 @@ export class GameRunner {
         break;
 
       case GameEventType.PLAYER_JOIN_GAME:
-        playerJoinGame(this._gameState, gameEvent);
-        // TODO: send 'player joined' event to all clients
+        playerJoinGame(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.PROPOSE_ACTION:
