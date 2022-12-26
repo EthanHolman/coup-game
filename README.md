@@ -85,6 +85,7 @@ Player receives 3 coins.
 ## Server events (broadcast to single player):
 
 - PLAYER_LOSE_CARD: {}
+- WELCOME: {playerNames}
 
 ## Client events:
 

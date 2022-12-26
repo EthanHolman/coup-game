@@ -1,6 +1,6 @@
 import { GameEventType } from "./enums";
 
-export type messagePlayerFn = (playerName: string, data: any) => void;
+export type messagePlayerFn = (playerName: string, data: ServerEvent) => void;
 
 export type messageAllFn = (data: ServerEvent) => void;
 

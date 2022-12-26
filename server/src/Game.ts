@@ -34,7 +34,12 @@ export class GameRunner {
         break;
 
       case GameEventType.PLAYER_JOIN_GAME:
-        playerJoinGame(this._gameState, gameEvent, this._messageAllFn);
+        playerJoinGame(
+          this._gameState,
+          gameEvent,
+          this._messageAllFn,
+          this._messagePlayer
+        );
         break;
 
       case GameEventType.PROPOSE_ACTION:

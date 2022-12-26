@@ -16,6 +16,7 @@ export enum GameEventType {
   BLOCK_ACTION,
   PLAYER_LOSE_CARD,
   PLAYER_REVEAL_CARD,
+  WELCOME,
 }
 
 export enum GameActionMove {
