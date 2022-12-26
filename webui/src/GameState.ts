@@ -3,7 +3,10 @@ export type GameState = {
   players: string[];
 };
 
-export type GameStateAction = { type: "joinGame"; data: { username: string } };
+export type GameStateAction = {
+  type: "joinGame" | "reset";
+  data: { username: string };
+};
 
 export const getInitialState = (): GameState => ({
   username: "",
@@ -17,6 +20,8 @@ export const gameStateReducer = (
   switch (action.type) {
     case "joinGame":
       return { ...state, username: action.data.username };
+    case "reset":
+      return getInitialState();
     default:
       return state;
   }

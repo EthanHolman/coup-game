@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 
-const useStyles = createUseStyles({
-  heading: {
-    textAlign: "center",
-  },
-});
+const useStyles = createUseStyles({});
 
 export type JoinGameProps = {
   onJoin: (username: string) => void;
@@ -24,13 +20,12 @@ const JoinGame = ({ onJoin }: JoinGameProps): JSX.Element => {
 
   return (
     <>
-      <h2 className={classes.heading}>Welcome to Coup Online!</h2>
       <p>Choose a username to begin</p>
-      <p>If you were disconnected, use the same username to re-join</p>
       <input type="text" value={username} onChange={onChange} />
       <button type="button" onClick={onSubmit}>
         Join the game!
       </button>
+      <p>If you were disconnected, use the same username to re-join</p>
     </>
   );
 };
