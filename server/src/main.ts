@@ -61,11 +61,16 @@ wss.on("connection", function connection(ws, req) {
     ws.close(4003, "player name already exists");
     return;
   } else {
-    clients.set(ws, metadata);
-    gameRunner.onEvent({
-      event: GameEventType.PLAYER_JOIN_GAME,
-      user: metadata.username,
-    });
+    try {
+      clients.set(ws, metadata);
+      gameRunner.onEvent({
+        event: GameEventType.PLAYER_JOIN_GAME,
+        user: metadata.username,
+      });
+    } catch (e: any) {
+      ws.close(4004, e);
+      clients.delete(ws);
+    }
   }
 
   ws.on("message", function (receivedData) {
