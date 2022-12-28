@@ -2,9 +2,11 @@ import { GameEventType } from "./enums";
 import { callBS } from "./eventHandlers/callBS";
 import { confirmAction } from "./eventHandlers/confirmAction";
 import { nevermindAction } from "./eventHandlers/nevermindAction";
+import { pauseGame } from "./eventHandlers/pauseGame";
 import { playerJoinGame } from "./eventHandlers/playerJoinGame";
 import { playerLoseCard } from "./eventHandlers/playerLoseCard";
 import { proposeAction } from "./eventHandlers/proposeAction";
+import { resumeGame } from "./eventHandlers/resumeGame";
 import { startGame } from "./eventHandlers/startGame";
 import { GameState } from "./GameState";
 import { messagePlayerFn, messageAllFn, GameEvent } from "./types";
@@ -28,6 +30,13 @@ export class GameRunner {
   }
 
   onEvent(gameEvent: GameEvent) {
+    if (
+      this._gameState.gameStatus === "PAUSED" &&
+      gameEvent.event !== GameEventType.RESUME_GAME
+    ) {
+      throw "no actions are allowed until the game is unpaused!";
+    }
+
     switch (gameEvent.event) {
       case GameEventType.START_GAME:
         startGame(this._gameState, this._messageAllFn);
@@ -69,6 +78,14 @@ export class GameRunner {
         break;
 
       case GameEventType.BLOCK_ACTION:
+        break;
+
+      case GameEventType.PAUSE_GAME:
+        pauseGame(this._gameState, gameEvent, this._messageAllFn);
+        break;
+
+      case GameEventType.RESUME_GAME:
+        resumeGame(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       default:

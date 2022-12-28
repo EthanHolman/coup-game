@@ -6,7 +6,7 @@ export class GameState {
   currentPlayerId: number;
   currentSecondaryPlayerId: number;
   activeAction: GameActionMove;
-  gameStarted: boolean;
+  gameStatus: "PRE_GAME" | "RUNNING" | "PAUSED";
   deck: Deck;
   private _players: Player[];
 
@@ -14,7 +14,7 @@ export class GameState {
     this.currentPlayerId = 0;
     this.currentSecondaryPlayerId = -1;
     this.activeAction = GameActionMove.NONE;
-    this.gameStarted = false;
+    this.gameStatus = "PRE_GAME";
     this.deck = new Deck();
     this._players = [];
   }
@@ -48,5 +48,13 @@ export class GameState {
     if (playerId > this._players.length - 1 || playerId < 0)
       throw `playerId is out of range`;
     this.currentSecondaryPlayerId = playerId;
+  }
+
+  pause() {
+    this.gameStatus = "PAUSED";
+  }
+
+  resume() {
+    this.gameStatus = "RUNNING";
   }
 }

@@ -24,4 +24,8 @@ describe("gamerunner", function () {
   it("should not be able to start game with less than 2 players", function () {});
 
   it("should not be able to start game if its already started", function () {});
+
+  it("should not allow actions if game paused", function () {});
+
+  it("should allow game to be unpaused", function () {});
 });

@@ -14,7 +14,7 @@ export function playerJoinGame(
   messageAllFn: messageAllFn,
   messagePlayerFn: messagePlayerFn
 ) {
-  if (state.gameStarted) throw `game has already started.`;
+  if (state.gameStatus !== "PRE_GAME") throw `game has already started.`;
   if (state.players.map((x) => x.name).includes(gameEvent.user))
     throw `the username ${gameEvent.user} has already been taken`;
 

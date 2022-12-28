@@ -80,7 +80,7 @@ describe("playerJoinGame", function () {
 
   it("shouldnt be able to join a game that is started", function () {
     const state = new GameState();
-    state.gameStarted = true;
+    state.gameStatus = "RUNNING";
 
     const messageAllFn = Sinon.stub();
     const messagePlayerFn = Sinon.stub();

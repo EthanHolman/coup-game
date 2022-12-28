@@ -86,6 +86,7 @@ Player receives 3 coins.
 
 - PLAYER_LOSE_CARD: {}
 - WELCOME: {playerNames}
+- GAME_PAUSED: {}
 
 ## Client events:
 
@@ -94,6 +95,17 @@ Player receives 3 coins.
 - CALL_BS: {}
 - BLOCK_ACTION: {blockAs: Card}
 - PLAYER_LOSE_CARD: {card: Card}
+
+## Internal Server Events:
+
+These events occur between the game connection server and the game logic
+
+- PAUSE_GAME {reason}
+- RESUME_GAME {reason}
+
+## Clients losing connection:
+
+In the event any client/player loses their connection, the game will enter a 'paused' state. The player will have the option to re-join the game using the same username. In the event they cannot re-connect, the game host will have the option to kick them from the game and resume gameplay.
 
 ## Easter eggs
 

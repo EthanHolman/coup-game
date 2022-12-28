@@ -17,6 +17,8 @@ export enum GameEventType {
   PLAYER_LOSE_CARD,
   PLAYER_REVEAL_CARD,
   WELCOME,
+  PAUSE_GAME,
+  RESUME_GAME,
 }
 
 export enum GameActionMove {
