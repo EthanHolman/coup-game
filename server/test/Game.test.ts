@@ -15,6 +15,8 @@ describe("gamerunner", function () {
     assert.isNotNull(runner);
   });
 
+  it("should not allow most actions while game is paused", function () {});
+
   it("should be able to add a new player", function () {});
 
   it("should not be able to re-use player names", function () {});

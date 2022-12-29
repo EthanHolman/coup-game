@@ -31,7 +31,9 @@ export class GameRunner {
   onEvent(gameEvent: GameEvent) {
     if (
       this._gameState.gameStatus === "PAUSED" &&
-      gameEvent.event !== GameEventType.RESUME_GAME
+      ![GameEventType.RESUME_GAME, GameEventType.PLAYER_DISCONNECT].includes(
+        gameEvent.event
+      )
     ) {
       throw "no actions are allowed until the game is unpaused!";
     }
