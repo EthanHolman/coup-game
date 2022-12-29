@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { Deck } from "../../src/Deck";
-import { Card, GameEventType } from "../../src/enums";
+import { Card, Deck } from "../../src/Deck";
+import { GameEventType } from "../../src/enums";
 import { playerDisconnect } from "../../src/eventHandlers/playerDisconnect";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";

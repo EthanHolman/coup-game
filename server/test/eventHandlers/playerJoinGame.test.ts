@@ -1,6 +1,7 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { Card, GameEventType } from "../../src/enums";
+import { Card } from "../../src/Deck";
+import { GameEventType } from "../../src/enums";
 import { playerJoinGame } from "../../src/eventHandlers/playerJoinGame";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
@@ -185,6 +186,30 @@ describe("playerJoinGame event handler", function () {
     assert.equal(state.gameStatus, "RUNNING");
     assert.equal(state.players.length, 1);
     assert.isTrue(state.players[0].isConnected);
+  });
+
+  it("rejoined players should still have their cards", function () {
+    const state = new GameState();
+    state.pause();
+    const testPlayer = new Player("tommy tester", [Card.DUKE, Card.CONTESSA]);
+    testPlayer.revealCard(Card.DUKE);
+    testPlayer.isConnected = false;
+    state.addPlayer(testPlayer);
+
+    assert.equal(state.gameStatus, "PAUSED");
+    assert.equal(state.players.length, 1);
+
+    const playerJoinEvent: GameEvent = {
+      event: GameEventType.PLAYER_JOIN_GAME,
+      user: "tommy tester",
+    };
+
+    playerJoinGame(state, playerJoinEvent, Sinon.stub(), Sinon.stub());
+
+    assert.isTrue(state.players[0].hasCard(Card.CONTESSA));
+    assert.isTrue(
+      state.players[0].cards.find((x) => x.card === Card.DUKE)!.isRevealed
+    );
   });
 
   it("should not restart the game if only one of two disconnected players rejoin", function () {

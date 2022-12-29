@@ -1,4 +1,4 @@
-import { Card } from "./enums";
+import { ALL_CARDS, Card } from "./Deck";
 
 export type PlayerCard = {
   card: Card;
@@ -26,24 +26,30 @@ export class Player {
   }
 
   get isOut() {
-    return this._cards.map((x) => x.isRevealed).includes(false);
+    return this._cards.every((x) => x.isRevealed === true);
   }
 
   hasCard(card: Card): boolean {
-    return this._cards.map((x) => x.card).includes(card);
+    return this._cards
+      .filter((x) => !x.isRevealed)
+      .map((y) => y.card)
+      .includes(card);
   }
 
   revealCard(card: Card): void {
-    const toReveal = this._cards.find((x) => x.card === card);
+    const toReveal = this._cards.find((x) => x.card === card && !x.isRevealed);
 
     if (!toReveal) throw `player does not have card ${card}`;
 
     toReveal.isRevealed = true;
   }
 
-  replaceCardWith(cardToReplace: Card, newCard: Card): void {
+  replaceCard(cardToReplace: Card, newCard: Card): void {
+    if (!ALL_CARDS.includes(newCard))
+      throw `newCard is not a valid card: ${newCard}`;
+
     const toReplaceIndex = this._cards.findIndex(
-      (x) => x.card === cardToReplace
+      (x) => x.card === cardToReplace && !x.isRevealed
     );
 
     if (toReplaceIndex === -1)

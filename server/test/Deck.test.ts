@@ -1,14 +1,5 @@
 import { assert } from "chai";
-import { Deck } from "../src/Deck";
-import { Card } from "../src/enums";
-
-const ALL_CARDS = [
-  Card.AMBASSADOR,
-  Card.ASSASSIN,
-  Card.CAPTAIN,
-  Card.CONTESSA,
-  Card.DUKE,
-];
+import { ALL_CARDS, Card, Deck } from "../src/Deck";
 
 describe("deck", function () {
   it("should generate deck if one is not passed in", function () {
@@ -48,7 +39,7 @@ describe("deck", function () {
     assert.equal(originalLength, deck._deck.length);
   });
 
-  it("should allow drawing a card", function () {
+  it("should allow drawing a card from top of deck", function () {
     const deck = new Deck([Card.AMBASSADOR, Card.ASSASSIN, Card.CAPTAIN]);
 
     const card = deck.drawCard()[0];
@@ -69,6 +60,16 @@ describe("deck", function () {
     assert.lengthOf(deck._deck, 1);
   });
 
+  it("should not allow drawing less than 1 cards", function () {
+    const deck = new Deck();
+    assert.throws(function () {
+      deck.drawCard(0);
+    });
+    assert.throws(function () {
+      deck.drawCard(-1);
+    });
+  });
+
   it("should discard a card to the bottom/end of deck", function () {
     const deck = new Deck([Card.AMBASSADOR, Card.ASSASSIN]);
     const toDiscard = Card.CONTESSA;
@@ -79,5 +80,14 @@ describe("deck", function () {
     assert.equal(deck._deck[0], Card.AMBASSADOR);
     assert.equal(deck._deck[1], Card.ASSASSIN);
     assert.equal(deck._deck[2], Card.CONTESSA);
+  });
+
+  it("should not allow discarding something that isnt a 'card'", function () {
+    const deck = new Deck();
+    const toDiscard: any = "not_a_card";
+
+    assert.throws(function () {
+      deck.discardCard(toDiscard);
+    });
   });
 });

@@ -1,7 +1,22 @@
-import { Card } from "./enums";
 import { getRandomNumber } from "./utils/getRandomNumber";
 
 // top of deck is index 0
+
+export enum Card {
+  DUKE,
+  AMBASSADOR,
+  ASSASSIN,
+  CONTESSA,
+  CAPTAIN,
+}
+
+export const ALL_CARDS = [
+  Card.AMBASSADOR,
+  Card.ASSASSIN,
+  Card.CAPTAIN,
+  Card.CONTESSA,
+  Card.DUKE,
+];
 
 export class Deck {
   _deck: Card[];
@@ -33,18 +48,17 @@ export class Deck {
     return shuffledDeck;
   }
 
-  peekCard(position?: number): Card {
-    if (!position) position = 0;
-
+  peekCard(position: number = 0): Card {
     return this._deck[position];
   }
 
   drawCard(count: number = 1): Card[] {
+    if (count < 1) throw `cannot draw less than 1 cards`;
     return this._deck.splice(0, count);
   }
 
   discardCard(card: Card): void {
-    // TODO: need to validate 'card'
+    if (!ALL_CARDS.includes(card)) throw `value is not a valid card: ${card}`;
     this._deck.push(card);
   }
 }

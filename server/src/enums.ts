@@ -1,11 +1,3 @@
-export enum Card {
-  DUKE,
-  AMBASSADOR,
-  ASSASSIN,
-  CONTESSA,
-  CAPTAIN,
-}
-
 export enum GameEventType {
   PLAYER_JOIN_GAME,
   START_GAME,

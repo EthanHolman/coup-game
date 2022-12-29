@@ -1,4 +1,4 @@
-import { Card } from "../../src/enums";
+import { Card } from "../../src/Deck";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 
