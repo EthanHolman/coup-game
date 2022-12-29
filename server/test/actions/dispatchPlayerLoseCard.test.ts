@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { dispatchPlayerLoseCard } from "../../src/actionHandlers/dispatchPlayerLoseCard";
+import { dispatchPlayerLoseCard } from "../../src/actions/dispatchPlayerLoseCard";
 import { GameActionMove, GameEventType } from "../../src/enums";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 

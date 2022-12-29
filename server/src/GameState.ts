@@ -6,7 +6,7 @@ export class GameState {
   currentPlayerId: number;
   currentSecondaryPlayerId: number;
   activeAction: GameActionMove;
-  gameStatus: "PRE_GAME" | "RUNNING" | "PAUSED";
+  _gameStatus: "PRE_GAME" | "RUNNING" | "PAUSED";
   deck: Deck;
   private _players: Player[];
 
@@ -14,7 +14,7 @@ export class GameState {
     this.currentPlayerId = 0;
     this.currentSecondaryPlayerId = -1;
     this.activeAction = GameActionMove.NONE;
-    this.gameStatus = "PRE_GAME";
+    this._gameStatus = "PRE_GAME";
     this.deck = new Deck();
     this._players = [];
   }
@@ -30,12 +30,26 @@ export class GameState {
     return this._players[this.currentSecondaryPlayerId];
   }
 
-  get players(): Player[] {
+  get players(): ReadonlyArray<Player> {
     return this._players;
+  }
+
+  get gameStatus() {
+    return this._gameStatus;
   }
 
   addPlayer(player: Player): void {
     this._players.push(player);
+  }
+
+  removePlayer(name: string): void {
+    if (this.gameStatus !== "PRE_GAME")
+      throw "players can only be removed during pre-game";
+
+    const index = this.players.findIndex((x) => x.name === name);
+    if (index === -1) throw `unable to find player ${name} in state`;
+
+    this._players.splice(index, 1);
   }
 
   setCurrentSecondaryPlayerByName(playerName: string) {
@@ -51,10 +65,14 @@ export class GameState {
   }
 
   pause() {
-    this.gameStatus = "PAUSED";
+    this._gameStatus = "PAUSED";
   }
 
   resume() {
-    this.gameStatus = "RUNNING";
+    this._gameStatus = "RUNNING";
+  }
+
+  start() {
+    this._gameStatus = "RUNNING";
   }
 }

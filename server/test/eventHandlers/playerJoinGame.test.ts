@@ -1,11 +1,12 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { GameEventType } from "../../src/enums";
+import { Card, GameEventType } from "../../src/enums";
 import { playerJoinGame } from "../../src/eventHandlers/playerJoinGame";
 import { GameState } from "../../src/GameState";
+import { Player } from "../../src/Player";
 import { GameEvent } from "../../src/types";
 
-describe("playerJoinGame", function () {
+describe("playerJoinGame event handler", function () {
   it("should add player to game state", function () {
     const state = new GameState();
     assert.equal(state.players.length, 0);
@@ -80,7 +81,7 @@ describe("playerJoinGame", function () {
 
   it("shouldnt be able to join a game that is started", function () {
     const state = new GameState();
-    state.gameStatus = "RUNNING";
+    state.start();
 
     const messageAllFn = Sinon.stub();
     const messagePlayerFn = Sinon.stub();
@@ -162,5 +163,94 @@ describe("playerJoinGame", function () {
       event: GameEventType.WELCOME,
       data: { playerNames: ["birdsarentreal", "anotherplayer"] },
     });
+  });
+
+  it("should allow players to rejoin if disconnected", function () {
+    const state = new GameState();
+    state.pause();
+    const testPlayer = new Player("tommy tester", [Card.DUKE, Card.DUKE]);
+    testPlayer.isConnected = false;
+    state.addPlayer(testPlayer);
+
+    assert.equal(state.gameStatus, "PAUSED");
+    assert.equal(state.players.length, 1);
+
+    const playerJoinEvent: GameEvent = {
+      event: GameEventType.PLAYER_JOIN_GAME,
+      user: "tommy tester",
+    };
+
+    playerJoinGame(state, playerJoinEvent, Sinon.stub(), Sinon.stub());
+
+    assert.equal(state.gameStatus, "RUNNING");
+    assert.equal(state.players.length, 1);
+    assert.isTrue(state.players[0].isConnected);
+  });
+
+  it("should not restart the game if only one of two disconnected players rejoin", function () {
+    const state = new GameState();
+    state.pause();
+
+    const testPlayer1 = new Player("lois", [Card.DUKE, Card.DUKE]);
+    testPlayer1.isConnected = false;
+    state.addPlayer(testPlayer1);
+
+    const testPlayer2 = new Player("peter", [Card.CONTESSA, Card.CONTESSA]);
+    testPlayer2.isConnected = false;
+    state.addPlayer(testPlayer2);
+
+    assert.equal(state.gameStatus, "PAUSED");
+    assert.equal(state.players.length, 2);
+
+    const playerJoinEvent: GameEvent = {
+      event: GameEventType.PLAYER_JOIN_GAME,
+      user: "lois",
+    };
+
+    playerJoinGame(state, playerJoinEvent, Sinon.stub(), Sinon.stub());
+
+    assert.equal(state.gameStatus, "PAUSED");
+    assert.equal(state.players.length, 2);
+    assert.isTrue(state.players.find((x) => x.name === "lois")!.isConnected);
+    assert.isFalse(state.players.find((x) => x.name === "peter")!.isConnected);
+  });
+
+  it("should restart the game when all disconnected players rejoin", function () {
+    const state = new GameState();
+    state.pause();
+
+    const testPlayer1 = new Player("lois", [Card.DUKE, Card.DUKE]);
+    testPlayer1.isConnected = false;
+    state.addPlayer(testPlayer1);
+
+    const testPlayer2 = new Player("peter", [Card.CONTESSA, Card.CONTESSA]);
+    testPlayer2.isConnected = false;
+    state.addPlayer(testPlayer2);
+
+    assert.equal(state.gameStatus, "PAUSED");
+    assert.equal(state.players.length, 2);
+
+    const playerJoinEvent: GameEvent = {
+      event: GameEventType.PLAYER_JOIN_GAME,
+      user: "lois",
+    };
+
+    playerJoinGame(state, playerJoinEvent, Sinon.stub(), Sinon.stub());
+
+    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.players.find((x) => x.name === "lois")!.isConnected);
+    assert.isFalse(state.players.find((x) => x.name === "peter")!.isConnected);
+
+    playerJoinGame(
+      state,
+      { ...playerJoinEvent, user: "peter" },
+      Sinon.stub(),
+      Sinon.stub()
+    );
+
+    assert.equal(state.gameStatus, "RUNNING");
+    assert.equal(state.players.length, 2);
+    assert.isTrue(state.players.find((x) => x.name === "lois")?.isConnected);
+    assert.isTrue(state.players.find((x) => x.name === "peter")?.isConnected);
   });
 });

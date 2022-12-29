@@ -2,14 +2,13 @@ import { GameEventType } from "./enums";
 import { callBS } from "./eventHandlers/callBS";
 import { confirmAction } from "./eventHandlers/confirmAction";
 import { nevermindAction } from "./eventHandlers/nevermindAction";
-import { pauseGame } from "./eventHandlers/pauseGame";
 import { playerJoinGame } from "./eventHandlers/playerJoinGame";
 import { playerLoseCard } from "./eventHandlers/playerLoseCard";
 import { proposeAction } from "./eventHandlers/proposeAction";
-import { resumeGame } from "./eventHandlers/resumeGame";
 import { startGame } from "./eventHandlers/startGame";
 import { GameState } from "./GameState";
 import { messagePlayerFn, messageAllFn, GameEvent } from "./types";
+import { playerDisconnect } from "./eventHandlers/playerDisconnect";
 
 export class GameRunner {
   _messagePlayer: messagePlayerFn;
@@ -80,12 +79,8 @@ export class GameRunner {
       case GameEventType.BLOCK_ACTION:
         break;
 
-      case GameEventType.PAUSE_GAME:
-        pauseGame(this._gameState, gameEvent, this._messageAllFn);
-        break;
-
-      case GameEventType.RESUME_GAME:
-        resumeGame(this._gameState, gameEvent, this._messageAllFn);
+      case GameEventType.PLAYER_DISCONNECT:
+        playerDisconnect(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       default:

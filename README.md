@@ -73,6 +73,8 @@ Player receives 3 coins.
 
 ## Server events (broadcast to all):
 
+All events include {event, data}. Fields noted below are members of the data object.
+
 - playerJoined: {playerName, turnOrder, publicCards}
 - START_GAME: {}
 - PROPOSE_ACTION: {action, targetPlayer}
@@ -81,15 +83,22 @@ Player receives 3 coins.
 - callBSResult: {accuser, wasCorrect}
 - revealCards: {playerName, card} // called after coup, calling BS, assassination, etc
 - nextTurn: {currentPlayerName}
+- PLAYER_DISCONNECT {} if received during pre-game, clients should delete player from state, as said player has left
+- PLAYER_RECONNECT {}
 
 ## Server events (broadcast to single player):
 
+All events include {event, data}. Fields noted below are members of the data object.
+
 - PLAYER_LOSE_CARD: {}
-- WELCOME: {playerNames}
+- WELCOME: {playerNames} used during pre-game to update clients on the list of players
 - GAME_PAUSED: {}
 
 ## Client events:
 
+All events include {event, user, data}. Fields noted below are members of the data object.
+
+- PLAYER_JOIN_GAME: {}
 - PROPOSE_ACTION: {action, targetPlayer}
 - CONFIRM_ACTION: {action, targetPlayer}
 - CALL_BS: {}
@@ -98,14 +107,17 @@ Player receives 3 coins.
 
 ## Internal Server Events:
 
-These events occur between the game connection server and the game logic
+These internal events occur between the websocket server and game server components
 
 - PAUSE_GAME {reason}
 - RESUME_GAME {reason}
+- PLAYER_DISCONNECT {}
+- PLAYER_RECONNECT {}
 
 ## Clients losing connection:
 
-In the event any client/player loses their connection, the game will enter a 'paused' state. The player will have the option to re-join the game using the same username. In the event they cannot re-connect, the game host will have the option to kick them from the game and resume gameplay.
+If a client/player loses their connection before the game has started, they will be removed from the game and their cards re-added to the deck.
+In the event any client/player loses their connection after the game has started, the game will enter a 'paused' state. The player will have the option to re-join the game using the same username. In case they can't reconnect, the game host will have the option to kick them from the game and resume gameplay. Kicking the player will mark them as 'online' again, and reveal all their cards -- rendering them 'out' of the game.
 
 ## Easter eggs
 

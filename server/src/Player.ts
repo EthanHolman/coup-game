@@ -9,6 +9,7 @@ export class Player {
   private _cards: PlayerCard[] = [];
   name: string;
   coins: number;
+  isConnected: boolean;
 
   constructor(name: string, cards: Card[]) {
     if (!cards || cards.length !== 2) throw `player should start with 2 cards`;
@@ -17,6 +18,11 @@ export class Player {
     this.name = name;
     this._cards = cards.map((card) => ({ card, isRevealed: false }));
     this.coins = 2;
+    this.isConnected = true;
+  }
+
+  get cards(): ReadonlyArray<PlayerCard> {
+    return this._cards;
   }
 
   get isOut() {

@@ -1,4 +1,4 @@
-import { dispatchPlayerLoseCard } from "../actionHandlers/dispatchPlayerLoseCard";
+import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
 import { GameActionMove } from "../enums";
 import { GameState } from "../GameState";
 import { GameEvent, messagePlayerFn } from "../types";

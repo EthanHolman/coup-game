@@ -2,33 +2,18 @@ import { createServer } from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import { GameEventType } from "./enums";
 import { GameRunner } from "./Game";
-import { SERVER_USERNAME } from "./globals";
-
-class ClientConnectionData {
-  websocket: WebSocket.WebSocket | null;
-  isConnected: boolean;
-
-  constructor(websocket: WebSocket.WebSocket) {
-    this.websocket = websocket;
-    this.isConnected = true;
-  }
-}
 
 const server = createServer();
 const wss = new WebSocketServer({ noServer: true });
-const clients = new Map<string, ClientConnectionData>();
+const clients = new Map<string, WebSocket.WebSocket>();
 
-function updateUserWebsocket(username: string, ws: WebSocket.WebSocket | null) {
-  const client = clients.get(username)!;
-  client.websocket = ws;
-}
-
-function getUsernameFromWebsocket(websocket: WebSocket.WebSocket): string {
+function getUserByWebsocket(websocket: WebSocket.WebSocket): string {
   if (!websocket) throw "websocket cannot be null";
   let username: string | undefined;
 
+  // TODO: this can probably be cleaned up
   clients.forEach((value, key) => {
-    if (value.websocket === websocket) username = key;
+    if (value === websocket) username = key;
   });
 
   if (!username) throw `user ${username} not found`;
@@ -37,11 +22,10 @@ function getUsernameFromWebsocket(websocket: WebSocket.WebSocket): string {
 }
 
 const messagePlayer = (username: string, data: any) => {
-  const userConnectionData = clients.get(username);
-  if (!userConnectionData) throw `[messageplayer] player ${username} not found`;
+  const websocket = clients.get(username);
+  if (!websocket) throw `[messageplayer] player ${username} not found`;
 
-  const { websocket } = userConnectionData;
-  if (!websocket || websocket.readyState !== WebSocket.OPEN)
+  if (websocket.readyState !== WebSocket.OPEN)
     throw `websocket not ready for user ${username}`;
 
   websocket.send(JSON.stringify(data));
@@ -71,42 +55,29 @@ wss.on("connection", function connection(ws, req) {
   const user = req.url.split("/")[1];
 
   if (clients.has(user)) {
-    const client = clients.get(user)!;
+    console.log(`disconnecting user ${user} -- already connected`);
+    ws.close(4003, "player already connected");
+    return;
+  }
 
-    if (client.isConnected) {
-      console.log(`disconnecting user ${user} -- already connected`);
-      ws.close(4003, "player already connected");
-      return;
-    } else {
-      console.log(`reconnecting user ${user}`);
-      updateUserWebsocket(user, ws);
-      client.isConnected = true;
-      gameRunner.onEvent({
-        event: GameEventType.RESUME_GAME,
-        user: SERVER_USERNAME,
-        data: { reason: `player ${user} has reconnected` },
-      });
-    }
-  } else {
-    try {
-      clients.set(user, new ClientConnectionData(ws));
-      gameRunner.onEvent({
-        event: GameEventType.PLAYER_JOIN_GAME,
-        user: user,
-      });
-    } catch (e: any) {
-      ws.close(4004, e);
-      console.warn(`user ${user} was unable to join game`, e);
-      clients.delete(user);
-    }
+  try {
+    clients.set(user, ws);
+    gameRunner.onEvent({
+      event: GameEventType.PLAYER_JOIN_GAME,
+      user: user,
+    });
+  } catch (e: any) {
+    ws.close(4004, e);
+    console.warn(`user ${user} was unable to join game`, e);
+    clients.delete(user);
   }
 
   ws.on("message", function (receivedData) {
-    const user = getUsernameFromWebsocket(ws);
+    const user = getUserByWebsocket(ws);
 
     if (!user) {
-      console.warn("received event from unregistered websocket");
-      ws.close(4000, "this connection is not registered with server");
+      console.warn("received event from connection not associated with user");
+      ws.close(4000, "this connection is not associated with a user");
       return;
     }
 
@@ -122,17 +93,10 @@ wss.on("connection", function connection(ws, req) {
   });
 
   ws.on("close", function (code, reason) {
-    const user = getUsernameFromWebsocket(ws);
+    const user = getUserByWebsocket(ws);
     console.log(`[CONN] closed clientId=${user} code=${code} reason=${reason}`);
-
-    updateUserWebsocket(user, null);
-    const client = clients.get(user)!;
-    client.isConnected = false;
-    gameRunner.onEvent({
-      event: GameEventType.PAUSE_GAME,
-      user: SERVER_USERNAME,
-      data: { reason: `player ${user} lost connection` },
-    });
+    gameRunner.onEvent({ event: GameEventType.PLAYER_DISCONNECT, user });
+    clients.delete(user);
   });
 });
 
