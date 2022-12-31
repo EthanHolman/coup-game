@@ -1,75 +1,93 @@
 # Coup-Game
 
-## Game flow overview (from a server perspective)
+# About the Game
 
-### Pre-Game
+## The Deck
+
+As part of game initialization, a deck of cards is created and shuffled. New players are dealt 2 cards and 2 coins upon joining the game. The deck is represented in memory as a list of card ids, with list[0] being the 'top of deck' and list[list.length] being the bottom of deck. Cards are drawn from top of deck, i.e., list[0]
+
+## Game Flow
 
 When a new game is initialized, players can join up until the max number of players is hit, or the game is started. When players connect, they will send their username as a unique identifier. If someone joins with a username that's already in use, they will be prompted to choose a new username. The game 'host' is the first person to join, and is the one who can start the game.
 
 Once the game starts, players will take their turns in the order they joined (i.e., host goes first, then the 2nd player to join, and so on). Turns will continue until only one player is left in the game, at which point they are declared the WINNER!
 
-### The Deck
+For a turn, the current player chooses any action to take. If they choose an action for which they don't have the required card, they will be vulnerable to a challenge if someone calls their bluff. This action will be sent to all players. If the action is not 'Income' or 'Coup', other players will have the option to Challenge or Block it. If none of these counters are taken against the action, the current player will be allowed to take ("confirm") the action. A minimum of 5 seconds must pass before confirmation. After this, their turn is over -- onto the next player.
 
-As part of game initialization, a deck of cards is created and shuffled. New players are dealt 2 cards and 2 coins upon joining the game. The deck is represented in memory as a list of card ids, with list[0] being the 'top of deck' and list.length being the bottom of deck. Cards are drawn from top of deck, i.e., list[0]
+More details on server's implementation around handing actions, challenges, and blocks can be found below under the "Server Action Handling" heading.
 
-### A Turn
+### Challenging an Action
 
-Current player proposes an action to take. They may choose any action, but if they don't have the card required for an action, they will be vulnerable if someone calls their bluff. If their action is not 'Income' or 'Coup', their action proposal will be sent to all other players -- who will have the option to 'allow' or 'call BS' on this action. If the action is blockable, a 'block' option will also be available. If the action is allowed to go thru, the player will be allowed to take the action after waiting a minimum of 5 seconds. After this, their turn is over.
+If the original action taker HAS the required card for their action, the challenger will lose a card (see 'Losing a Card'), and the action will go through. Then, action taker will discard the required card and draw a new one from the deck.
 
-#### Calling BS on an Action
+If the original action taker DOES NOT have the required card, they must choose a card to lose (see 'Losing a Card'). Further, the action will not go through.
 
-If someone calls BS on an action, the action will not occur, and someone will end up losing a card. After this, the turn is over:
+### Blocking an Action
 
-- If the action taker has the required card for the proposed action, the BS caller will choose a card to lose.
-- If the action taker doesn't have the required card, they must choose a card to lose.
+If someone blocks an action, they must choose which card they are using to block. This block action will now replace the original action as the "current action". The block event will be sent to all players -- anyone can challenge it. After a minimum of 5 seconds, the blocker will be allowed to "confirm" the block.
 
-#### Blocking an Action
+- If the block is allowed/confirmed, nothing becomes of the entire turn (next player's turn)
+- If the action is challenged, follow the same rules under "Challenging an Action". (IE, if someone blocks foreign aid as Duke but doesn't have the Duke, they lose a card)
 
-If someone blocks an action, they must choose which card they are using to block. This block action will now replace the original action as the "current action". The block event will be sent to all the players, and just like a regular action, the block can be 'allowed' or 'call BS'.
+### Losing a Card
 
-- If the block is allowed, nothing becomes of the entire turn
-- If the action is challenged, follow the same rules under "Calling BS on an Action"
+Players can lose a card when they are Assassinated, Coup'ed, or if they incorrectly challenge another player's action. In any of these events, the player to lose a card becomes the 'current secondary player', and the game awaits them to choose a card to lose. If they only have one card remaining, they must choose that card.
 
-#### Losing a Card
+After processing the card loss: if the player has no cards left (IE, they are all revealed), then the player is out of the game, and all players will be notified. If this leaves only one player in the game, all players will be notified of the WINNER!
 
-Players can lose a card when they are Assassinated, Coup'ed, or if they incorrectly call BS on another player's action. In any of these events, the player to lose a card becomes the 'current secondary player', and the game awaits them to chose a card to lose. If they only have one card remaining, they are out of the game immediately. x` x
+## Actions
 
-### Available Actions
-
-#### Assassinate
+### Assassinate
 
 Card: Assasin
-Player may choose a target player to lose a card. This action will cost the player 3 coins. Can be blocked by a contessa.
+Blocked By: Contessa
+Coins: -3
 
-#### Coup
+Player chooses a target player to lose a card
+
+### Coup
 
 Card: n/a
-Player chooses a target player to lose a card. This action cannot be blocked. It costs 7 coins.
+Blocked By: n/a
+Coins: -7
 
-#### Exchange
+Player chooses a target player to lose a card
+
+### Exchange
 
 Card: Ambassador
+Blocked By: n/a
+Coins: 0
+
 Player may draw two cards from the deck so they temporarily have four cards. They get to choose any two to keep, and discard the others to the bottom of the deck.
 
-#### Foreign Aid
+### Foreign Aid
 
 Card: n/a
-Player receives 2 coins. Blocked by Duke.
+Blocked By: Duke
+Coins: +2
 
-#### Income
+### Income
 
 Card: n/a
-Player takes the safe route. They receive 1 coin. Cannot be blocked.
+Blocked By: n/a
+Coins: +1
 
-#### Steal
+### Steal
 
 Card: Captain
-Player chooses a target player from whom they steal 2 coins. Blocked by Ambassador and Captain.
+Blocked By: Ambassador, Duke
+Coins: +2 (up to)
 
-#### Tax
+Player chooses a target player from whom they steal up to 2 coins
+
+### Tax
 
 Card: Duke
-Player receives 3 coins.
+Blocked By: n/a
+Coins: +3
+
+# Events & Connections
 
 ## Server events (broadcast to all):
 
@@ -77,11 +95,10 @@ All events include {event, data}. Fields noted below are members of the data obj
 
 - playerJoined: {playerName, turnOrder, publicCards}
 - START_GAME: {}
-- PROPOSE_ACTION: {action, targetPlayer}
+- CHOOSE_ACTION: {action, targetPlayer}
 - CONFIRM_ACTION: {targetPlayer}
 - passAction: {}
-- callBSResult: {accuser, wasCorrect}
-- revealCards: {playerName, card} // called after coup, calling BS, assassination, etc
+- revealCards: {playerName, card} // called after coup, challenging, assassination, etc
 - nextTurn: {currentPlayerName}
 - PLAYER_DISCONNECT {} if received during pre-game, clients should delete player from state, as said player has left
 - PLAYER_RECONNECT {}
@@ -99,9 +116,9 @@ All events include {event, data}. Fields noted below are members of the data obj
 All events include {event, user, data}. Fields noted below are members of the data object.
 
 - PLAYER_JOIN_GAME: {}
-- PROPOSE_ACTION: {action, targetPlayer}
+- CHOOSE_ACTION: {action, targetPlayer}
 - CONFIRM_ACTION: {action, targetPlayer}
-- CALL_BS: {}
+- CHALLENGE_ACTION: {}
 - BLOCK_ACTION: {blockAs: Card}
 - PLAYER_LOSE_CARD: {card: Card}
 
@@ -113,6 +130,22 @@ These internal events occur between the websocket server and game server compone
 - RESUME_GAME {reason}
 - PLAYER_DISCONNECT {}
 - PLAYER_RECONNECT {}
+
+## Server Action Handling:
+
+chooseAction event comes in, and is saved as `currentEvent`
+
+`{event: chooseAction, user: someName, data: { action: assassinate, target: anotherName }`
+
+Game is now waiting for one of the following events: [confirmAction, challenge, or block]:
+
+- confirmAction: executes `currentEvent`
+- challenge: does `currentEvent.user` have required card for `currentEvent.data.action`? yes → challenger loses card, execute `currentEvent`. no → `currentEvent.user` loses a card, end of turn
+- block: save this event as `blockEvent`. Game is now waiting for one of the following events: [acceptBlock, challengeBlock]
+  - acceptBlock: next turn. _this can be done only by who?_
+  - challengeBlock: does `blockEvent.user` have `blockEvent.data.blockAsCard`?
+    - yes → `challengeBlockEvent.user` loses a card. block succeeds. end of turn.
+    - no → `blockEvent.user` loses card, and execute `currentEvent`
 
 ## Clients losing connection:
 
