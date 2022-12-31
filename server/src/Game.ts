@@ -1,14 +1,14 @@
 import { GameEventType } from "./enums";
-import { callBS } from "./eventHandlers/callBS";
+import { challengeAction } from "./eventHandlers/challengeAction";
 import { confirmAction } from "./eventHandlers/confirmAction";
-import { nevermindAction } from "./eventHandlers/nevermindAction";
 import { playerJoinGame } from "./eventHandlers/playerJoinGame";
 import { playerLoseCard } from "./eventHandlers/playerLoseCard";
-import { proposeAction } from "./eventHandlers/proposeAction";
+import { chooseAction } from "./eventHandlers/chooseAction";
 import { startGame } from "./eventHandlers/startGame";
 import { GameState } from "./GameState";
 import { messagePlayerFn, messageAllFn, GameEvent } from "./types";
 import { playerDisconnect } from "./eventHandlers/playerDisconnect";
+import { acceptBlock } from "./eventHandlers/acceptBlock";
 
 export class GameRunner {
   _messagePlayer: messagePlayerFn;
@@ -52,9 +52,8 @@ export class GameRunner {
         );
         break;
 
-      case GameEventType.PROPOSE_ACTION:
-        // might want to validate incoming action
-        proposeAction(this._gameState, gameEvent, this._messageAllFn);
+      case GameEventType.CHOOSE_ACTION:
+        chooseAction(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.CONFIRM_ACTION:
@@ -66,19 +65,22 @@ export class GameRunner {
         );
         break;
 
-      case GameEventType.NEVERMIND_ACTION:
-        nevermindAction(this._gameState, gameEvent, this._messageAllFn);
+      case GameEventType.CHALLENGE_ACTION:
+        challengeAction(this._gameState, gameEvent, this._messagePlayer);
         break;
 
-      case GameEventType.CALL_BS:
-        callBS(this._gameState, gameEvent, this._messagePlayer);
+      case GameEventType.BLOCK_ACTION:
+        break;
+
+      case GameEventType.ACCEPT_BLOCK:
+        acceptBlock(this._gameState, gameEvent, this._messageAllFn);
+        break;
+
+      case GameEventType.CHALLENGE_BLOCK:
         break;
 
       case GameEventType.PLAYER_LOSE_CARD:
         playerLoseCard(this._gameState, gameEvent);
-        break;
-
-      case GameEventType.BLOCK_ACTION:
         break;
 
       case GameEventType.PLAYER_DISCONNECT:

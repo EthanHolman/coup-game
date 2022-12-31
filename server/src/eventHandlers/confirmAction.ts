@@ -1,5 +1,5 @@
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
-import { GameActionMove, GameEventType } from "../enums";
+import { GameActionMove } from "../enums";
 import { GameState } from "../GameState";
 import { GameEvent, messageAllFn, messagePlayerFn } from "../types";
 import { nextTurn } from "./nextTurn";
@@ -13,7 +13,7 @@ export function confirmAction(
   // event validations
   if (gameEvent.user !== state.currentPlayer.name) throw "wrong user!";
   if (gameEvent.data.action !== state.activeAction)
-    throw "proposed action does not match requested confirm action";
+    throw "chosen action does not match requested confirm action";
 
   // broadcast confirmation to all players
   messageAllFn(gameEvent);

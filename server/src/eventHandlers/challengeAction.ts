@@ -4,7 +4,7 @@ import { GameState } from "../GameState";
 import { GameEvent, messagePlayerFn } from "../types";
 import { getRequiredCardForAction } from "../utils/getRequiredCardForAction";
 
-export function callBS(
+export function challengeAction(
   state: GameState,
   gameEvent: GameEvent,
   messagePlayerFn: messagePlayerFn
