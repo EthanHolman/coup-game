@@ -1,3 +1,4 @@
+import { getEnumVals } from "./utils/getEnumVals";
 import { getRandomNumber } from "./utils/getRandomNumber";
 
 // top of deck is index 0
@@ -10,13 +11,7 @@ export enum Card {
   CAPTAIN,
 }
 
-export const ALL_CARDS = [
-  Card.AMBASSADOR,
-  Card.ASSASSIN,
-  Card.CAPTAIN,
-  Card.CONTESSA,
-  Card.DUKE,
-];
+export const ALL_CARDS = getEnumVals<Card>(Card);
 
 export class Deck {
   _deck: Card[];

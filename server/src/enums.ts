@@ -1,3 +1,5 @@
+import { getEnumVals } from "./utils/getEnumVals";
+
 export enum GameEventType {
   PLAYER_JOIN_GAME,
   START_GAME,
@@ -27,3 +29,10 @@ export enum GameActionMove {
   EXCHANGE,
   LOSE_CARD,
 }
+
+export const ALL_GAME_ACTION_MOVES =
+  getEnumVals<GameActionMove>(GameActionMove);
+
+export const ALL_PLAYABLE_GAME_ACTION_MOVES = ALL_GAME_ACTION_MOVES.filter(
+  (x) => ![GameActionMove.NONE, GameActionMove.LOSE_CARD].includes(x)
+);

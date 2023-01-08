@@ -9,7 +9,9 @@ export function challengeAction(
   gameEvent: GameEvent,
   messagePlayerFn: messagePlayerFn
 ) {
-  const requiredCardForAction = getRequiredCardForAction(state.activeAction);
+  const requiredCardForAction = getRequiredCardForAction(
+    state.currentAction!.action!
+  );
   const playerToLoseCard = state.currentPlayer.hasCard(requiredCardForAction)
     ? gameEvent.user
     : state.currentPlayer.name;

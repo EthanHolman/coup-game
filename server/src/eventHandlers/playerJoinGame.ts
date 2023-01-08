@@ -27,6 +27,8 @@ export function playerJoinGame(
       if (!state.players.map((x) => x.isConnected).includes(false))
         resumeGame(state, messageAllFn, "all players have reconnected!");
 
+      // TODO: reconnecting player needs to know what is currently happening
+
       return;
     }
 

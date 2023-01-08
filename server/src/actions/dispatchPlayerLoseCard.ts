@@ -8,14 +8,15 @@ export function dispatchPlayerLoseCard(
   reason: GameActionMove,
   messagePlayerFn: messagePlayerFn
 ) {
-  // TODO: do we need an activeSecondaryAction?
-  state.activeAction = GameActionMove.LOSE_CARD;
+  if (state.currentSecondaryPlayerId !== -1)
+    throw `there is already a currentSecondaryPlayer: ${state.currentSecondaryPlayerId}`;
+
   state.setCurrentSecondaryPlayerByName(player);
 
   const event: ServerEvent = {
     event: GameEventType.PLAYER_LOSE_CARD,
-    data: { reason }, // TODO: can reason just pull from state.activeAction
-  }; 
+    data: { reason }, // TODO: can reason just pull from state.activeAction?
+  };
 
-  messagePlayerFn(state.currentSecondaryPlayer.name, event);
+  messagePlayerFn(player, event);
 }

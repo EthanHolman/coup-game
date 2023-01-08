@@ -1,11 +1,12 @@
 import { Deck } from "./Deck";
-import { GameActionMove } from "./enums";
 import { Player } from "./Player";
+import { GameEvent, GameEventData } from "./types";
 
 export class GameState {
   currentPlayerId: number;
   currentSecondaryPlayerId: number;
-  activeAction: GameActionMove;
+  currentAction?: GameEventData;
+  blockAction?: GameEvent;
   _gameStatus: "PRE_GAME" | "RUNNING" | "PAUSED";
   deck: Deck;
   private _players: Player[];
@@ -13,7 +14,8 @@ export class GameState {
   constructor() {
     this.currentPlayerId = 0;
     this.currentSecondaryPlayerId = -1;
-    this.activeAction = GameActionMove.NONE;
+    this.currentAction = undefined;
+    this.blockAction = undefined;
     this._gameStatus = "PRE_GAME";
     this.deck = new Deck();
     this._players = [];

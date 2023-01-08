@@ -14,6 +14,8 @@ Once the game starts, players will take their turns in the order they joined (i.
 
 For a turn, the current player chooses any action to take. If they choose an action for which they don't have the required card, they will be vulnerable to a challenge if someone calls their bluff. This action will be sent to all players. If the action is not 'Income' or 'Coup', other players will have the option to Challenge or Block it. If none of these counters are taken against the action, the current player will be allowed to take ("confirm") the action. A minimum of 5 seconds must pass before confirmation. After this, their turn is over -- onto the next player.
 
+If a player starts the round with 10 coins, they must Coup another player.
+
 More details on server's implementation around handing actions, challenges, and blocks can be found below under the "Server Action Handling" heading.
 
 ### Challenging an Action
@@ -76,7 +78,7 @@ Coins: +1
 ### Steal
 
 Card: Captain
-Blocked By: Ambassador, Duke
+Blocked By: Ambassador, Captain
 Coins: +2 (up to)
 
 Player chooses a target player from whom they steal up to 2 coins
@@ -116,8 +118,8 @@ All events include {event, data}. Fields noted below are members of the data obj
 All events include {event, user, data}. Fields noted below are members of the data object.
 
 - PLAYER_JOIN_GAME: {}
-- CHOOSE_ACTION: {action, targetPlayer}
-- CONFIRM_ACTION: {action, targetPlayer}
+- CHOOSE_ACTION: {action, targetPlayer?}
+- CONFIRM_ACTION: {}
 - CHALLENGE_ACTION: {}
 - BLOCK_ACTION: {blockAs: Card}
 - PLAYER_LOSE_CARD: {card: Card}
@@ -143,7 +145,7 @@ Game is now waiting for one of the following events: [confirmAction, challenge, 
 - challenge: does `currentEvent.user` have required card for `currentEvent.data.action`? yes → challenger loses card, execute `currentEvent`. no → `currentEvent.user` loses a card, end of turn
 - block: save this event as `blockEvent`. Game is now waiting for one of the following events: [acceptBlock, challengeBlock]
   - acceptBlock: next turn. _this can be done only by who?_
-  - challengeBlock: does `blockEvent.user` have `blockEvent.data.blockAsCard`?
+  - challengeBlock: does `blockEvent.user` have `blockEvent.data.card`?
     - yes → `challengeBlockEvent.user` loses a card. block succeeds. end of turn.
     - no → `blockEvent.user` loses card, and execute `currentEvent`
 

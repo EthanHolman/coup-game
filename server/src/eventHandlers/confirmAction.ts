@@ -2,7 +2,7 @@ import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
 import { GameActionMove } from "../enums";
 import { GameState } from "../GameState";
 import { GameEvent, messageAllFn, messagePlayerFn } from "../types";
-import { nextTurn } from "./nextTurn";
+import { nextTurn } from "../actions/nextTurn";
 
 export function confirmAction(
   state: GameState,
@@ -12,17 +12,15 @@ export function confirmAction(
 ) {
   // event validations
   if (gameEvent.user !== state.currentPlayer.name) throw "wrong user!";
-  if (gameEvent.data.action !== state.activeAction)
-    throw "chosen action does not match requested confirm action";
 
   // broadcast confirmation to all players
   messageAllFn(gameEvent);
 
-  switch (state.activeAction) {
+  switch (state.currentAction?.action) {
     case GameActionMove.ASSASSINATE:
       dispatchPlayerLoseCard(
         state,
-        gameEvent.data.targetPlayer,
+        state.currentAction!.targetPlayer!,
         GameActionMove.ASSASSINATE,
         messagePlayerFn
       );
@@ -31,7 +29,7 @@ export function confirmAction(
     case GameActionMove.COUP:
       dispatchPlayerLoseCard(
         state,
-        gameEvent.data.targetPlayer,
+        state.currentAction!.targetPlayer!,
         GameActionMove.COUP,
         messagePlayerFn
       );
@@ -50,8 +48,6 @@ export function confirmAction(
       break;
 
     case GameActionMove.STEAL:
-      const targetPlayer = gameEvent.data.targetPlayer;
-
       state.currentPlayer.coins += 2;
       break;
 
@@ -60,7 +56,7 @@ export function confirmAction(
       break;
 
     default:
-      throw `cannot process unexpected action ${state.activeAction}`;
+      throw `cannot process unexpected action ${state.currentAction?.action}`;
   }
 
   nextTurn(state);
