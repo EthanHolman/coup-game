@@ -15,7 +15,6 @@ export enum GameEventType {
   PAUSE_GAME,
   RESUME_GAME,
   PLAYER_DISCONNECT,
-  PLAYER_RECONNECT,
 }
 
 export enum GameActionMove {
@@ -36,3 +35,5 @@ export const ALL_GAME_ACTION_MOVES =
 export const ALL_PLAYABLE_GAME_ACTION_MOVES = ALL_GAME_ACTION_MOVES.filter(
   (x) => ![GameActionMove.NONE, GameActionMove.LOSE_CARD].includes(x)
 );
+
+export const ALL_GAME_EVENT_TYPES = getEnumVals<GameEventType>(GameEventType);

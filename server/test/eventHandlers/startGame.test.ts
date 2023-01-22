@@ -52,4 +52,6 @@ describe("startGame", function () {
 
     assert.isTrue(messageAllFn.calledWith({ event: GameEventType.START_GAME }));
   });
+
+  // someday when we have hosts: make sure only host can start the game
 });

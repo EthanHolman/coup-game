@@ -10,6 +10,11 @@ import { messagePlayerFn, messageAllFn, GameEvent } from "./types";
 import { playerDisconnect } from "./eventHandlers/playerDisconnect";
 import { acceptBlock } from "./eventHandlers/acceptBlock";
 
+export const ACTIONS_ALLOWED_WHILE_PAUSED = [
+  GameEventType.PLAYER_DISCONNECT,
+  GameEventType.PLAYER_JOIN_GAME,
+];
+
 export class GameRunner {
   _messagePlayer: messagePlayerFn;
   _messageAllFn: messageAllFn;
@@ -31,9 +36,7 @@ export class GameRunner {
   onEvent(gameEvent: GameEvent) {
     if (
       this._gameState.gameStatus === "PAUSED" &&
-      ![GameEventType.RESUME_GAME, GameEventType.PLAYER_DISCONNECT].includes(
-        gameEvent.event
-      )
+      !ACTIONS_ALLOWED_WHILE_PAUSED.includes(gameEvent.event)
     ) {
       throw "no actions are allowed until the game is unpaused!";
     }

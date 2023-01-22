@@ -103,7 +103,6 @@ All events include {event, data}. Fields noted below are members of the data obj
 - revealCards: {playerName, card} // called after coup, challenging, assassination, etc
 - nextTurn: {currentPlayerName}
 - PLAYER_DISCONNECT {} if received during pre-game, clients should delete player from state, as said player has left
-- PLAYER_RECONNECT {}
 
 ## Server events (broadcast to single player):
 
@@ -131,7 +130,6 @@ These internal events occur between the websocket server and game server compone
 - PAUSE_GAME {reason}
 - RESUME_GAME {reason}
 - PLAYER_DISCONNECT {}
-- PLAYER_RECONNECT {}
 
 ## Server Action Handling:
 
