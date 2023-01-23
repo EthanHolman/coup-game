@@ -10,45 +10,44 @@ export function confirmAction(
   messageAllFn: messageAllFn,
   messagePlayerFn: messagePlayerFn
 ) {
-  // event validations
   if (gameEvent.user !== state.currentPlayer.name) throw "wrong user!";
 
-  // broadcast confirmation to all players
   messageAllFn(gameEvent);
 
   switch (state.currentAction?.action) {
     case GameActionMove.ASSASSINATE:
-      dispatchPlayerLoseCard(
-        state,
-        state.currentAction!.targetPlayer!,
-        GameActionMove.ASSASSINATE,
-        messagePlayerFn
-      );
-      break;
-
     case GameActionMove.COUP:
       dispatchPlayerLoseCard(
         state,
         state.currentAction!.targetPlayer!,
-        GameActionMove.COUP,
+        state.currentAction.action,
         messagePlayerFn
       );
+      state.clearCurrentAction();
       break;
 
     case GameActionMove.EXCHANGE:
       break;
 
     case GameActionMove.FOREIGN_AID:
+      state.currentPlayer.coins += 2;
       break;
 
     case GameActionMove.INCOME:
-      const player = state.players.find((x) => x.name === gameEvent.user);
-      if (!player) throw `unable to find player ${gameEvent.user}`;
-      player.coins += 1;
+      state.currentPlayer.coins += 1;
       break;
 
     case GameActionMove.STEAL:
-      state.currentPlayer.coins += 2;
+      const targetPlayer = state.players.find(
+        (x) => x.name === state.currentAction?.targetPlayer
+      );
+      if (!targetPlayer)
+        throw `could not find targetPlayer ${state.currentAction.targetPlayer} to steal from!`;
+      const targetOriginalCoins = targetPlayer.coins;
+      targetPlayer.coins - 2;
+      if (targetPlayer.coins < 0) targetPlayer.coins = 0;
+      const numCoinsStolen = targetOriginalCoins - targetPlayer.coins;
+      state.currentPlayer.coins += numCoinsStolen;
       break;
 
     case GameActionMove.TAX:

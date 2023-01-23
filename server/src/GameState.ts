@@ -77,4 +77,8 @@ export class GameState {
   start() {
     this._gameStatus = "RUNNING";
   }
+
+  clearCurrentAction() {
+    this.currentAction = undefined;
+  }
 }

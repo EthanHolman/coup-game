@@ -26,7 +26,7 @@ If the original action taker DOES NOT have the required card, they must choose a
 
 ### Blocking an Action
 
-If someone blocks an action, they must choose which card they are using to block. This block action will now replace the original action as the "current action". The block event will be sent to all players -- anyone can challenge it. After a minimum of 5 seconds, the blocker will be allowed to "confirm" the block.
+If someone blocks an action, they must choose which card they are using to block. The block event will be sent to all players -- anyone can challenge it. After a minimum of 5 seconds, the blocker will be allowed to "confirm" the block.
 
 - If the block is allowed/confirmed, nothing becomes of the entire turn (next player's turn)
 - If the action is challenged, follow the same rules under "Challenging an Action". (IE, if someone blocks foreign aid as Duke but doesn't have the Duke, they lose a card)
@@ -35,7 +35,7 @@ If someone blocks an action, they must choose which card they are using to block
 
 Players can lose a card when they are Assassinated, Coup'ed, or if they incorrectly challenge another player's action. In any of these events, the player to lose a card becomes the 'current secondary player', and the game awaits them to choose a card to lose. If they only have one card remaining, they must choose that card.
 
-After processing the card loss: if the player has no cards left (IE, they are all revealed), then the player is out of the game, and all players will be notified. If this leaves only one player in the game, all players will be notified of the WINNER!
+After processing the card loss: if the player has no unrevealed cards left, then they are out of the game, and all players will be notified. If this leaves only one player in the game, all players will be notified of the WINNER!
 
 ## Actions
 
