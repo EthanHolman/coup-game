@@ -1,7 +1,9 @@
 import { useReducer, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { gameStateReducer, getInitialState } from "../GameState";
+import { GameMessage } from "../types";
 import JoinGame from "./JoinGame";
+import MessageViewer from "./MessageViewer";
 import TableTop from "./TableTop";
 import TableTopGame from "./TableTopGame";
 
@@ -19,7 +21,7 @@ const useStyles = createUseStyles({
 const Game = (): JSX.Element => {
   const [state, dispatch] = useReducer(gameStateReducer, getInitialState());
   const [websocket, setWebsocket] = useState<WebSocket>();
-  const [lastMessage, setLastMessage] = useState<any>();
+  const [messages, setMessages] = useState<GameMessage[]>([]);
 
   const classes = useStyles();
 
@@ -30,12 +32,12 @@ const Game = (): JSX.Element => {
         console.log(event);
         try {
           const data = JSON.parse(event.data);
-          if (data) setLastMessage(event.data);
+          if (data) setMessages((msgs) => [...msgs, data]);
         } catch (e) {
-          setLastMessage({
-            description: "unable to parse last message",
-            error: e,
-          });
+          // setLastMessage({
+          //   description: "unable to parse last message",
+          //   error: e,
+          // });
         }
       });
       ws.addEventListener("close", (event) => {
@@ -59,7 +61,7 @@ const Game = (): JSX.Element => {
           <JoinGame onJoin={onUserJoinGame} />
         )}
       </TableTop>
-      <div>{lastMessage}</div>
+      <MessageViewer messages="asdf" />
     </div>
   );
 };
