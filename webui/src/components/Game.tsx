@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { gameStateReducer, getInitialState } from "../GameState";
 import { GameMessage } from "../types";
 import JoinGame from "./JoinGame";
-import MessageViewer from "./MessageViewer";
+import EventViewer from "./EventViewer";
 import TableTop from "./TableTop";
 import TableTopGame from "./TableTopGame";
 
@@ -61,7 +61,7 @@ const Game = (): JSX.Element => {
           <JoinGame onJoin={onUserJoinGame} />
         )}
       </TableTop>
-      <MessageViewer messages="asdf" />
+      <EventViewer events={["something"]} />
     </div>
   );
 };

@@ -1,6 +1,12 @@
+export type Player = {
+  username: string;
+  coins: number;
+  cards: Card[];
+}
+
 export type GameState = {
   username: string;
-  players: string[];
+  players: Player[];
 };
 
 export type GameStateAction = {
