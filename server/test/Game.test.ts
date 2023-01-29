@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { ALL_GAME_EVENT_TYPES, GameEventType } from "../src/enums";
+import { ALL_GAME_EVENT_TYPES } from "../../shared/enums";
 import { ACTIONS_ALLOWED_WHILE_PAUSED, GameRunner } from "../src/Game";
 
 describe("gamerunner", function () {

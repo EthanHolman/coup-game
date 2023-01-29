@@ -1,19 +1,15 @@
-import { Card } from "./Deck";
 import { GameActionMove, GameEventType } from "./enums";
-
-export type messagePlayerFn = (playerName: string, data: ServerEvent) => void;
-
-export type messageAllFn = (data: ServerEvent) => void;
-
-export type ServerEvent = {
-  event: GameEventType;
-  data?: any;
-};
+import { Card } from "./Card";
 
 export type GameEventData = {
   targetPlayer?: string;
   action?: GameActionMove;
   card?: Card;
+
+  // only used when sent by server
+  reason?: string;
+  playerNames?: string[];
+  name?: string;
 };
 
 export type GameEvent = {

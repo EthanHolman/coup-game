@@ -1,17 +1,7 @@
-import { getEnumVals } from "./utils/getEnumVals";
+import { ALL_CARDS, Card } from "../../shared/Card";
 import { getRandomNumber } from "./utils/getRandomNumber";
 
 // top of deck is index 0
-
-export enum Card {
-  DUKE,
-  AMBASSADOR,
-  ASSASSIN,
-  CONTESSA,
-  CAPTAIN,
-}
-
-export const ALL_CARDS = getEnumVals<Card>(Card);
 
 export class Deck {
   _deck: Card[];

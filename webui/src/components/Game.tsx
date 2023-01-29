@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { GameEvent } from "../../../shared/GameEvent";
 import { gameStateReducer, getInitialState } from "../GameState";
-import { GameMessage } from "../types";
 import JoinGame from "./JoinGame";
 import EventViewer from "./EventViewer";
 import TableTop from "./TableTop";
@@ -21,7 +21,7 @@ const useStyles = createUseStyles({
 const Game = (): JSX.Element => {
   const [state, dispatch] = useReducer(gameStateReducer, getInitialState());
   const [websocket, setWebsocket] = useState<WebSocket>();
-  const [messages, setMessages] = useState<GameMessage[]>([]);
+  const [messages, setMessages] = useState<GameEvent[]>([]);
 
   const classes = useStyles();
 
@@ -29,20 +29,20 @@ const Game = (): JSX.Element => {
     try {
       const ws = new WebSocket(`ws://localhost:8080/${username}`);
       ws.addEventListener("message", (event) => {
-        console.log(event);
         try {
-          const data = JSON.parse(event.data);
-          if (data) setMessages((msgs) => [...msgs, data]);
+          const data = JSON.parse(event.data) as GameEvent;
+          if (data) {
+            console.info("[WS]", data);
+            setMessages((msgs) => [...msgs, data]);
+          }
         } catch (e) {
-          // setLastMessage({
-          //   description: "unable to parse last message",
-          //   error: e,
-          // });
+          alert("unable to connect!");
+          console.error(e);
         }
       });
       ws.addEventListener("close", (event) => {
         console.log(event);
-        dispatch({ type: "reset", data: { username: "" } });
+        dispatch({ type: "reset" });
       });
       setWebsocket(ws);
       dispatch({ type: "joinGame", data: { username } });
@@ -61,7 +61,7 @@ const Game = (): JSX.Element => {
           <JoinGame onJoin={onUserJoinGame} />
         )}
       </TableTop>
-      <EventViewer events={["something"]} />
+      <EventViewer events={messages} />
     </div>
   );
 };

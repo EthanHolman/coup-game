@@ -1,11 +1,12 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { Card, Deck } from "../../src/Deck";
-import { GameEventType } from "../../src/enums";
+import { GameEventType } from "../../../shared/enums";
+import { Deck } from "../../src/Deck";
+import { Card } from "../../../shared/Card";
 import { playerDisconnect } from "../../src/eventHandlers/playerDisconnect";
+import { GameEvent } from "../../../shared/GameEvent";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
-import { GameEvent } from "../../src/types";
 
 describe("playerDisconnect event handler", function () {
   it("should update the player as no longer connected, and pause game, if game is started", function () {

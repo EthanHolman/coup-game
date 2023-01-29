@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { Card } from "../src/Deck";
+import { Card } from "../../shared/Card";
 import { Player } from "../src/Player";
 
 describe("player", function () {

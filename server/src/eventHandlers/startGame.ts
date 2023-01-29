@@ -1,6 +1,7 @@
-import { GameEventType } from "../enums";
+import { GameEventType } from "../../../shared/enums";
+import { createServerEvent } from "../utils/createServerEvent";
 import { GameState } from "../GameState";
-import { messageAllFn, ServerEvent } from "../types";
+import { messageAllFn } from "../messageFnTypes";
 
 export function startGame(state: GameState, messageAllFn: messageAllFn) {
   if (state.players.length < 2)
@@ -9,7 +10,7 @@ export function startGame(state: GameState, messageAllFn: messageAllFn) {
   state.start();
   state.currentPlayerId = 0;
 
-  const event: ServerEvent = { event: GameEventType.START_GAME };
+  const event = createServerEvent(GameEventType.START_GAME);
 
   messageAllFn(event);
 }

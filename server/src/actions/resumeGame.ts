@@ -1,6 +1,7 @@
-import { GameEventType } from "../enums";
+import { GameEventType } from "../../../shared/enums";
+import { createServerEvent } from "../utils/createServerEvent";
 import { GameState } from "../GameState";
-import { messageAllFn, ServerEvent } from "../types";
+import { messageAllFn } from "../messageFnTypes";
 
 export function resumeGame(
   state: GameState,
@@ -10,10 +11,7 @@ export function resumeGame(
   if (state.gameStatus !== "PAUSED")
     throw "game cannot be resumed if it is not currently paused";
 
-  const event: ServerEvent = {
-    event: GameEventType.RESUME_GAME,
-    data: { reason },
-  };
+  const event = createServerEvent(GameEventType.RESUME_GAME, { reason });
 
   state.resume();
   messageAllFn(event);

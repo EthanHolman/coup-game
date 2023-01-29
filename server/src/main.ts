@@ -1,6 +1,6 @@
 import { createServer } from "http";
 import WebSocket, { WebSocketServer } from "ws";
-import { GameEventType } from "./enums";
+import { GameEventType } from "../../shared/enums";
 import { GameRunner } from "./Game";
 
 const server = createServer();

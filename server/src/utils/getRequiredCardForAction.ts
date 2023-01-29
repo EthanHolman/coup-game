@@ -1,5 +1,5 @@
-import { Card } from "../Deck";
-import { GameActionMove } from "../enums";
+import { Card } from "../../../shared/Card";
+import { GameActionMove } from "../../../shared/enums";
 
 export function getRequiredCardForAction(action: GameActionMove): Card {
   switch (action) {

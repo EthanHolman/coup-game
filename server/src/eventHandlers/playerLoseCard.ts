@@ -1,6 +1,6 @@
 import { GameState } from "../GameState";
-import { GameEvent } from "../types";
 import { nextTurn } from "../actions/nextTurn";
+import { GameEvent } from "../../../shared/GameEvent";
 
 export function playerLoseCard(state: GameState, gameEvent: GameEvent) {
   if (state.currentSecondaryPlayer.name === gameEvent.user) {

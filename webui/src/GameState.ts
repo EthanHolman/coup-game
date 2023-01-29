@@ -1,18 +1,22 @@
+import { Card } from "../../shared/Card";
+
 export type Player = {
   username: string;
   coins: number;
   cards: Card[];
-}
+};
 
 export type GameState = {
   username: string;
   players: Player[];
 };
 
-export type GameStateAction = {
-  type: "joinGame" | "reset";
-  data: { username: string };
-};
+export type GameStateAction =
+  | {
+      type: "joinGame";
+      data: { username: string };
+    }
+  | { type: "reset" };
 
 export const getInitialState = (): GameState => ({
   username: "",

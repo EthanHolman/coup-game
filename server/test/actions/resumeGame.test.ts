@@ -1,9 +1,9 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { GameEventType } from "../../src/enums";
+import { GameEventType } from "../../../shared/enums";
 import { resumeGame } from "../../src/actions/resumeGame";
+import { createServerEvent } from "../../src/utils/createServerEvent";
 import { GameState } from "../../src/GameState";
-import { ServerEvent } from "../../src/types";
 
 describe("resumeGame event handler", function () {
   it("should update gamestatus to RUNNING", function () {
@@ -23,10 +23,9 @@ describe("resumeGame event handler", function () {
 
     resumeGame(state, messageAllFn);
 
-    const expectedEvent: ServerEvent = {
-      event: GameEventType.RESUME_GAME,
-      data: { reason: "game resumed" },
-    };
+    const expectedEvent = createServerEvent(GameEventType.RESUME_GAME, {
+      reason: "game resumed",
+    });
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
     assert.equal(state.gameStatus, "RUNNING");
@@ -39,10 +38,9 @@ describe("resumeGame event handler", function () {
 
     resumeGame(state, messageAllFn, "resume just for fun");
 
-    const expectedEvent: ServerEvent = {
-      event: GameEventType.RESUME_GAME,
-      data: { reason: "resume just for fun" },
-    };
+    const expectedEvent = createServerEvent(GameEventType.RESUME_GAME, {
+      reason: "resume just for fun",
+    });
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
     assert.equal(state.gameStatus, "RUNNING");

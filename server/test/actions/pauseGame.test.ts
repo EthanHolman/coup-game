@@ -1,9 +1,9 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { GameEventType } from "../../src/enums";
+import { GameEventType } from "../../../shared/enums";
 import { pauseGame } from "../../src/actions/pauseGame";
+import { createServerEvent } from "../../src/utils/createServerEvent";
 import { GameState } from "../../src/GameState";
-import { ServerEvent } from "../../src/types";
 
 describe("pauseGame", function () {
   it("should update gamestatus to paused", function () {
@@ -23,10 +23,9 @@ describe("pauseGame", function () {
 
     pauseGame(state, messageAllFn);
 
-    const expectedEvent: ServerEvent = {
-      event: GameEventType.PAUSE_GAME,
-      data: { reason: "game paused" },
-    };
+    const expectedEvent = createServerEvent(GameEventType.PAUSE_GAME, {
+      reason: "game paused",
+    });
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
     assert.equal(state.gameStatus, "PAUSED");
@@ -39,10 +38,9 @@ describe("pauseGame", function () {
 
     pauseGame(state, messageAllFn, "because i wanna pause it");
 
-    const expectedEvent: ServerEvent = {
-      event: GameEventType.PAUSE_GAME,
-      data: { reason: "because i wanna pause it" },
-    };
+    const expectedEvent = createServerEvent(GameEventType.PAUSE_GAME, {
+      reason: "because i wanna pause it",
+    });
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
     assert.equal(state.gameStatus, "PAUSED");

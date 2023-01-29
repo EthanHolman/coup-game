@@ -1,12 +1,13 @@
 import { createUseStyles } from "react-jss";
+import { GameEvent } from "../../../shared/GameEvent";
 
 const useStyles = createUseStyles({
   container: {},
-  messageBubble: {}
+  messageBubble: {},
 });
 
 type EventViewerProps = {
-  events: string[];
+  events: GameEvent[];
 };
 
 const EventViewer = ({ events }: EventViewerProps): JSX.Element => {
@@ -14,8 +15,10 @@ const EventViewer = ({ events }: EventViewerProps): JSX.Element => {
 
   return (
     <div className={classes.container}>
-      {events.map(event => (
-        <div className={classes.messageBubble}>{event}</div>
+      {events.map((event, index) => (
+        <div className={classes.messageBubble} key={index}>
+          {event.user}: {event.event} - {JSON.stringify(event.data)}
+        </div>
       ))}
     </div>
   );

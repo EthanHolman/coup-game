@@ -3,7 +3,8 @@ import { GameState } from "../../src/GameState";
 import { startGame } from "../../src/eventHandlers/startGame";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import Sinon from "sinon";
-import { GameEventType } from "../../src/enums";
+import { GameEventType } from "../../../shared/enums";
+import { SERVER_USERNAME } from "../../src/globals";
 
 describe("startGame", function () {
   it("shouldn't be able to start without players", function () {
@@ -50,8 +51,12 @@ describe("startGame", function () {
 
     startGame(state, messageAllFn);
 
-    assert.isTrue(messageAllFn.calledWith({ event: GameEventType.START_GAME }));
+    Sinon.assert.calledOnceWithExactly(messageAllFn, {
+      user: SERVER_USERNAME,
+      event: GameEventType.START_GAME,
+      data: {},
+    });
   });
 
-  // someday when we have hosts: make sure only host can start the game
+  // TODO: someday when we have hosts: make sure only host can start the game
 });

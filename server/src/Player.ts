@@ -1,4 +1,4 @@
-import { ALL_CARDS, Card } from "./Deck";
+import { ALL_CARDS, Card } from "../../shared/Card";
 
 export type PlayerCard = {
   card: Card;

@@ -1,7 +1,10 @@
-import { ALL_PLAYABLE_GAME_ACTION_MOVES, GameActionMove } from "../enums";
+import {
+  ALL_PLAYABLE_GAME_ACTION_MOVES,
+  GameActionMove,
+} from "../../../shared/enums";
 import { GameState } from "../GameState";
-import { GameEvent } from "../types";
-import { messageAllFn } from "../types";
+import { messageAllFn } from "../messageFnTypes";
+import { GameEvent } from "../../../shared/GameEvent";
 
 export function chooseAction(
   state: GameState,

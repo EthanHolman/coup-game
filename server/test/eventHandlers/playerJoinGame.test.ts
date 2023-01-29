@@ -1,11 +1,12 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { Card } from "../../src/Deck";
-import { GameEventType } from "../../src/enums";
+import { GameEventType } from "../../../shared/enums";
+import { Card } from "../../../shared/Card";
 import { playerJoinGame } from "../../src/eventHandlers/playerJoinGame";
+import { GameEvent } from "../../../shared/GameEvent";
 import { GameState } from "../../src/GameState";
+import { SERVER_USERNAME } from "../../src/globals";
 import { Player } from "../../src/Player";
-import { GameEvent } from "../../src/types";
 
 describe("playerJoinGame event handler", function () {
   it("should add player to game state", function () {
@@ -76,7 +77,7 @@ describe("playerJoinGame event handler", function () {
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, {
       event: GameEventType.PLAYER_JOIN_GAME,
-      data: { name: "birdsarentreal" },
+      user: "birdsarentreal",
     });
   });
 
@@ -127,6 +128,7 @@ describe("playerJoinGame event handler", function () {
 
     Sinon.assert.calledOnceWithExactly(messagePlayerFn, "birdsarentreal", {
       event: GameEventType.WELCOME,
+      user: SERVER_USERNAME,
       data: { playerNames: ["birdsarentreal"] },
     });
   });
@@ -147,6 +149,7 @@ describe("playerJoinGame event handler", function () {
     Sinon.assert.calledOnce(messagePlayer1Fn);
     Sinon.assert.calledWithExactly(messagePlayer1Fn, "birdsarentreal", {
       event: GameEventType.WELCOME,
+      user: SERVER_USERNAME,
       data: { playerNames: ["birdsarentreal"] },
     });
 
@@ -162,6 +165,7 @@ describe("playerJoinGame event handler", function () {
     Sinon.assert.calledOnce(messagePlayer2Fn);
     Sinon.assert.calledWithExactly(messagePlayer2Fn, "anotherplayer", {
       event: GameEventType.WELCOME,
+      user: SERVER_USERNAME,
       data: { playerNames: ["birdsarentreal", "anotherplayer"] },
     });
   });

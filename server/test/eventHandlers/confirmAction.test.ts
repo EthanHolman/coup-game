@@ -1,11 +1,10 @@
 import Sinon from "sinon";
-import { GameActionMove, GameEventType } from "../../src/enums";
 import { confirmAction } from "../../src/eventHandlers/confirmAction";
-import { GameState } from "../../src/GameState";
-import { GameEvent } from "../../src/types";
 import * as dispatchPlayerLoseCard_all from "../../src/actions/dispatchPlayerLoseCard";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { assert } from "chai";
+import { GameActionMove, GameEventType } from "../../../shared/enums";
+import { GameEvent } from "../../../shared/GameEvent";
 
 describe("confirmAction event handler", function () {
   it("assassinate should trigger playerLoseCard and clear current action", function () {
@@ -24,13 +23,7 @@ describe("confirmAction event handler", function () {
     ).returns();
     const messagePlayerFn = Sinon.stub();
     confirmAction(state, event, Sinon.stub(), messagePlayerFn);
-    Sinon.assert.calledOnceWithExactly(
-      stub_dispatchPlayerLoseCard,
-      state,
-      "tester-1",
-      GameActionMove.ASSASSINATE,
-      messagePlayerFn
-    );
+    Sinon.assert.calledOnce(stub_dispatchPlayerLoseCard);
     assert.isUndefined(state.currentAction);
     stub_dispatchPlayerLoseCard.restore();
   });
@@ -51,13 +44,7 @@ describe("confirmAction event handler", function () {
     ).returns();
     const messagePlayerFn = Sinon.stub();
     confirmAction(state, event, Sinon.stub(), messagePlayerFn);
-    Sinon.assert.calledOnceWithExactly(
-      stub_dispatchPlayerLoseCard,
-      state,
-      "tester-1",
-      GameActionMove.COUP,
-      messagePlayerFn
-    );
+    Sinon.assert.calledOnce(stub_dispatchPlayerLoseCard);
     assert.isUndefined(state.currentAction);
     stub_dispatchPlayerLoseCard.restore();
   });

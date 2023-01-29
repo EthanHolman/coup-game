@@ -1,13 +1,10 @@
 import { resumeGame } from "../actions/resumeGame";
-import { GameEventType } from "../enums";
+import { GameEvent } from "../../../shared/GameEvent";
+import { createServerEvent } from "../utils/createServerEvent";
 import { GameState } from "../GameState";
 import { Player } from "../Player";
-import {
-  GameEvent,
-  messageAllFn,
-  messagePlayerFn,
-  ServerEvent,
-} from "../types";
+import { messageAllFn, messagePlayerFn } from "../messageFnTypes";
+import { GameEventType } from "../../../shared/enums";
 
 export function playerJoinGame(
   state: GameState,
@@ -43,21 +40,11 @@ export function playerJoinGame(
   state.addPlayer(newPlayer);
 
   // send initial game state to new player
-  const playerEvent: ServerEvent = {
-    event: GameEventType.WELCOME,
-    data: {
-      playerNames: state.players.map((x) => x.name),
-    },
-  };
+  const playerEvent = createServerEvent(GameEventType.WELCOME, {
+    playerNames: state.players.map((x) => x.name),
+  });
   messagePlayerFn(newPlayer.name, playerEvent);
 
   // message everyone that new player joined
-  const everyoneEvent: ServerEvent = {
-    event: GameEventType.PLAYER_JOIN_GAME,
-    data: {
-      name: newPlayer.name,
-      // TODO: include player data with this message
-    },
-  };
-  messageAllFn(everyoneEvent);
+  messageAllFn(gameEvent);
 }

@@ -1,22 +1,20 @@
-import { GameActionMove, GameEventType } from "../enums";
+import { GameEventType } from "../../../shared/enums";
+import { createServerEvent } from "../utils/createServerEvent";
 import { GameState } from "../GameState";
-import { messagePlayerFn, ServerEvent } from "../types";
+import { messagePlayerFn } from "../messageFnTypes";
 
 export function dispatchPlayerLoseCard(
   state: GameState,
   player: string,
-  reason: GameActionMove,
-  messagePlayerFn: messagePlayerFn
+  messagePlayerFn: messagePlayerFn,
+  reason: string
 ) {
   if (state.currentSecondaryPlayerId !== -1)
     throw `there is already a currentSecondaryPlayer: ${state.currentSecondaryPlayerId}`;
 
   state.setCurrentSecondaryPlayerByName(player);
 
-  const event: ServerEvent = {
-    event: GameEventType.PLAYER_LOSE_CARD,
-    data: { reason }, // TODO: can reason just pull from state.activeAction?
-  };
+  const event = createServerEvent(GameEventType.PLAYER_LOSE_CARD, { reason });
 
   messagePlayerFn(player, event);
 }

@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { dispatchPlayerLoseCard } from "../../src/actions/dispatchPlayerLoseCard";
-import { GameActionMove, GameEventType } from "../../src/enums";
+import { GameEventType } from "../../../shared/enums";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 
 import Sinon from "sinon";
@@ -12,8 +12,8 @@ describe("dispatchPlayerLoseCard action handler", function () {
     dispatchPlayerLoseCard(
       state,
       "tester-1",
-      GameActionMove.ASSASSINATE,
-      Sinon.stub()
+      Sinon.stub(),
+      "sad day you lose a card"
     );
 
     assert.equal(state.currentSecondaryPlayerId, 1);
@@ -28,8 +28,8 @@ describe("dispatchPlayerLoseCard action handler", function () {
       dispatchPlayerLoseCard(
         state,
         "tester-2",
-        GameActionMove.ASSASSINATE,
-        Sinon.stub()
+        Sinon.stub(),
+        "sad day you lose a card"
       );
     });
   });
@@ -41,13 +41,14 @@ describe("dispatchPlayerLoseCard action handler", function () {
     dispatchPlayerLoseCard(
       state,
       "tester-1",
-      GameActionMove.COUP,
-      messagePlayer
+      messagePlayer,
+      "sad day you lose a card"
     );
 
     Sinon.assert.calledOnceWithExactly(messagePlayer, "tester-1", {
       event: GameEventType.PLAYER_LOSE_CARD,
-      data: { reason: GameActionMove.COUP },
+      user: "__server",
+      data: { reason: "sad day you lose a card" },
     });
   });
 });

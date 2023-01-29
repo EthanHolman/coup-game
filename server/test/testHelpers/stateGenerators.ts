@@ -1,4 +1,4 @@
-import { Card } from "../../src/Deck";
+import { Card } from "../../../shared/Card";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 

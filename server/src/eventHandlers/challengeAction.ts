@@ -1,8 +1,8 @@
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
-import { GameActionMove } from "../enums";
 import { GameState } from "../GameState";
-import { GameEvent, messagePlayerFn } from "../types";
+import { messagePlayerFn } from "../messageFnTypes";
 import { getRequiredCardForAction } from "../utils/getRequiredCardForAction";
+import { GameEvent } from "../../../shared/GameEvent";
 
 export function challengeAction(
   state: GameState,
@@ -19,8 +19,8 @@ export function challengeAction(
   dispatchPlayerLoseCard(
     state,
     playerToLoseCard,
-    GameActionMove.LOSE_CARD, // TODO: should we make new action for this case?
-    messagePlayerFn
+    messagePlayerFn,
+    "player lost the challenge"
   );
 
   // TODO: message all players what happened

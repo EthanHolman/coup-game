@@ -1,6 +1,7 @@
 import { GameState } from "../GameState";
-import { GameEvent, messageAllFn } from "../types";
+import { messageAllFn } from "../messageFnTypes";
 import { nextTurn } from "../actions/nextTurn";
+import { GameEvent } from "../../../shared/GameEvent";
 
 export function acceptBlock(
   state: GameState,

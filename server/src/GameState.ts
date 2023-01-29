@@ -1,6 +1,6 @@
 import { Deck } from "./Deck";
 import { Player } from "./Player";
-import { GameEvent, GameEventData } from "./types";
+import { GameEvent, GameEventData } from "../../shared/GameEvent";
 
 export class GameState {
   currentPlayerId: number;

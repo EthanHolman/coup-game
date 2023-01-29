@@ -1,6 +1,7 @@
 import { pauseGame } from "../actions/pauseGame";
 import { GameState } from "../GameState";
-import { GameEvent, messageAllFn } from "../types";
+import { messageAllFn } from "../messageFnTypes";
+import { GameEvent } from "../../../shared/GameEvent";
 
 export function playerDisconnect(
   state: GameState,

@@ -1,4 +1,4 @@
-import { GameEventType } from "./enums";
+import { GameEventType } from "../../shared/enums";
 import { challengeAction } from "./eventHandlers/challengeAction";
 import { confirmAction } from "./eventHandlers/confirmAction";
 import { playerJoinGame } from "./eventHandlers/playerJoinGame";
@@ -6,9 +6,10 @@ import { playerLoseCard } from "./eventHandlers/playerLoseCard";
 import { chooseAction } from "./eventHandlers/chooseAction";
 import { startGame } from "./eventHandlers/startGame";
 import { GameState } from "./GameState";
-import { messagePlayerFn, messageAllFn, GameEvent } from "./types";
+import { messagePlayerFn, messageAllFn } from "./messageFnTypes";
 import { playerDisconnect } from "./eventHandlers/playerDisconnect";
 import { acceptBlock } from "./eventHandlers/acceptBlock";
+import { GameEvent } from "../../shared/GameEvent";
 
 export const ACTIONS_ALLOWED_WHILE_PAUSED = [
   GameEventType.PLAYER_DISCONNECT,

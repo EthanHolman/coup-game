@@ -93,9 +93,9 @@ Coins: +3
 
 ## Server events (broadcast to all):
 
-All events include {event, data}. Fields noted below are members of the data object.
+All events include {event, user, data}. Fields noted below are members of the data object.
 
-- playerJoined: {playerName, turnOrder, publicCards}
+- PLAYER_JOIN_GAME: {}
 - START_GAME: {}
 - CHOOSE_ACTION: {action, targetPlayer}
 - CONFIRM_ACTION: {targetPlayer}

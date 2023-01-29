@@ -1,8 +1,9 @@
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
-import { GameActionMove } from "../enums";
+import { GameActionMove } from "../../../shared/enums";
 import { GameState } from "../GameState";
-import { GameEvent, messageAllFn, messagePlayerFn } from "../types";
+import { messageAllFn, messagePlayerFn } from "../messageFnTypes";
 import { nextTurn } from "../actions/nextTurn";
+import { GameEvent } from "../../../shared/GameEvent";
 
 export function confirmAction(
   state: GameState,
@@ -20,8 +21,12 @@ export function confirmAction(
       dispatchPlayerLoseCard(
         state,
         state.currentAction!.targetPlayer!,
-        state.currentAction.action,
-        messagePlayerFn
+        messagePlayerFn,
+        `You were ${
+          state.currentAction.action === GameActionMove.ASSASSINATE
+            ? "assassinated"
+            : "couped"
+        }`
       );
       state.clearCurrentAction();
       break;

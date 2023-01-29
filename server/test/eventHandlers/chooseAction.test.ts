@@ -1,16 +1,16 @@
 import Sinon from "sinon";
-import { GameEvent } from "../../src/types";
-import {
-  GameEventType,
-  GameActionMove,
-  ALL_PLAYABLE_GAME_ACTION_MOVES,
-} from "../../src/enums";
 import { chooseAction } from "../../src/eventHandlers/chooseAction";
 import { assert } from "chai";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
-import { Card } from "../../src/Deck";
+import { Card } from "../../../shared/Card";
+import {
+  GameEventType,
+  GameActionMove,
+  ALL_PLAYABLE_GAME_ACTION_MOVES,
+} from "../../../shared/enums";
+import { GameEvent } from "../../../shared/GameEvent";
 
 describe("chooseAction event handler", function () {
   it("should set the current action", function () {

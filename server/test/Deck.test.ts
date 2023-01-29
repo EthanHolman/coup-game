@@ -1,5 +1,6 @@
 import { assert } from "chai";
-import { ALL_CARDS, Card, Deck } from "../src/Deck";
+import { Deck } from "../src/Deck";
+import { ALL_CARDS, Card } from "../../shared/Card";
 
 describe("deck", function () {
   it("should generate deck if one is not passed in", function () {

@@ -1,4 +1,4 @@
-import { getEnumVals } from "./utils/getEnumVals";
+import { getEnumVals } from "./getEnumVals";
 
 export enum GameEventType {
   PLAYER_JOIN_GAME,
