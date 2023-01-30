@@ -38,6 +38,7 @@ describe("deck", function () {
     assert.include(ALL_CARDS, card);
     assert.equal(deck._deck[0], card);
     assert.equal(originalLength, deck._deck.length);
+    assert.equal(originalLength, deck.count);
   });
 
   it("should allow drawing a card from top of deck", function () {
@@ -48,6 +49,7 @@ describe("deck", function () {
     assert.equal(card, Card.AMBASSADOR);
     assert.equal(deck._deck[0], Card.ASSASSIN);
     assert.lengthOf(deck._deck, 2);
+    assert.equal(deck.count, 2);
   });
 
   it("should allow drawing multiple cards", function () {
@@ -59,6 +61,7 @@ describe("deck", function () {
     assert.equal(card[1], Card.ASSASSIN);
     assert.equal(deck._deck[0], Card.CAPTAIN);
     assert.lengthOf(deck._deck, 1);
+    assert.equal(deck.count, 1);
   });
 
   it("should not allow drawing less than 1 cards", function () {
@@ -78,6 +81,7 @@ describe("deck", function () {
     deck.discardCard(toDiscard);
 
     assert.lengthOf(deck._deck, 3);
+    assert.equal(deck.count, 3);
     assert.equal(deck._deck[0], Card.AMBASSADOR);
     assert.equal(deck._deck[1], Card.ASSASSIN);
     assert.equal(deck._deck[2], Card.CONTESSA);

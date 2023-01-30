@@ -25,6 +25,10 @@ const Game = (): JSX.Element => {
 
   const classes = useStyles();
 
+  const sendEvent = (event: GameEvent) => {
+    websocket?.send(JSON.stringify(event));
+  };
+
   const onUserJoinGame = (username: string) => {
     try {
       const ws = new WebSocket(`ws://localhost:8080/${username}`);
@@ -36,17 +40,20 @@ const Game = (): JSX.Element => {
             setMessages((msgs) => [...msgs, data]);
           }
         } catch (e) {
-          alert("unable to connect!");
           console.error(e);
         }
       });
       ws.addEventListener("close", (event) => {
         console.log(event);
         dispatch({ type: "reset" });
+        alert(
+          "connection reset. please re-join the game with the same username"
+        );
       });
       setWebsocket(ws);
       dispatch({ type: "joinGame", data: { username } });
     } catch (e) {
+      alert("unable to connect!");
       console.error(e);
     }
   };

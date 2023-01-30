@@ -1,5 +1,6 @@
 import { GameActionMove, GameEventType } from "./enums";
 import { Card } from "./Card";
+import { ClientGameState } from "./ClientGameState";
 
 export type GameEventData = {
   targetPlayer?: string;
@@ -10,6 +11,7 @@ export type GameEventData = {
   reason?: string;
   playerNames?: string[];
   name?: string;
+  state?: ClientGameState;
 };
 
 export type GameEvent = {

@@ -102,7 +102,8 @@ All events include {event, user, data}. Fields noted below are members of the da
 - passAction: {}
 - revealCards: {playerName, card} // called after coup, challenging, assassination, etc
 - nextTurn: {currentPlayerName}
-- PLAYER_DISCONNECT {} if received during pre-game, clients should delete player from state, as said player has left
+- PLAYER_DISCONNECT: {} if received during pre-game, clients should delete player from state, as said player has left
+- CURRENT_STATE: {state}
 
 ## Server events (broadcast to single player):
 

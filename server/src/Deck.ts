@@ -33,6 +33,10 @@ export class Deck {
     return shuffledDeck;
   }
 
+  get count(): number {
+    return this._deck.length;
+  }
+
   peekCard(position: number = 0): Card {
     return this._deck[position];
   }

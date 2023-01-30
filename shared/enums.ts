@@ -15,6 +15,7 @@ export enum GameEventType {
   PAUSE_GAME,
   RESUME_GAME,
   PLAYER_DISCONNECT,
+  CURRENT_STATE,
 }
 
 export enum GameActionMove {

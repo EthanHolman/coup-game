@@ -5,6 +5,7 @@ import { GameState } from "../GameState";
 import { Player } from "../Player";
 import { messageAllFn, messagePlayerFn } from "../messageFnTypes";
 import { GameEventType } from "../../../shared/enums";
+import { sendCurrentState } from "../actions/sendCurrentState";
 
 export function playerJoinGame(
   state: GameState,
@@ -40,10 +41,12 @@ export function playerJoinGame(
   state.addPlayer(newPlayer);
 
   // send initial game state to new player
-  const playerEvent = createServerEvent(GameEventType.WELCOME, {
-    playerNames: state.players.map((x) => x.name),
-  });
-  messagePlayerFn(newPlayer.name, playerEvent);
+  // const playerEvent = createServerEvent(GameEventType.WELCOME, {
+  //   playerNames: state.players.map((x) => x.name),
+  // });
+  // messagePlayerFn(newPlayer.name, playerEvent);
+
+  sendCurrentState(state, messageAllFn);
 
   // message everyone that new player joined
   messageAllFn(gameEvent);
