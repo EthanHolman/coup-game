@@ -1,6 +1,6 @@
 import { Card } from "./Card";
 
-export type Player = {
+export type ClientPlayer = {
   name: string;
   coins: number;
   cards: (Card | string)[]; // TODO: this isn't ideal...
@@ -9,6 +9,6 @@ export type Player = {
 export type ClientGameState = {
   currentPlayerName: string;
   gameStatus: string;
-  players: Player[];
+  players: ClientPlayer[];
   deckCount: number;
 };

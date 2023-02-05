@@ -5,7 +5,6 @@ import { Card } from "../../../shared/Card";
 import { playerJoinGame } from "../../src/eventHandlers/playerJoinGame";
 import { GameEvent } from "../../../shared/GameEvent";
 import { GameState } from "../../src/GameState";
-import { SERVER_USERNAME } from "../../src/globals";
 import { Player } from "../../src/Player";
 
 describe("playerJoinGame event handler", function () {
@@ -14,13 +13,12 @@ describe("playerJoinGame event handler", function () {
     assert.equal(state.players.length, 0);
 
     const messageAllFn = Sinon.stub();
-    const messagePlayerFn = Sinon.stub();
     const event: GameEvent = {
       event: GameEventType.PLAYER_JOIN_GAME,
       user: "birdsarentreal",
     };
 
-    playerJoinGame(state, event, messageAllFn, messagePlayerFn);
+    playerJoinGame(state, event, messageAllFn);
 
     assert.equal(state.players.length, 1);
   });
@@ -31,13 +29,12 @@ describe("playerJoinGame event handler", function () {
     const originalDeck = [...state.deck._deck];
 
     const messageAllFn = Sinon.stub();
-    const messagePlayerFn = Sinon.stub();
     const event: GameEvent = {
       event: GameEventType.PLAYER_JOIN_GAME,
       user: "birdsarentreal",
     };
 
-    playerJoinGame(state, event, messageAllFn, messagePlayerFn);
+    playerJoinGame(state, event, messageAllFn);
 
     assert.deepEqual(state.deck._deck, originalDeck.slice(2));
     assert.isTrue(state.players[0].hasCard(originalDeck[0]));
@@ -48,7 +45,6 @@ describe("playerJoinGame event handler", function () {
     const state = new GameState();
 
     const messageAllFn = Sinon.stub();
-    const messagePlayerFn = Sinon.stub();
     const event1: GameEvent = {
       event: GameEventType.PLAYER_JOIN_GAME,
       user: "birdsarentreal",
@@ -56,8 +52,8 @@ describe("playerJoinGame event handler", function () {
 
     const event2: GameEvent = { ...event1, user: "hello" };
 
-    playerJoinGame(state, event1, messageAllFn, messagePlayerFn);
-    playerJoinGame(state, event2, messageAllFn, messagePlayerFn);
+    playerJoinGame(state, event1, messageAllFn);
+    playerJoinGame(state, event2, messageAllFn);
 
     assert.equal(state.currentPlayer.name, "birdsarentreal");
     assert.equal(state.currentPlayerId, 0);
@@ -67,13 +63,12 @@ describe("playerJoinGame event handler", function () {
     const state = new GameState();
 
     const messageAllFn = Sinon.fake();
-    const messagePlayerFn = Sinon.stub();
     const event: GameEvent = {
       event: GameEventType.PLAYER_JOIN_GAME,
       user: "birdsarentreal",
     };
 
-    playerJoinGame(state, event, messageAllFn, messagePlayerFn);
+    playerJoinGame(state, event, messageAllFn);
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, {
       event: GameEventType.PLAYER_JOIN_GAME,
@@ -86,14 +81,13 @@ describe("playerJoinGame event handler", function () {
     state.start();
 
     const messageAllFn = Sinon.stub();
-    const messagePlayerFn = Sinon.stub();
     const event: GameEvent = {
       event: GameEventType.PLAYER_JOIN_GAME,
       user: "birdsarentreal",
     };
 
     assert.throws(function () {
-      playerJoinGame(state, event, messageAllFn, messagePlayerFn);
+      playerJoinGame(state, event, messageAllFn);
     }, "game has already started");
   });
 
@@ -101,73 +95,16 @@ describe("playerJoinGame event handler", function () {
     const state = new GameState();
 
     const messageAllFn = Sinon.stub();
-    const messagePlayerFn = Sinon.stub();
     const event: GameEvent = {
       event: GameEventType.PLAYER_JOIN_GAME,
       user: "birdsarentreal",
     };
 
-    playerJoinGame(state, event, messageAllFn, messagePlayerFn);
+    playerJoinGame(state, event, messageAllFn);
 
     assert.throws(function () {
-      playerJoinGame(state, event, messageAllFn, messagePlayerFn);
+      playerJoinGame(state, event, messageAllFn);
     }, "birdsarentreal has already been");
-  });
-
-  it("should send event to new player with current game state -- no existing players", function () {
-    const state = new GameState();
-
-    const messageAllFn = Sinon.stub();
-    const messagePlayerFn = Sinon.fake();
-    const event: GameEvent = {
-      event: GameEventType.PLAYER_JOIN_GAME,
-      user: "birdsarentreal",
-    };
-
-    playerJoinGame(state, event, messageAllFn, messagePlayerFn);
-
-    Sinon.assert.calledOnceWithExactly(messagePlayerFn, "birdsarentreal", {
-      event: GameEventType.WELCOME,
-      user: SERVER_USERNAME,
-      data: { playerNames: ["birdsarentreal"] },
-    });
-  });
-
-  it("should send event to new player with current game state -- some existing players", function () {
-    const state = new GameState();
-    const messageAllFn = Sinon.stub();
-
-    // player 1 joins...
-    const player1: GameEvent = {
-      event: GameEventType.PLAYER_JOIN_GAME,
-      user: "birdsarentreal",
-    };
-    const messagePlayer1Fn = Sinon.fake();
-
-    playerJoinGame(state, player1, messageAllFn, messagePlayer1Fn);
-
-    Sinon.assert.calledOnce(messagePlayer1Fn);
-    Sinon.assert.calledWithExactly(messagePlayer1Fn, "birdsarentreal", {
-      event: GameEventType.WELCOME,
-      user: SERVER_USERNAME,
-      data: { playerNames: ["birdsarentreal"] },
-    });
-
-    // player 2 joins...
-    const player2: GameEvent = {
-      event: GameEventType.PLAYER_JOIN_GAME,
-      user: "anotherplayer",
-    };
-    const messagePlayer2Fn = Sinon.fake();
-
-    playerJoinGame(state, player2, messageAllFn, messagePlayer2Fn);
-
-    Sinon.assert.calledOnce(messagePlayer2Fn);
-    Sinon.assert.calledWithExactly(messagePlayer2Fn, "anotherplayer", {
-      event: GameEventType.WELCOME,
-      user: SERVER_USERNAME,
-      data: { playerNames: ["birdsarentreal", "anotherplayer"] },
-    });
   });
 
   it("should allow players to rejoin if disconnected", function () {
@@ -185,7 +122,7 @@ describe("playerJoinGame event handler", function () {
       user: "tommy tester",
     };
 
-    playerJoinGame(state, playerJoinEvent, Sinon.stub(), Sinon.stub());
+    playerJoinGame(state, playerJoinEvent, Sinon.stub());
 
     assert.equal(state.gameStatus, "RUNNING");
     assert.equal(state.players.length, 1);
@@ -208,7 +145,7 @@ describe("playerJoinGame event handler", function () {
       user: "tommy tester",
     };
 
-    playerJoinGame(state, playerJoinEvent, Sinon.stub(), Sinon.stub());
+    playerJoinGame(state, playerJoinEvent, Sinon.stub());
 
     assert.isTrue(state.players[0].hasCard(Card.CONTESSA));
     assert.isTrue(
@@ -236,7 +173,7 @@ describe("playerJoinGame event handler", function () {
       user: "lois",
     };
 
-    playerJoinGame(state, playerJoinEvent, Sinon.stub(), Sinon.stub());
+    playerJoinGame(state, playerJoinEvent, Sinon.stub());
 
     assert.equal(state.gameStatus, "PAUSED");
     assert.equal(state.players.length, 2);
@@ -264,18 +201,13 @@ describe("playerJoinGame event handler", function () {
       user: "lois",
     };
 
-    playerJoinGame(state, playerJoinEvent, Sinon.stub(), Sinon.stub());
+    playerJoinGame(state, playerJoinEvent, Sinon.stub());
 
     assert.equal(state.gameStatus, "PAUSED");
     assert.isTrue(state.players.find((x) => x.name === "lois")!.isConnected);
     assert.isFalse(state.players.find((x) => x.name === "peter")!.isConnected);
 
-    playerJoinGame(
-      state,
-      { ...playerJoinEvent, user: "peter" },
-      Sinon.stub(),
-      Sinon.stub()
-    );
+    playerJoinGame(state, { ...playerJoinEvent, user: "peter" }, Sinon.stub());
 
     assert.equal(state.gameStatus, "RUNNING");
     assert.equal(state.players.length, 2);

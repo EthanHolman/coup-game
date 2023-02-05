@@ -1,17 +1,13 @@
 import { resumeGame } from "../actions/resumeGame";
 import { GameEvent } from "../../../shared/GameEvent";
-import { createServerEvent } from "../utils/createServerEvent";
 import { GameState } from "../GameState";
 import { Player } from "../Player";
-import { messageAllFn, messagePlayerFn } from "../messageFnTypes";
-import { GameEventType } from "../../../shared/enums";
-import { sendCurrentState } from "../actions/sendCurrentState";
+import { messageAllFn } from "../messageFnTypes";
 
 export function playerJoinGame(
   state: GameState,
   gameEvent: GameEvent,
-  messageAllFn: messageAllFn,
-  messagePlayerFn: messagePlayerFn
+  messageAllFn: messageAllFn
 ) {
   if (state.gameStatus !== "PRE_GAME") {
     // allow disconnected players to reconnect
@@ -39,14 +35,6 @@ export function playerJoinGame(
   const newPlayerCards = state.deck.drawCard(2);
   const newPlayer = new Player(gameEvent.user, newPlayerCards);
   state.addPlayer(newPlayer);
-
-  // send initial game state to new player
-  // const playerEvent = createServerEvent(GameEventType.WELCOME, {
-  //   playerNames: state.players.map((x) => x.name),
-  // });
-  // messagePlayerFn(newPlayer.name, playerEvent);
-
-  sendCurrentState(state, messageAllFn);
 
   // message everyone that new player joined
   messageAllFn(gameEvent);

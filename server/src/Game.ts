@@ -10,6 +10,7 @@ import { messagePlayerFn, messageAllFn } from "./messageFnTypes";
 import { playerDisconnect } from "./eventHandlers/playerDisconnect";
 import { acceptBlock } from "./eventHandlers/acceptBlock";
 import { GameEvent } from "../../shared/GameEvent";
+import { sendCurrentState } from "./actions/sendCurrentState";
 
 export const ACTIONS_ALLOWED_WHILE_PAUSED = [
   GameEventType.PLAYER_DISCONNECT,
@@ -48,12 +49,7 @@ export class GameRunner {
         break;
 
       case GameEventType.PLAYER_JOIN_GAME:
-        playerJoinGame(
-          this._gameState,
-          gameEvent,
-          this._messageAllFn,
-          this._messagePlayer
-        );
+        playerJoinGame(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.CHOOSE_ACTION:
@@ -94,5 +90,9 @@ export class GameRunner {
       default:
         throw `cannot process unexpected action ${gameEvent.event}`;
     }
+
+    // provide clients with updated state after each turn. note that
+    //  state updates may occur more frequently as needed
+    sendCurrentState(this._gameState, this._messageAllFn);
   }
 }
