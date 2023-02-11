@@ -93,6 +93,7 @@ export class GameRunner {
 
     // provide clients with updated state after each turn. note that
     //  state updates may occur more frequently as needed
-    sendCurrentState(this._gameState, this._messageAllFn);
+    if (this._gameState.players.length > 0)
+      sendCurrentState(this._gameState, this._messageAllFn);
   }
 }

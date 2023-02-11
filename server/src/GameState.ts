@@ -22,6 +22,9 @@ export class GameState {
   }
 
   get currentPlayer(): Player {
+    if (this.currentPlayerId >= this._players.length)
+      throw `invalid current player id ${this.currentPlayerId}`;
+
     return this._players[this.currentPlayerId];
   }
 
