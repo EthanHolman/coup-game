@@ -137,6 +137,13 @@ describe("player", function () {
     assert.isTrue(player.hasCard(Card.DUKE));
   });
 
+  it("should not be able to reveal a HIDDEN card", function () {
+    const player = new Player("someone", [Card.CONTESSA, Card.DUKE]);
+    assert.throws(function () {
+      player.revealCard(Card.HIDDEN_CARD);
+    }, `you can't reveal ${Card.HIDDEN_CARD}`);
+  });
+
   it("should not allow replacing a card with something that isnt a card", function () {
     const player = new Player("haxor player", [Card.CONTESSA, Card.AMBASSADOR]);
     assert.throws(function () {

@@ -37,6 +37,7 @@ export class Player {
   }
 
   revealCard(card: Card): void {
+    if (card === Card.HIDDEN_CARD) throw `you can't reveal ${card}`;
     const toReveal = this._cards.find((x) => x.card === card && !x.isRevealed);
 
     if (!toReveal) throw `player does not have card ${card}`;

@@ -17,9 +17,7 @@ export class Deck {
     const unshuffledDeck: Card[] = [];
     for (let i = 0; i < numCardsOfType; i++) {
       // convert this to map
-      for (const card in Object.keys(Card).filter(
-        (key) => !isNaN(Number(Card[key as any]))
-      ))
+      for (const card in ALL_CARDS)
         unshuffledDeck.push(Card[Card[card] as any] as any);
     }
 

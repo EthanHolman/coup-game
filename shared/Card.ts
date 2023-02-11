@@ -1,6 +1,7 @@
 import { getEnumVals } from "./getEnumVals";
 
 export enum Card {
+  HIDDEN_CARD = -1,
   DUKE,
   AMBASSADOR,
   ASSASSIN,
@@ -8,4 +9,6 @@ export enum Card {
   CAPTAIN,
 }
 
-export const ALL_CARDS = getEnumVals<Card>(Card);
+export const ALL_CARDS = getEnumVals<Card>(Card).filter(
+  (x) => x !== Card.HIDDEN_CARD
+);

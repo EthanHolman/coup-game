@@ -14,6 +14,11 @@ describe("deck", function () {
     }
   });
 
+  it("should not generate a deck with HIDDEN CARD in it", function () {
+    const deck = new Deck();
+    assert.notInclude(deck._deck, Card.HIDDEN_CARD);
+  });
+
   it("should have correct number of each cards when generating", function () {
     const expectedDeckCards: Card[] = [];
     ALL_CARDS.forEach((card) => {

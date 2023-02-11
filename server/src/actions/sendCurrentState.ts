@@ -1,3 +1,4 @@
+import { Card } from "../../../shared/Card";
 import { ClientGameState } from "../../../shared/ClientGameState";
 import { GameEventType } from "../../../shared/enums";
 import { GameState } from "../GameState";
@@ -12,7 +13,7 @@ export function sendCurrentState(state: GameState, messageAllFn: messageAllFn) {
       name: player.name,
       coins: player.coins,
       cards: player.cards.map((card) =>
-        card.isRevealed ? card.card : "hidden"
+        card.isRevealed ? card.card : Card.HIDDEN_CARD
       ),
     })),
     deckCount: state.deck.count,
