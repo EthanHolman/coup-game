@@ -92,11 +92,17 @@ describe("player", function () {
   });
 
   it("should be 'out' when all cards are revealed", function () {
-    const player = new Player("someone", [Card.CONTESSA, Card.ASSASSIN]);
-    assert.isFalse(player.isOut);
-    player.revealCard(Card.ASSASSIN);
-    player.revealCard(Card.CONTESSA);
-    assert.isTrue(player.isOut);
+    const player1 = new Player("someone", [Card.CONTESSA, Card.ASSASSIN]);
+    assert.isFalse(player1.isOut);
+    player1.revealCard(Card.ASSASSIN);
+    player1.revealCard(Card.CONTESSA);
+    assert.isTrue(player1.isOut);
+
+    const player2 = new Player("else", [Card.CONTESSA, Card.CONTESSA]);
+    assert.isFalse(player2.isOut);
+    player2.revealCard(Card.CONTESSA);
+    player2.revealCard(Card.CONTESSA);
+    assert.isTrue(player2.isOut);
   });
 
   it("should be able to replace a card with a different card", function () {

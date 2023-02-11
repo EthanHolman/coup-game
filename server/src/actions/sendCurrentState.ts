@@ -12,6 +12,8 @@ export function sendCurrentState(state: GameState, messageAllFn: messageAllFn) {
     players: state.players.map((player) => ({
       name: player.name,
       coins: player.coins,
+      isHost: player.isHost,
+      isOut: player.isOut,
       cards: player.cards.map((card) =>
         card.isRevealed ? card.card : Card.HIDDEN_CARD
       ),
