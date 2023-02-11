@@ -10,8 +10,9 @@ export class Player {
   name: string;
   coins: number;
   isConnected: boolean;
+  isHost: boolean;
 
-  constructor(name: string, cards: Card[]) {
+  constructor(name: string, cards: Card[], isHost?: boolean) {
     if (!cards || cards.length !== 2) throw `player should start with 2 cards`;
     if (!name) throw `player must have a name`;
 
@@ -19,6 +20,7 @@ export class Player {
     this._cards = cards.map((card) => ({ card, isRevealed: false }));
     this.coins = 2;
     this.isConnected = true;
+    this.isHost = isHost ?? false;
   }
 
   get cards(): ReadonlyArray<PlayerCard> {

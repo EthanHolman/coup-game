@@ -11,6 +11,12 @@ export function playerDisconnect(
   const player = state.players.find((x) => x.name === gameEvent.user);
   if (!player) throw `unable to find player ${player} in gamestate`;
 
+  if (state.players.length > 1 && player.isHost) {
+    player.isHost = false;
+    const newHost = state.players.filter((x) => x.name !== player.name)[0];
+    newHost.isHost = true;
+  }
+
   if (state.gameStatus === "PRE_GAME") {
     player.cards.forEach((x) => state.deck.discardCard(x.card));
     state.removePlayer(player.name);

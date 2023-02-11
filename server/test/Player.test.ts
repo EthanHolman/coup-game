@@ -153,4 +153,11 @@ describe("player", function () {
     assert.isTrue(player.hasCard(Card.CONTESSA));
     assert.isTrue(player.hasCard(Card.AMBASSADOR));
   });
+
+  it("should be able to be the host", function () {
+    const player = new Player("ethan", [Card.AMBASSADOR, Card.ASSASSIN], true);
+    assert.isTrue(player.isHost);
+    player.isHost = false;
+    assert.isFalse(player.isHost);
+  });
 });

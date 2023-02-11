@@ -214,4 +214,17 @@ describe("playerJoinGame event handler", function () {
     assert.isTrue(state.players.find((x) => x.name === "lois")?.isConnected);
     assert.isTrue(state.players.find((x) => x.name === "peter")?.isConnected);
   });
+
+  it("should make new player the host if they are first to join", function () {
+    const state = new GameState();
+
+    playerJoinGame(
+      state,
+      { event: GameEventType.PLAYER_JOIN_GAME, user: "ethan", data: {} },
+      Sinon.stub()
+    );
+
+    assert.equal(state.players.length, 1);
+    assert.isTrue(state.players.find((x) => x.name === "ethan")?.isHost);
+  });
 });

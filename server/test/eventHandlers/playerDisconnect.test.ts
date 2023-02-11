@@ -7,6 +7,7 @@ import { playerDisconnect } from "../../src/eventHandlers/playerDisconnect";
 import { GameEvent } from "../../../shared/GameEvent";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
+import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 
 describe("playerDisconnect event handler", function () {
   it("should update the player as no longer connected, and pause game, if game is started", function () {
@@ -89,5 +90,36 @@ describe("playerDisconnect event handler", function () {
     Sinon.assert.calledOnceWithExactly(messageAllFn, { ...event });
   });
 
-  // it("should make someone else host if the host is who disconnected", function () {});
+  it("should make someone else host if host disconnects", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.isTrue(state.players[0].isHost);
+    assert.equal(state.gameStatus, "RUNNING");
+
+    playerDisconnect(
+      state,
+      { event: GameEventType.PLAYER_DISCONNECT, user: "tester-0" },
+      Sinon.stub()
+    );
+
+    assert.isFalse(state.players[0].isConnected);
+    assert.isFalse(state.players[0].isHost);
+    assert.isTrue(state.players[1].isHost);
+  });
+
+  it("should make someone else host if host disconnects, and host is not player 0", function () {
+    const state = generateStateWithNPlayers(3);
+    state.players[0].isHost = false;
+    state.players[1].isHost = true;
+    state.currentPlayerId = 2;
+
+    playerDisconnect(
+      state,
+      { event: GameEventType.PLAYER_DISCONNECT, user: "tester-1" },
+      Sinon.stub()
+    );
+
+    assert.isFalse(state.players[1].isConnected);
+    assert.isFalse(state.players[1].isHost);
+    assert.isTrue(state.players[0].isHost);
+  });
 });
