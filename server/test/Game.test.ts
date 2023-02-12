@@ -4,6 +4,7 @@ import { ALL_GAME_EVENT_TYPES, GameEventType } from "../../shared/enums";
 import { ACTIONS_ALLOWED_WHILE_PAUSED, GameRunner } from "../src/Game";
 import * as module_sendCurrentState from "../src/actions/sendCurrentState";
 import * as module_playerJoinGame from "../src/eventHandlers/playerJoinGame";
+import { generateStateWithNPlayers } from "./testHelpers/stateGenerators";
 
 describe("gamerunner", function () {
   let mock_sendCurrentState: Sinon.SinonStub;
@@ -63,6 +64,8 @@ describe("gamerunner", function () {
       messagePlayer: Sinon.fake(),
       messageAll,
     });
+
+    runner._gameState = generateStateWithNPlayers(2);
 
     runner.onEvent({
       event: GameEventType.PLAYER_JOIN_GAME,
