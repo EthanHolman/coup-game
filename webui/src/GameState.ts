@@ -17,7 +17,7 @@ export const getInitialState = (): GameState => ({
   username: "",
   thisPlayer: undefined as any,
   currentPlayerName: "",
-  gameStatus: "",
+  gameStatus: "" as any,
   players: [],
   deckCount: 0,
 });

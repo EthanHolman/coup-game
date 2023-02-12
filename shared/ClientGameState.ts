@@ -10,7 +10,7 @@ export type ClientPlayer = {
 
 export type ClientGameState = {
   currentPlayerName: string;
-  gameStatus: string;
+  gameStatus: "PRE_GAME" | "RUNNING" | "PAUSED";
   players: ClientPlayer[];
   deckCount: number;
 };

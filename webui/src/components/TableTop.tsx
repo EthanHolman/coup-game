@@ -6,6 +6,8 @@ const useStyles = createUseStyles({
     margin: "0 10rem",
     border: "1px solid #999",
     borderRadius: "1rem",
+    display: "flex",
+    flexDirection: "column",
   },
 });
 
