@@ -104,6 +104,8 @@ All events include {event, user, data}. Fields noted below are members of the da
 - nextTurn: {currentPlayerName}
 - PLAYER_DISCONNECT: {} if received during pre-game, clients should delete player from state, as said player has left
 - CURRENT_STATE: {state}
+- PAUSE_GAME: {reason}
+- RESUME_GAME: {reason}
 
 ## Server events (broadcast to single player):
 
@@ -111,7 +113,6 @@ All events include {event, data}. Fields noted below are members of the data obj
 
 - PLAYER_LOSE_CARD: {}
 - WELCOME: {playerNames} used during pre-game to update clients on the list of players
-- GAME_PAUSED: {}
 
 ## Client events:
 
@@ -123,14 +124,6 @@ All events include {event, user, data}. Fields noted below are members of the da
 - CHALLENGE_ACTION: {}
 - BLOCK_ACTION: {blockAs: Card}
 - PLAYER_LOSE_CARD: {card: Card}
-
-## Internal Server Events:
-
-These internal events occur between the websocket server and game server components
-
-- PAUSE_GAME {reason}
-- RESUME_GAME {reason}
-- PLAYER_DISCONNECT {}
 
 ## Server Action Handling:
 

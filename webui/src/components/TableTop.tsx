@@ -2,9 +2,8 @@ import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
   container: {
-    flex: "1",
-    margin: "5rem 10rem",
-    marginTop: "2.5rem",
+    flex: "3",
+    margin: "0 10rem",
     border: "1px solid #999",
     borderRadius: "1rem",
   },

@@ -1,7 +1,8 @@
-import { ClientGameState } from "../../shared/ClientGameState";
+import { ClientGameState, ClientPlayer } from "../../shared/ClientGameState";
 
 export type GameState = ClientGameState & {
   username: string;
+  thisPlayer: ClientPlayer;
 };
 
 export type GameStateAction =
@@ -14,6 +15,7 @@ export type GameStateAction =
 
 export const getInitialState = (): GameState => ({
   username: "",
+  thisPlayer: undefined as any,
   currentPlayerName: "",
   gameStatus: "",
   players: [],
@@ -30,7 +32,16 @@ export const gameStateReducer = (
     case "reset":
       return getInitialState();
     case "updateGameState":
-      return { username: state.username, ...action.data };
+      const thisPlayer = action.data.players.find(
+        (x) => x.name === state.username
+      );
+      if (!thisPlayer)
+        throw `could not find username ${state.username} in returned player list`;
+      return {
+        username: state.username,
+        thisPlayer,
+        ...action.data,
+      };
     default:
       return state;
   }

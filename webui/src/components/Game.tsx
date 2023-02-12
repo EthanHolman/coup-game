@@ -3,9 +3,11 @@ import { createUseStyles } from "react-jss";
 import { GameEvent } from "../../../shared/GameEvent";
 import { gameStateReducer, getInitialState } from "../GameState";
 import JoinGame from "./JoinGame";
-import EventViewer from "./EventViewer";
+import MessageViewer from "./MessageViewer";
 import TableTop from "./TableTop";
 import TableTopGame from "./TableTopGame";
+import { GameEventType } from "../../../shared/enums";
+import { eventToMessage, UIMessage } from "../eventsToMessages";
 
 const useStyles = createUseStyles({
   container: {
@@ -21,7 +23,7 @@ const useStyles = createUseStyles({
 const Game = (): JSX.Element => {
   const [state, dispatch] = useReducer(gameStateReducer, getInitialState());
   const [websocket, setWebsocket] = useState<WebSocket>();
-  const [messages, setMessages] = useState<GameEvent[]>([]);
+  const [messages, setMessages] = useState<UIMessage[]>([]);
 
   const classes = useStyles();
 
@@ -34,10 +36,12 @@ const Game = (): JSX.Element => {
       const ws = new WebSocket(`ws://localhost:8080/${username}`);
       ws.addEventListener("message", (event) => {
         try {
-          const data = JSON.parse(event.data) as GameEvent;
-          if (data) {
-            console.info("[WS]", data);
-            setMessages((msgs) => [...msgs, data]);
+          const gameEvent = JSON.parse(event.data) as GameEvent;
+          console.info("[WS]", gameEvent);
+          if (gameEvent.event === GameEventType.CURRENT_STATE) {
+            dispatch({ type: "updateGameState", data: gameEvent.data!.state! });
+          } else {
+            setMessages((msgs) => [...msgs, eventToMessage(gameEvent)]);
           }
         } catch (e) {
           console.error(e);
@@ -62,13 +66,13 @@ const Game = (): JSX.Element => {
     <div className={classes.container}>
       <h1 className={classes.header}>Coup ONLINE</h1>
       <TableTop>
-        {state.username ? (
+        {state.thisPlayer ? (
           <TableTopGame state={state} dispatch={dispatch} />
         ) : (
           <JoinGame onJoin={onUserJoinGame} />
         )}
       </TableTop>
-      <EventViewer events={messages} />
+      <MessageViewer events={messages} state={state} />
     </div>
   );
 };

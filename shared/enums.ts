@@ -11,7 +11,7 @@ export enum GameEventType {
   CHALLENGE_BLOCK,
   PLAYER_LOSE_CARD,
   PLAYER_REVEAL_CARD,
-  WELCOME,
+  WELCOME, // i don't think this is used anymore
   PAUSE_GAME,
   RESUME_GAME,
   PLAYER_DISCONNECT,
