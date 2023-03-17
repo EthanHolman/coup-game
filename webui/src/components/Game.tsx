@@ -67,7 +67,11 @@ const Game = (): JSX.Element => {
       <h1 className={classes.header}>Coup ONLINE</h1>
       <TableTop>
         {state.thisPlayer ? (
-          <TableTopGame state={state} dispatch={dispatch} />
+          <TableTopGame
+            state={state}
+            dispatch={dispatch}
+            sendEvent={sendEvent}
+          />
         ) : (
           <JoinGame onJoin={onUserJoinGame} />
         )}

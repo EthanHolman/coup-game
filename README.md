@@ -124,6 +124,7 @@ All events include {event, user, data}. Fields noted below are members of the da
 - CHALLENGE_ACTION: {}
 - BLOCK_ACTION: {blockAs: Card}
 - PLAYER_LOSE_CARD: {card: Card}
+- START_GAME: {}
 
 ## Server Action Handling:
 
