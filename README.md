@@ -1,5 +1,22 @@
 # Coup-Game
 
+This is a monorepo containing both a node-based server application and react-based webui. These are intended to be built and released together, and as such, share code where possible. (Shared code is in the `/shared` directory).
+
+Eventually this application will be dockerized to make it quick and easy to host a game! The end goal is to be able to run a single docker command and have an entire game server ready to go -- all you'll have to do is port forward if you're playing with people across the internet.
+
+The application is very server-centric, in that the server handles most all game logic. The UI and server communicate via a websocket. Server will send state out to each client, and clients will send actions to the server.
+
+## DEV Quick Start
+
+In both the `/webui` and `/server` directory:
+
+- install packages: `yarn install`
+- run development server: `yarn dev`
+
+## Testing
+
+Run `yarn test` in the `/webui` and `/server` directories to execute unit and integration tests.
+
 # About the Game
 
 ## The Deck
