@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { GameEvent } from "../../../shared/GameEvent";
-import { gameStateReducer, getInitialState } from "../GameState";
+import { gameStateReducer, getInitialState } from "../ClientState";
 import JoinGame from "./JoinGame";
 import MessageViewer from "./MessageViewer";
 import TableTop from "./TableTop";

@@ -1,8 +1,9 @@
 import { ClientGameState, ClientPlayer } from "../../shared/ClientGameState";
 
-export type GameState = ClientGameState & {
+export type ClientState = ClientGameState & {
   username: string;
   thisPlayer: ClientPlayer;
+  isMyTurn: boolean;
 };
 
 export type GameStateAction =
@@ -13,9 +14,10 @@ export type GameStateAction =
   | { type: "reset" }
   | { type: "updateGameState"; data: ClientGameState };
 
-export const getInitialState = (): GameState => ({
+export const getInitialState = (): ClientState => ({
   username: "",
   thisPlayer: undefined as any,
+  isMyTurn: false,
   currentPlayerName: "",
   gameStatus: "" as any,
   players: [],
@@ -23,9 +25,9 @@ export const getInitialState = (): GameState => ({
 });
 
 export const gameStateReducer = (
-  state: GameState,
+  state: ClientState,
   action: GameStateAction
-): GameState => {
+): ClientState => {
   switch (action.type) {
     case "joinGame":
       return { ...state, username: action.data.username };
@@ -40,6 +42,7 @@ export const gameStateReducer = (
       return {
         username: state.username,
         thisPlayer,
+        isMyTurn: action.data.currentPlayerName === state.username,
         ...action.data,
       };
     default:

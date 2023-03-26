@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { createUseStyles } from "react-jss";
 import { UIMessage } from "../eventsToMessages";
-import { GameState } from "../GameState";
+import { ClientState } from "../ClientState";
 
 const useStyles = createUseStyles({
   container: {
@@ -26,7 +26,7 @@ const useStyles = createUseStyles({
 
 type MessageViewerProps = {
   events: UIMessage[];
-  state: GameState;
+  state: ClientState;
 };
 
 const MessageViewer = ({ events, state }: MessageViewerProps): JSX.Element => {
