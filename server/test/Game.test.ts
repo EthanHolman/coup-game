@@ -9,6 +9,7 @@ import { generateStateWithNPlayers } from "./testHelpers/stateGenerators";
 describe("gamerunner", function () {
   let mock_sendCurrentState: Sinon.SinonStub;
   let mock_playerJoinGame: Sinon.SinonStub;
+
   this.beforeEach(function () {
     mock_sendCurrentState = Sinon.stub(
       module_sendCurrentState,
