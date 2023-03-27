@@ -1,5 +1,6 @@
 import { assert } from "chai";
 import { Card } from "../../../shared/Card";
+import { GameActionMove, GameEventType } from "../../../shared/enums";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import { buildClientState } from "../../src/utils/buildClientState";
@@ -25,6 +26,35 @@ describe("util buildClientState", function () {
     assert.equal(state.deck.count, 14);
     const result = buildClientState(state, "tester-1");
     assert.equal(result.deckCount, 14);
+  });
+
+  it("should not include currentAction or blockAction if missing", function () {
+    const state = generateStateWithNPlayers(2);
+    const result = buildClientState(state, "tester-0");
+    assert.isUndefined(result.currentAction);
+    assert.isUndefined(result.blockAction);
+  });
+
+  it("should include currentAction if present in state", function () {
+    const state = generateStateWithNPlayers(2);
+    const action = {
+      targetPlayer: "tester-1",
+      action: GameActionMove.ASSASSINATE,
+    };
+    state.currentAction = action;
+    const result = buildClientState(state, "tester-0");
+    assert.deepStrictEqual(result.currentAction, action);
+  });
+
+  it("should include blockAction if present in state", function () {
+    const state = generateStateWithNPlayers(2);
+    const action = {
+      event: GameEventType.BLOCK_ACTION,
+      user: "tester-1",
+    };
+    state.blockAction = action;
+    const result = buildClientState(state, "tester-0");
+    assert.deepStrictEqual(result.blockAction, action);
   });
 
   it("should map players correctly", function () {

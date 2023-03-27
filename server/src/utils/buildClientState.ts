@@ -12,6 +12,8 @@ export function buildClientState(
   return {
     currentPlayerName: state.currentPlayer.name,
     gameStatus: state.gameStatus,
+    currentAction: state.currentAction,
+    blockAction: state.blockAction,
     players: state.players.map((player) => ({
       name: player.name,
       coins: player.coins,

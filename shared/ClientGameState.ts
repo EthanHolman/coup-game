@@ -1,4 +1,5 @@
 import { Card } from "./Card";
+import { GameEvent, GameEventData } from "./GameEvent";
 
 export type ClientPlayer = {
   name: string;
@@ -11,6 +12,8 @@ export type ClientPlayer = {
 export type ClientGameState = {
   currentPlayerName: string;
   gameStatus: "PRE_GAME" | "RUNNING" | "PAUSED";
+  currentAction?: GameEventData;
+  blockAction?: GameEvent;
   players: ClientPlayer[];
   deckCount: number;
 };
