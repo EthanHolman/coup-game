@@ -1,25 +1,11 @@
 import { createUseStyles } from "react-jss";
-import { GameActionMove } from "../../../shared/enums";
 import { GameEvent } from "../../../shared/GameEvent";
 import { ClientState, GameStateAction } from "../ClientState";
+import { ClientGameAction, getFriendlyActionName } from "../ClientGameAction";
 import PlayerCard from "./PlayerCard";
 import StartGame from "./StartGame";
-
-type ClientGameAction = {
-  action: GameActionMove;
-  friendlyTitle: string;
-};
-
-function getAvailableActions(state: ClientState): ClientGameAction[] {
-  const actions: ClientGameAction[] = [];
-
-  if (state.gameStatus !== "RUNNING") return [];
-
-  if (state.isMyTurn) {
-  }
-
-  return actions;
-}
+import { getAvailableActions } from "../getAvailableActions";
+import React from "react";
 
 const useStyles = createUseStyles({
   playerRow: { flex: 1, display: "flex", justifyContent: "space-around" },
@@ -39,8 +25,11 @@ const TableTopGame = ({
 }: TableTopGameProps): JSX.Element => {
   const classes = useStyles();
 
+  // TODO: memoize or something.. i can't remember how to do it right in react
+  const availableActions = getAvailableActions(state);
+
   const handleChooseAction = (action: ClientGameAction) => {
-    alert(action.action);
+    alert(action);
   };
 
   return (
@@ -63,21 +52,18 @@ const TableTopGame = ({
           <div>Deck: {state.deckCount} cards</div>
         )}
       </div>
-      {state.currentPlayerName === state.username &&
-        state.gameStatus === "RUNNING" && (
-          <div>
-            <h2>Choose an action</h2>
-            {getAvailableActions(state).map((action) => (
-              <button
-                type="button"
-                key={action.friendlyTitle}
-                onClick={() => handleChooseAction(action)}
-              >
-                {action.friendlyTitle}
-              </button>
-            ))}
-          </div>
-        )}
+      <div>
+        {availableActions.length > 0 && <h2>Choose an action</h2>}
+        {availableActions.map((action) => (
+          <button
+            type="button"
+            key={action}
+            onClick={() => handleChooseAction(action)}
+          >
+            {getFriendlyActionName(action)}
+          </button>
+        ))}
+      </div>
     </>
   );
 };

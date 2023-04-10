@@ -38,7 +38,9 @@ const Game = (): JSX.Element => {
         try {
           const gameEvent = JSON.parse(event.data) as GameEvent;
           console.info("[WS]", gameEvent);
-          if (gameEvent.event === GameEventType.CURRENT_STATE) {
+          if (gameEvent.error) {
+            console.error(gameEvent.error);
+          } else if (gameEvent.event === GameEventType.CURRENT_STATE) {
             dispatch({ type: "updateGameState", data: gameEvent.data!.state! });
           } else {
             setMessages((msgs) => [...msgs, eventToMessage(gameEvent)]);

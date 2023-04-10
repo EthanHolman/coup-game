@@ -18,4 +18,5 @@ export type GameEvent = {
   event: GameEventType;
   user: string;
   data?: Partial<GameEventData>;
+  error?: any;
 };
