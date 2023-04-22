@@ -1,6 +1,7 @@
-import { GameActionMove } from "../../shared/enums";
-import { ClientGameAction } from "./ClientGameAction";
+import { GameActionMove, GameEventType } from "../../shared/enums";
 import { ClientState } from "./ClientState";
+
+export type ClientGameAction = GameEventType | GameActionMove;
 
 export function getAvailableActions(state: ClientState): ClientGameAction[] {
   let actions: ClientGameAction[] = [];
@@ -9,18 +10,17 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
 
   if (!state.currentAction && !state.blockAction && state.isMyTurn) {
     if (state.thisPlayer.coins >= 10) {
-      actions = [ClientGameAction.COUP];
+      actions = [GameActionMove.COUP];
     } else {
       actions = [
-        ClientGameAction.EXCHANGE,
-        ClientGameAction.FOREIGN_AID,
-        ClientGameAction.INCOME,
-        ClientGameAction.STEAL,
-        ClientGameAction.TAX,
+        GameActionMove.EXCHANGE,
+        GameActionMove.FOREIGN_AID,
+        GameActionMove.INCOME,
+        GameActionMove.STEAL,
+        GameActionMove.TAX,
       ];
-      if (state.thisPlayer.coins >= 3)
-        actions.push(ClientGameAction.ASSASSINATE);
-      if (state.thisPlayer.coins >= 7) actions.push(ClientGameAction.COUP);
+      if (state.thisPlayer.coins >= 3) actions.push(GameActionMove.ASSASSINATE);
+      if (state.thisPlayer.coins >= 7) actions.push(GameActionMove.COUP);
     }
   }
 
@@ -31,7 +31,7 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
       GameActionMove.STEAL,
     ];
     if (blockableActions.includes(state.currentAction.action!))
-      actions.push(ClientGameAction.BLOCK_ACTION);
+      actions.push(GameEventType.BLOCK_ACTION);
 
     const challengeableActions = [
       GameActionMove.ASSASSINATE,
@@ -40,21 +40,21 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
       GameActionMove.TAX,
     ];
     if (challengeableActions.includes(state.currentAction.action!))
-      actions.push(ClientGameAction.CHALLENGE_ACTION);
+      actions.push(GameEventType.CHALLENGE_ACTION);
 
     if (state.currentAction.targetPlayer === state.thisPlayer.name)
-      actions.push(ClientGameAction.CONFIRM_ACTION);
+      actions.push(GameEventType.CONFIRM_ACTION);
   }
 
   if (state.blockAction) {
     // current player can accept a block
     if (state.currentPlayerName === state.thisPlayer.name) {
-      actions.push(ClientGameAction.ACCEPT_BLOCK);
+      actions.push(GameEventType.ACCEPT_BLOCK);
     }
 
     // everyone except blocker can challenge a block
     if (state.blockAction.user !== state.thisPlayer.name)
-      actions.push(ClientGameAction.CHALLENGE_BLOCK);
+      actions.push(GameEventType.CHALLENGE_BLOCK);
   }
 
   return actions;

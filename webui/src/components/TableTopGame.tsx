@@ -1,10 +1,9 @@
 import { createUseStyles } from "react-jss";
 import { GameEvent } from "../../../shared/GameEvent";
 import { ClientState, GameStateAction } from "../ClientState";
-import { ClientGameAction, getFriendlyActionName } from "../ClientGameAction";
 import PlayerCard from "./PlayerCard";
 import StartGame from "./StartGame";
-import { getAvailableActions } from "../getAvailableActions";
+import { ClientGameAction, getAvailableActions } from "../getAvailableActions";
 import React from "react";
 
 const useStyles = createUseStyles({
@@ -60,7 +59,7 @@ const TableTopGame = ({
             key={action}
             onClick={() => handleChooseAction(action)}
           >
-            {getFriendlyActionName(action)}
+            {action}
           </button>
         ))}
       </div>
