@@ -8,7 +8,7 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
 
   if (state.gameStatus !== "RUNNING") return [];
 
-  if (!state.currentAction && !state.blockAction && state.isMyTurn) {
+  if (state.isMyTurn && !state.currentAction && !state.blockAction) {
     if (state.thisPlayer.coins >= 10) {
       actions = [GameActionMove.COUP];
     } else {
@@ -24,7 +24,7 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
     }
   }
 
-  if (state.currentAction && !state.blockAction && !state.isMyTurn) {
+  if (!state.isMyTurn && state.currentAction && !state.blockAction) {
     const blockableActions = [
       GameActionMove.ASSASSINATE,
       GameActionMove.FOREIGN_AID,
@@ -48,7 +48,7 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
 
   if (state.blockAction) {
     // current player can accept a block
-    if (state.currentPlayerName === state.thisPlayer.name) {
+    if (state.isMyTurn) {
       actions.push(GameEventType.ACCEPT_BLOCK);
     }
 
