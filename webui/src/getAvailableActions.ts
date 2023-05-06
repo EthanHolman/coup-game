@@ -1,4 +1,9 @@
-import { GameActionMove, GameEventType } from "../../shared/enums";
+import {
+  BLOCKABLE_ACTIONS,
+  CHALLENGEABLE_ACTIONS,
+  GameActionMove,
+  GameEventType,
+} from "../../shared/enums";
 import { ClientState } from "./ClientState";
 
 export type ClientGameAction = GameEventType | GameActionMove;
@@ -25,21 +30,10 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
   }
 
   if (!state.isMyTurn && state.currentAction && !state.blockAction) {
-    const blockableActions = [
-      GameActionMove.ASSASSINATE,
-      GameActionMove.FOREIGN_AID,
-      GameActionMove.STEAL,
-    ];
-    if (blockableActions.includes(state.currentAction.action!))
+    if (BLOCKABLE_ACTIONS.includes(state.currentAction.action!))
       actions.push(GameEventType.BLOCK_ACTION);
 
-    const challengeableActions = [
-      GameActionMove.ASSASSINATE,
-      GameActionMove.EXCHANGE,
-      GameActionMove.STEAL,
-      GameActionMove.TAX,
-    ];
-    if (challengeableActions.includes(state.currentAction.action!))
+    if (CHALLENGEABLE_ACTIONS.includes(state.currentAction.action!))
       actions.push(GameEventType.CHALLENGE_ACTION);
 
     if (state.currentAction.targetPlayer === state.thisPlayer.name)

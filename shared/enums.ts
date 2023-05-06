@@ -48,3 +48,16 @@ export const ALL_PLAYABLE_GAME_ACTION_MOVES = ALL_GAME_ACTION_MOVES.filter(
 
 export const ALL_GAME_EVENT_TYPES =
   getStrEnumVals<GameEventType>(GameEventType);
+
+export const CHALLENGEABLE_ACTIONS = [
+  GameActionMove.ASSASSINATE,
+  GameActionMove.EXCHANGE,
+  GameActionMove.STEAL,
+  GameActionMove.TAX,
+];
+
+export const BLOCKABLE_ACTIONS = [
+  GameActionMove.ASSASSINATE,
+  GameActionMove.FOREIGN_AID,
+  GameActionMove.STEAL,
+];

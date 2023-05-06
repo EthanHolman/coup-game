@@ -139,7 +139,7 @@ All events include {event, user, data}. Fields noted below are members of the da
 - CHOOSE_ACTION: {action, targetPlayer?}
 - CONFIRM_ACTION: {}
 - CHALLENGE_ACTION: {}
-- BLOCK_ACTION: {blockAs: Card}
+- BLOCK_ACTION: {card: Card}
 - PLAYER_LOSE_CARD: {card: Card}
 - START_GAME: {}
 
