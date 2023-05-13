@@ -13,7 +13,9 @@ export function confirmAction(
 ) {
   if (gameEvent.user !== state.currentPlayer.name) throw "wrong user!";
 
-  messageAllFn(gameEvent);
+  // income is auto-confirmed, so we don't want to double notify the users
+  if (state.currentAction?.action !== GameActionMove.INCOME)
+    messageAllFn(gameEvent);
 
   switch (state.currentAction?.action) {
     case GameActionMove.ASSASSINATE:

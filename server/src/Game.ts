@@ -1,4 +1,4 @@
-import { GameEventType } from "../../shared/enums";
+import { GameActionMove, GameEventType } from "../../shared/enums";
 import { challengeAction } from "./eventHandlers/challengeAction";
 import { confirmAction } from "./eventHandlers/confirmAction";
 import { playerJoinGame } from "./eventHandlers/playerJoinGame";
@@ -54,6 +54,16 @@ export class GameRunner {
 
       case GameEventType.CHOOSE_ACTION:
         chooseAction(this._gameState, gameEvent, this._messageAllFn);
+
+        // Income action is auto-confirmed
+        if (this._gameState.currentAction?.action === GameActionMove.INCOME) {
+          confirmAction(
+            this._gameState,
+            gameEvent,
+            this._messageAllFn,
+            this._messagePlayer
+          );
+        }
         break;
 
       case GameEventType.CONFIRM_ACTION:

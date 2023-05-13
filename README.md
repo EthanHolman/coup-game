@@ -149,6 +149,8 @@ chooseAction event comes in, and is saved as `currentEvent`
 
 `{event: chooseAction, user: someName, data: { action: assassinate, target: anotherName }`
 
+If the action is "Income", it is processed immediately, since that action is not blockable and doesn't target another player.
+
 Game is now waiting for one of the following events: [confirmAction, challenge, or block]:
 
 - confirmAction: executes `currentEvent`

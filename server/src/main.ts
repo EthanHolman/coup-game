@@ -82,8 +82,8 @@ wss.on("connection", function connection(ws, req) {
     }
 
     try {
-      console.debug(`[DEBUG] ${user} sent:`, receivedData);
       const data = JSON.parse(receivedData.toString());
+      console.debug(`[DEBUG] ${user} sent:`, data);
       data["user"] = user;
       gameRunner.onEvent(data);
     } catch (error) {
