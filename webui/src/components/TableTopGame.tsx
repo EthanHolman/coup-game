@@ -3,8 +3,8 @@ import { GameEvent } from "../../../shared/GameEvent";
 import { ClientState, GameStateAction } from "../ClientState";
 import PlayerCard from "./PlayerCard";
 import StartGame from "./StartGame";
-import { ClientGameAction, getAvailableActions } from "../getAvailableActions";
 import React from "react";
+import ActionPicker from "./ActionPicker/ActionPicker";
 
 const useStyles = createUseStyles({
   playerRow: { flex: 1, display: "flex", justifyContent: "space-around" },
@@ -17,19 +17,8 @@ type TableTopGameProps = {
   sendEvent: (event: GameEvent) => void;
 };
 
-const TableTopGame = ({
-  state,
-  dispatch,
-  sendEvent,
-}: TableTopGameProps): JSX.Element => {
+const TableTopGame = ({ state, sendEvent }: TableTopGameProps): JSX.Element => {
   const classes = useStyles();
-
-  // TODO: memoize or something.. i can't remember how to do it right in react
-  const availableActions = getAvailableActions(state);
-
-  const handleChooseAction = (action: ClientGameAction) => {
-    alert(action);
-  };
 
   return (
     <>
@@ -51,18 +40,7 @@ const TableTopGame = ({
           <div>Deck: {state.deckCount} cards</div>
         )}
       </div>
-      <div>
-        {availableActions.length > 0 && <h2>Choose an action</h2>}
-        {availableActions.map((action) => (
-          <button
-            type="button"
-            key={action}
-            onClick={() => handleChooseAction(action)}
-          >
-            {action}
-          </button>
-        ))}
-      </div>
+      <ActionPicker state={state} sendEvent={sendEvent} />
     </>
   );
 };

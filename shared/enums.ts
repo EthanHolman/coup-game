@@ -61,3 +61,9 @@ export const BLOCKABLE_ACTIONS = [
   GameActionMove.FOREIGN_AID,
   GameActionMove.STEAL,
 ];
+
+export const ACTIONS_REQUIRING_TARGET_PLAYER = [
+  GameActionMove.COUP,
+  GameActionMove.STEAL,
+  GameActionMove.ASSASSINATE,
+];

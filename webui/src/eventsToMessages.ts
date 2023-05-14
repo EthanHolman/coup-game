@@ -1,12 +1,42 @@
-import { GameEventType } from "../../shared/enums";
-import { GameEvent } from "../../shared/GameEvent";
+import { GameActionMove, GameEventType } from "../../shared/enums";
+import { GameEvent, GameEventData } from "../../shared/GameEvent";
 
 export type UIMessage = {
   user: string;
   message: string;
+  isError?: boolean;
 };
 
-export function eventToMessage({ event, user, data }: GameEvent): UIMessage {
+function getMsgChooseAction(data: Partial<GameEventData> | undefined): string {
+  if (!data) throw `[getMsgChooseAction] data is missing: ${data}`;
+  switch (data.action) {
+    case GameActionMove.INCOME:
+      return "I'm just taking income";
+    case GameActionMove.COUP:
+      return `${data.targetPlayer}, you're dead to me. I'm coup'ing you!`;
+    case GameActionMove.FOREIGN_AID:
+      return "I'm taking foreign aid";
+    case GameActionMove.STEAL:
+      return `I'm stealing! Hand 'em over, ${data.targetPlayer}!`;
+    case GameActionMove.ASSASSINATE:
+      return `${data.targetPlayer}, I'm assassinating you! Plz don't take it personally`;
+    case GameActionMove.TAX:
+      return "I'm totally the duke... gonna tax and take my 3...";
+    case GameActionMove.EXCHANGE:
+      return "I want new cards, so I'm going to exchange";
+    default:
+      return `${data.action}`;
+  }
+}
+
+export function eventToMessage({
+  event,
+  user,
+  data,
+  error,
+}: GameEvent): UIMessage {
+  if (error) return { user: "[Error]", message: error, isError: true };
+
   switch (event) {
     case GameEventType.ACCEPT_BLOCK:
       return { user, message: "I accept your block" };
@@ -17,7 +47,7 @@ export function eventToMessage({ event, user, data }: GameEvent): UIMessage {
     case GameEventType.CHALLENGE_BLOCK:
       return { user, message: "BS! I'm challenging your block." };
     case GameEventType.CHOOSE_ACTION:
-      return { user, message: "[CHOSE ACTION]" };
+      return { user, message: getMsgChooseAction(data) };
     case GameEventType.CONFIRM_ACTION:
       return { user, message: "[CONFIRM ACTION]" };
     case GameEventType.PAUSE_GAME:
@@ -36,6 +66,8 @@ export function eventToMessage({ event, user, data }: GameEvent): UIMessage {
       return { user, message: "The game is starting! Hope you're ready" };
 
     default:
-      throw `${event} doesn't have an eventToMessage handler`;
+      const message = `${event} doesn't have an eventToMessage handler`;
+      console.warn(message);
+      return { user: "[UI]", message, isError: true };
   }
 }

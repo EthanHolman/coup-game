@@ -22,6 +22,10 @@ const useStyles = createUseStyles({
     color: "white",
     alignSelf: "flex-end",
   },
+  errorMessage: {
+    backgroundColor: "#d44",
+    color: "white",
+  },
 });
 
 type MessageViewerProps = {
@@ -42,6 +46,7 @@ const MessageViewer = ({ events, state }: MessageViewerProps): JSX.Element => {
             className={clsx([
               classes.messageBubble,
               { [classes.selfMessage]: event.user === state.thisPlayer.name },
+              { [classes.errorMessage]: event.isError },
             ])}
             key={index}
           >

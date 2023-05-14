@@ -28,7 +28,9 @@ const Game = (): JSX.Element => {
   const classes = useStyles();
 
   const sendEvent = (event: GameEvent) => {
-    websocket?.send(JSON.stringify(event));
+    const toSend = JSON.stringify(event);
+    console.debug("[ws] sending message:", toSend);
+    websocket?.send(toSend);
   };
 
   const onUserJoinGame = (username: string) => {
@@ -38,9 +40,8 @@ const Game = (): JSX.Element => {
         try {
           const gameEvent = JSON.parse(event.data) as GameEvent;
           console.info("[WS]", gameEvent);
-          if (gameEvent.error) {
-            console.error(gameEvent.error);
-          } else if (gameEvent.event === GameEventType.CURRENT_STATE) {
+          if (gameEvent.error) console.error(gameEvent.error);
+          if (gameEvent.event === GameEventType.CURRENT_STATE) {
             dispatch({ type: "updateGameState", data: gameEvent.data!.state! });
           } else {
             setMessages((msgs) => [...msgs, eventToMessage(gameEvent)]);
