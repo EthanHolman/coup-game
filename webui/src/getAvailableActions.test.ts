@@ -6,6 +6,7 @@ import {
   BLOCKABLE_ACTIONS,
   CHALLENGEABLE_ACTIONS,
   GameActionMove,
+  NON_TARGETED_ACTIONS,
 } from "../../shared/enums";
 import { GameEventType } from "../../shared/enums";
 import { Card } from "../../shared/Card";
@@ -78,6 +79,17 @@ describe("getAvailableActions", function () {
         targetPlayer: "player-1",
       };
       assert.notInclude(getAvailableActions(state), GameEventType.BLOCK_ACTION);
+    });
+
+    it("should allow confirming action if currentAction is non-targeted", function () {
+      NON_TARGETED_ACTIONS.forEach((action) => {
+        const state = generateClientState(2, 0, 0);
+        state.currentAction = { action };
+        assert.include(
+          getAvailableActions(state),
+          GameEventType.CONFIRM_ACTION
+        );
+      });
     });
   });
 

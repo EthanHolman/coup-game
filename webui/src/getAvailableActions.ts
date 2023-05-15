@@ -3,6 +3,7 @@ import {
   CHALLENGEABLE_ACTIONS,
   GameActionMove,
   GameEventType,
+  NON_TARGETED_ACTIONS,
 } from "../../shared/enums";
 import { ClientState } from "./ClientState";
 
@@ -28,6 +29,13 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
       if (state.thisPlayer.coins >= 7) actions.push(GameActionMove.COUP);
     }
   }
+
+  if (
+    state.isMyTurn &&
+    state.currentAction &&
+    NON_TARGETED_ACTIONS.includes(state.currentAction.action!)
+  )
+    actions.push(GameEventType.CONFIRM_ACTION);
 
   if (!state.isMyTurn && state.currentAction && !state.blockAction) {
     if (BLOCKABLE_ACTIONS.includes(state.currentAction.action!))

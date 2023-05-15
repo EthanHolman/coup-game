@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { GameEvent } from "../../../../shared/GameEvent";
 import {
-  ACTIONS_REQUIRING_TARGET_PLAYER,
+  TARGETED_ACTIONS,
   ALL_GAME_ACTION_MOVES,
   ALL_GAME_EVENT_TYPES,
   GameEventType,
@@ -34,7 +34,7 @@ const ActionPickerView = ({
 
   const handleChooseAction = (action: any) => {
     setAction(action);
-    if (ACTIONS_REQUIRING_TARGET_PLAYER.includes(action)) {
+    if (TARGETED_ACTIONS.includes(action)) {
       setViewMode(ViewMode.Player);
     }
   };

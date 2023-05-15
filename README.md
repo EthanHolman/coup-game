@@ -145,15 +145,14 @@ All events include {event, user, data}. Fields noted below are members of the da
 
 ## Server Action Handling:
 
-chooseAction event comes in, and is saved as `currentEvent`
-
+chooseAction event comes in, and is saved as `currentEvent`:
 `{event: chooseAction, user: someName, data: { action: assassinate, target: anotherName }`
 
 If the action is "Income", it is processed immediately, since that action is not blockable and doesn't target another player.
 
-Game is now waiting for one of the following events: [confirmAction, challenge, or block]:
+Otherwise, game is now waiting for one of the following events: [confirmAction, challenge, or block]:
 
-- confirmAction: executes `currentEvent`
+- confirmAction: executes `currentEvent` (if action is targeted, targetPlayer must confirm. if not, then currentPlayer confirms)
 - challenge: does `currentEvent.user` have required card for `currentEvent.data.action`? yes → challenger loses card, execute `currentEvent`. no → `currentEvent.user` loses a card, end of turn
 - block: save this event as `blockEvent`. Game is now waiting for one of the following events: [acceptBlock, challengeBlock]
   - acceptBlock: next turn. _this can be done only by who?_
