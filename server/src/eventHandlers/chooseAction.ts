@@ -14,6 +14,8 @@ export function chooseAction(
   if (state.gameStatus !== "RUNNING")
     throw `cannot choose an action when the game is not running`;
 
+  if (state.currentAction) throw "there is already an action in play";
+
   if (gameEvent.user !== state.currentPlayer.name)
     throw `it is not currently ${gameEvent.user}'s turn`;
 

@@ -37,6 +37,19 @@ describe("chooseAction event handler", function () {
     Sinon.assert.calledOnceWithExactly(messageAllFn, event);
   });
 
+  it("shouldn't allow choosing an action if one has been chosen already", function () {
+    const state = generateStateWithNPlayers(2);
+    state.currentAction = { action: GameActionMove.INCOME };
+    const event: GameEvent = {
+      event: GameEventType.CHOOSE_ACTION,
+      user: "tester-0",
+      data: { action: GameActionMove.EXCHANGE },
+    };
+    assert.throws(function () {
+      chooseAction(state, event, Sinon.stub());
+    }, "already an action");
+  });
+
   it("should not allow proposing invalid actions", function () {
     const state = generateStateWithNPlayers(2);
     [GameActionMove.NONE, GameActionMove.LOSE_CARD].forEach((invalidAction) => {
