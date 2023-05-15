@@ -8,6 +8,11 @@ export function acceptBlock(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ) {
+  if (!state.blockAction) throw "There isn't a block action currently in play";
+
+  if (gameEvent.user !== state.currentPlayer.name)
+    throw "Only current player can accept the block";
+
   messageAllFn(gameEvent);
   nextTurn(state);
 }

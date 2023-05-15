@@ -139,8 +139,8 @@ All events include {event, user, data}. Fields noted below are members of the da
 - CHOOSE_ACTION: {action, targetPlayer?}
 - CONFIRM_ACTION: {}
 - CHALLENGE_ACTION: {}
-- BLOCK_ACTION: {card: Card}
-- PLAYER_LOSE_CARD: {card: Card}
+- BLOCK_ACTION: {card}
+- PLAYER_LOSE_CARD: {card}
 - START_GAME: {}
 
 ## Server Action Handling:
@@ -155,7 +155,7 @@ Otherwise, game is now waiting for one of the following events: [confirmAction, 
 - confirmAction: executes `currentEvent` (if action is targeted, targetPlayer must confirm. if not, then currentPlayer confirms)
 - challenge: does `currentEvent.user` have required card for `currentEvent.data.action`? yes → challenger loses card, execute `currentEvent`. no → `currentEvent.user` loses a card, end of turn
 - block: save this event as `blockEvent`. Game is now waiting for one of the following events: [acceptBlock, challengeBlock]
-  - acceptBlock: next turn. _this can be done only by who?_
+  - acceptBlock: no-op. next player's turn. (currentPlayer must confirm)
   - challengeBlock: does `blockEvent.user` have `blockEvent.data.card`?
     - yes → `challengeBlockEvent.user` loses a card. block succeeds. end of turn.
     - no → `blockEvent.user` loses card, and execute `currentEvent`

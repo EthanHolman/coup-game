@@ -1,6 +1,7 @@
 import Sinon from "sinon";
 import { confirmAction } from "../../src/eventHandlers/confirmAction";
 import * as dispatchPlayerLoseCard_all from "../../src/actions/dispatchPlayerLoseCard";
+import * as nextTurn_all from "../../src/actions/nextTurn";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { assert } from "chai";
 import { GameActionMove, GameEventType } from "../../../shared/enums";
@@ -83,6 +84,19 @@ describe("confirmAction event handler", function () {
     };
     confirmAction(state, event, mockMessageAllFn, Sinon.stub());
     Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
+  });
+
+  it("should trigger next turn", function () {
+    const stub_nextTurn = Sinon.stub(nextTurn_all, "nextTurn").returns();
+    const state = generateStateWithNPlayers(2);
+    state.currentAction = { action: GameActionMove.TAX };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    Sinon.assert.calledOnce(stub_nextTurn);
+    stub_nextTurn.restore();
   });
 
   describe("stealing", function () {

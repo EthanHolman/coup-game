@@ -9,6 +9,7 @@ import {
   GameEventType,
   GameActionMove,
   ALL_PLAYABLE_GAME_ACTION_MOVES,
+  TARGETED_ACTIONS,
 } from "../../../shared/enums";
 import { GameEvent } from "../../../shared/GameEvent";
 
@@ -260,16 +261,9 @@ describe("chooseAction event handler", function () {
     assert.deepEqual(state.currentAction, event.data);
   });
 
-  const TARGET_PLAYER_ACTIONS = [
-    GameActionMove.COUP,
-    GameActionMove.ASSASSINATE,
-    GameActionMove.STEAL,
-  ];
-
-  // targetPlayer
   it("should not allow missing player target", function () {
     const state = generateStateWithNPlayers(2);
-    TARGET_PLAYER_ACTIONS.forEach((action) => {
+    TARGETED_ACTIONS.forEach((action) => {
       assert.throws(function () {
         chooseAction(
           state,
@@ -286,7 +280,7 @@ describe("chooseAction event handler", function () {
 
   it("should not allow target as self", function () {
     const state = generateStateWithNPlayers(2);
-    TARGET_PLAYER_ACTIONS.forEach((action) => {
+    TARGETED_ACTIONS.forEach((action) => {
       assert.throws(function () {
         chooseAction(
           state,
@@ -307,7 +301,7 @@ describe("chooseAction event handler", function () {
     player!.revealCard(Card.CONTESSA);
     player!.revealCard(Card.CONTESSA);
     assert.isTrue(player!.isOut);
-    TARGET_PLAYER_ACTIONS.forEach((action) => {
+    TARGETED_ACTIONS.forEach((action) => {
       assert.throws(function () {
         chooseAction(
           state,
@@ -324,7 +318,7 @@ describe("chooseAction event handler", function () {
 
   it("should not allow unknown target players", function () {
     const state = generateStateWithNPlayers(2);
-    TARGET_PLAYER_ACTIONS.forEach((action) => {
+    TARGETED_ACTIONS.forEach((action) => {
       assert.throws(function () {
         chooseAction(
           state,
