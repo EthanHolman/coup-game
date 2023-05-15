@@ -43,6 +43,8 @@ export class GameRunner {
       throw "no actions are allowed until the game is unpaused!";
     }
 
+    // TODO: validate gameEvent (make sure it includes user and no weird/malformed data)
+
     switch (gameEvent.event) {
       case GameEventType.START_GAME:
         startGame(this._gameState, this._messageAllFn);

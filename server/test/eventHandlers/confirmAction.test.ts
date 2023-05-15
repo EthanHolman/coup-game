@@ -15,7 +15,7 @@ describe("confirmAction event handler", function () {
     };
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
-      user: "tester-0",
+      user: "tester-1",
     };
     const stub_dispatchPlayerLoseCard = Sinon.stub(
       dispatchPlayerLoseCard_all,
@@ -36,7 +36,7 @@ describe("confirmAction event handler", function () {
     };
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
-      user: "tester-0",
+      user: "tester-1",
     };
     const stub_dispatchPlayerLoseCard = Sinon.stub(
       dispatchPlayerLoseCard_all,

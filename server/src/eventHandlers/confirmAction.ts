@@ -11,8 +11,6 @@ export function confirmAction(
   messageAllFn: messageAllFn,
   messagePlayerFn: messagePlayerFn
 ) {
-  if (gameEvent.user !== state.currentPlayer.name) throw "wrong user!";
-
   // income is auto-confirmed, so we don't want to double notify the users
   if (state.currentAction?.action !== GameActionMove.INCOME)
     messageAllFn(gameEvent);
@@ -20,6 +18,9 @@ export function confirmAction(
   switch (state.currentAction?.action) {
     case GameActionMove.ASSASSINATE:
     case GameActionMove.COUP:
+      if (gameEvent.user !== state.currentAction.targetPlayer)
+        throw `Wrong user, only ${state.currentAction.targetPlayer} can confirm ${state.currentAction.action}!`;
+
       dispatchPlayerLoseCard(
         state,
         state.currentAction!.targetPlayer!,
@@ -37,19 +38,29 @@ export function confirmAction(
       break;
 
     case GameActionMove.FOREIGN_AID:
+      if (gameEvent.user !== state.currentPlayer.name)
+        throw `Wrong user, only ${state.currentPlayer.name} can confirm foreign aid!`;
+
       state.currentPlayer.coins += 2;
       break;
 
     case GameActionMove.INCOME:
+      if (gameEvent.user !== state.currentPlayer.name)
+        throw `Wrong user, only ${state.currentPlayer.name} can confirm income!`;
+
       state.currentPlayer.coins += 1;
       break;
 
     case GameActionMove.STEAL:
+      if (gameEvent.user !== state.currentAction.targetPlayer)
+        throw `Wrong user, only ${state.currentAction.targetPlayer} can confirm stealing!`;
+
       const targetPlayer = state.players.find(
         (x) => x.name === state.currentAction?.targetPlayer
       );
       if (!targetPlayer)
         throw `could not find targetPlayer ${state.currentAction.targetPlayer} to steal from!`;
+
       const targetOriginalCoins = targetPlayer.coins;
       targetPlayer.coins - 2;
       if (targetPlayer.coins < 0) targetPlayer.coins = 0;
@@ -58,6 +69,9 @@ export function confirmAction(
       break;
 
     case GameActionMove.TAX:
+      if (gameEvent.user !== state.currentPlayer.name)
+        throw `Wrong user, only ${state.currentPlayer.name} can confirm tax!`;
+
       state.currentPlayer.coins += 3;
       break;
 
