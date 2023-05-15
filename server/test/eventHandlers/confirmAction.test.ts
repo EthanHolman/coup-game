@@ -7,63 +7,134 @@ import { GameActionMove, GameEventType } from "../../../shared/enums";
 import { GameEvent } from "../../../shared/GameEvent";
 
 describe("confirmAction event handler", function () {
-  it("assassinate should trigger playerLoseCard and clear current action", function () {
-    const state = generateStateWithNPlayers(2);
-    state.currentAction = {
-      action: GameActionMove.ASSASSINATE,
-      targetPlayer: "tester-1",
-    };
-    const event: GameEvent = {
-      event: GameEventType.CONFIRM_ACTION,
-      user: "tester-1",
-    };
-    const stub_dispatchPlayerLoseCard = Sinon.stub(
-      dispatchPlayerLoseCard_all,
-      "dispatchPlayerLoseCard"
-    ).returns();
-    const messagePlayerFn = Sinon.stub();
-    confirmAction(state, event, Sinon.stub(), messagePlayerFn);
-    Sinon.assert.calledOnce(stub_dispatchPlayerLoseCard);
-    assert.isUndefined(state.currentAction);
-    stub_dispatchPlayerLoseCard.restore();
+  describe("assassinate/coup", function () {
+    it("should trigger playerLoseCard and clear current action", function () {
+      [GameActionMove.ASSASSINATE, GameActionMove.COUP].forEach((action) => {
+        const state = generateStateWithNPlayers(2);
+        state.currentAction = {
+          action,
+          targetPlayer: "tester-1",
+        };
+        const event: GameEvent = {
+          event: GameEventType.CONFIRM_ACTION,
+          user: "tester-1",
+        };
+        const stub_dispatchPlayerLoseCard = Sinon.stub(
+          dispatchPlayerLoseCard_all,
+          "dispatchPlayerLoseCard"
+        ).returns();
+        const messagePlayerFn = Sinon.stub();
+        confirmAction(state, event, Sinon.stub(), messagePlayerFn);
+        Sinon.assert.calledOnce(stub_dispatchPlayerLoseCard);
+        assert.isUndefined(state.currentAction);
+        stub_dispatchPlayerLoseCard.restore();
+      });
+    });
   });
 
-  it("coup should trigger playerLoseCard and clear current action", function () {
+  it("foreign aid should increase currentPlayers coins by 2", function () {
     const state = generateStateWithNPlayers(2);
-    state.currentAction = {
-      action: GameActionMove.COUP,
-      targetPlayer: "tester-1",
-    };
+    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+    state.currentAction = { action: GameActionMove.FOREIGN_AID };
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
-      user: "tester-1",
+      user: "tester-0",
     };
-    const stub_dispatchPlayerLoseCard = Sinon.stub(
-      dispatchPlayerLoseCard_all,
-      "dispatchPlayerLoseCard"
-    ).returns();
-    const messagePlayerFn = Sinon.stub();
-    confirmAction(state, event, Sinon.stub(), messagePlayerFn);
-    Sinon.assert.calledOnce(stub_dispatchPlayerLoseCard);
-    assert.isUndefined(state.currentAction);
-    stub_dispatchPlayerLoseCard.restore();
+    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 4);
   });
 
-  // TODO: add exchange confirm tests
-  // it('exchange should....', function() {})
+  it("income should increase currentPlayers coins by 1", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+    state.currentAction = { action: GameActionMove.INCOME };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 3);
+  });
 
-  it("foreign aid should increase currentPlayers coins by 2", function () {});
+  it("tax should increase currentPlayers coins by 3", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+    state.currentAction = { action: GameActionMove.TAX };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 5);
+  });
 
-  it("income should increase currentPlayers coins by 1", function () {});
+  it("should not allow confirms by the wrong users", function () {
+    // maybe::: "targeted actions should only be confirmable by target player"
+    //    and "non-targeted actions should only be confirmable by current player"
+  });
 
-  it("stealing from player with 2+ coins -- target should lose 2 and currentplayer should gain 2", function () {});
+  it("should broadcast incoming event to all users", function () {
+    const mockMessageAllFn = Sinon.stub();
+    const state = generateStateWithNPlayers(2);
+    state.currentAction = { action: GameActionMove.TAX };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    confirmAction(state, event, mockMessageAllFn, Sinon.stub());
+    Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
+  });
 
-  it("stealing from player with <2 coins -- target should lose 1 and currentplayer should gain 1", function () {});
+  describe("stealing", function () {
+    it("from player with >2 coins: target should lose 2, currentplayer should gain 2", function () {
+      const state = generateStateWithNPlayers(2);
+      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+      state.players.find((x) => x.name === "tester-1")!.coins = 3;
+      state.currentAction = {
+        action: GameActionMove.STEAL,
+        targetPlayer: "tester-1",
+      };
+      const event: GameEvent = {
+        event: GameEventType.CONFIRM_ACTION,
+        user: "tester-1",
+      };
+      confirmAction(state, event, Sinon.stub(), Sinon.stub());
+      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 4);
+      assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 1);
+    });
 
-  it("tax should increase currentPlayers coins by 3", function () {});
+    it("from player with 1 coin: target should lose 1 and currentplayer should gain 1", function () {
+      const state = generateStateWithNPlayers(2);
+      state.players.find((x) => x.name === "tester-1")!.coins = 1;
+      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+      state.currentAction = {
+        action: GameActionMove.STEAL,
+        targetPlayer: "tester-1",
+      };
+      const event: GameEvent = {
+        event: GameEventType.CONFIRM_ACTION,
+        user: "tester-1",
+      };
+      confirmAction(state, event, Sinon.stub(), Sinon.stub());
+      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 3);
+      assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 0);
+    });
 
-  it("confirmations from non-current players should not be allowed", function () {});
-
-  // TODO: add tests for confirmation events
-  // it('', function() {})
+    it("from player with 0 coins should be no-op", function () {
+      const state = generateStateWithNPlayers(2);
+      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+      state.players.find((x) => x.name === "tester-1")!.coins = 0;
+      state.currentAction = {
+        action: GameActionMove.STEAL,
+        targetPlayer: "tester-1",
+      };
+      const event: GameEvent = {
+        event: GameEventType.CONFIRM_ACTION,
+        user: "tester-1",
+      };
+      confirmAction(state, event, Sinon.stub(), Sinon.stub());
+      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+      assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 0);
+    });
+  });
 });

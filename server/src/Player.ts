@@ -61,4 +61,9 @@ export class Player {
     this._cards.splice(toReplaceIndex, 1);
     this._cards.push({ card: newCard, isRevealed: false });
   }
+
+  updateCoins(adjustmentAmount: number): void {
+    this.coins += adjustmentAmount;
+    if (this.coins < 0) this.coins = 0;
+  }
 }

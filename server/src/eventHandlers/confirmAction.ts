@@ -41,14 +41,14 @@ export function confirmAction(
       if (gameEvent.user !== state.currentPlayer.name)
         throw `Wrong user, only ${state.currentPlayer.name} can confirm foreign aid!`;
 
-      state.currentPlayer.coins += 2;
+      state.currentPlayer.updateCoins(2);
       break;
 
     case GameActionMove.INCOME:
       if (gameEvent.user !== state.currentPlayer.name)
         throw `Wrong user, only ${state.currentPlayer.name} can confirm income!`;
 
-      state.currentPlayer.coins += 1;
+      state.currentPlayer.updateCoins(1);
       break;
 
     case GameActionMove.STEAL:
@@ -62,17 +62,16 @@ export function confirmAction(
         throw `could not find targetPlayer ${state.currentAction.targetPlayer} to steal from!`;
 
       const targetOriginalCoins = targetPlayer.coins;
-      targetPlayer.coins - 2;
-      if (targetPlayer.coins < 0) targetPlayer.coins = 0;
+      targetPlayer.updateCoins(-2);
       const numCoinsStolen = targetOriginalCoins - targetPlayer.coins;
-      state.currentPlayer.coins += numCoinsStolen;
+      state.currentPlayer.updateCoins(numCoinsStolen);
       break;
 
     case GameActionMove.TAX:
       if (gameEvent.user !== state.currentPlayer.name)
         throw `Wrong user, only ${state.currentPlayer.name} can confirm tax!`;
 
-      state.currentPlayer.coins += 3;
+      state.currentPlayer.updateCoins(3);
       break;
 
     default:

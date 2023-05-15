@@ -160,6 +160,10 @@ describe("chooseAction event handler", function () {
 
   it("stealing allowed from another player that has at least 1 coin", function () {
     const state = generateStateWithNPlayers(2);
+    assert.isAtLeast(
+      state.players.find((x) => x.name === "tester-1")!.coins,
+      1
+    );
     const event = {
       event: GameEventType.CHOOSE_ACTION,
       user: "tester-0",

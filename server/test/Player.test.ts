@@ -166,4 +166,25 @@ describe("player", function () {
     player.isHost = false;
     assert.isFalse(player.isHost);
   });
+
+  it("should be able to adjust coins up", function () {
+    const player = new Player("alex", [Card.AMBASSADOR, Card.ASSASSIN]);
+    assert.equal(player.coins, 2);
+    player.updateCoins(1);
+    assert.equal(player.coins, 3);
+  });
+
+  it("should be able to adjust coins down", function () {
+    const player = new Player("alex", [Card.AMBASSADOR, Card.ASSASSIN]);
+    assert.equal(player.coins, 2);
+    player.updateCoins(-1);
+    assert.equal(player.coins, 1);
+  });
+
+  it("should cap coin balance at 0 if adjustment down is too much", function () {
+    const player = new Player("alex", [Card.AMBASSADOR, Card.ASSASSIN]);
+    assert.equal(player.coins, 2);
+    player.updateCoins(-10);
+    assert.equal(player.coins, 0);
+  });
 });
