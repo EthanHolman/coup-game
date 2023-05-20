@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GameEvent } from "../../../../shared/GameEvent";
+import { GameEvent, GameEventData } from "../../../../shared/GameEvent";
 import {
   TARGETED_ACTIONS,
   ALL_GAME_ACTION_MOVES,
@@ -9,6 +9,8 @@ import {
 import { ClientGameAction } from "../../getAvailableActions";
 import ActionButtons from "./ActionButtons";
 import PlayerTargetButtons from "./PlayerTargetButtons";
+import CardButtons from "./CardButtons";
+import { Card } from "../../../../shared/Card";
 
 type ActionPickerViewProps = {
   availableActions: ClientGameAction[];
@@ -20,6 +22,7 @@ type ActionPickerViewProps = {
 enum ViewMode {
   Action,
   Player,
+  Card,
 }
 
 const ActionPickerView = ({
@@ -31,18 +34,28 @@ const ActionPickerView = ({
   const [viewMode, setViewMode] = useState(ViewMode.Action);
   const [action, setAction] = useState<any>();
   const [targetPlayer, setTargetPlayer] = useState<string>();
+  const [blockAsCard, setBlockAsCard] = useState<Card>();
 
   const handleChooseAction = (action: any) => {
     setAction(action);
     if (TARGETED_ACTIONS.includes(action)) {
       setViewMode(ViewMode.Player);
     }
+    if (action === GameEventType.BLOCK_ACTION) {
+      setViewMode(ViewMode.Card);
+    }
   };
 
   const onPickPlayer = (username: string) => setTargetPlayer(username);
 
+  const onPickCard = (card: Card) => setBlockAsCard(card);
+
   useEffect(() => {
-    if (!action || (action && viewMode === ViewMode.Player && !targetPlayer))
+    if (
+      !action ||
+      (action && viewMode === ViewMode.Player && !targetPlayer) ||
+      (action && viewMode === ViewMode.Card && blockAsCard === undefined)
+    )
       return;
 
     if (ALL_GAME_ACTION_MOVES.includes(action)) {
@@ -55,9 +68,13 @@ const ActionPickerView = ({
         },
       });
     } else if (ALL_GAME_EVENT_TYPES.includes(action)) {
+      const data: Partial<GameEventData> = {};
+      if (blockAsCard !== undefined) data["card"] = blockAsCard;
+
       sendEvent({
         event: action as GameEventType,
         user: username,
+        data: data,
       });
     } else
       console.warn(`[ActionPicker] action ${action} was not handled properly`);
@@ -65,17 +82,11 @@ const ActionPickerView = ({
     setAction(undefined);
     setViewMode(ViewMode.Action);
     setTargetPlayer(undefined);
-  }, [action, targetPlayer]);
+    setBlockAsCard(undefined);
+  }, [action, targetPlayer, blockAsCard]);
 
   return (
     <div role="toolbar">
-      {availableActions.length > 0 && (
-        <h2>
-          {viewMode === ViewMode.Action
-            ? "Choose an action"
-            : "Choose a target"}
-        </h2>
-      )}
       {viewMode === ViewMode.Action && (
         <ActionButtons
           availableActions={availableActions}
@@ -88,6 +99,7 @@ const ActionPickerView = ({
           onPickPlayer={onPickPlayer}
         />
       )}
+      {viewMode === ViewMode.Card && <CardButtons onPickCard={onPickCard} />}
     </div>
   );
 };

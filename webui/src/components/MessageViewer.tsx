@@ -36,8 +36,6 @@ type MessageViewerProps = {
 const MessageViewer = ({ events, state }: MessageViewerProps): JSX.Element => {
   const classes = useStyles();
 
-  console.log({ [classes.container]: true });
-
   return (
     <div className={classes.container}>
       {!!state.thisPlayer &&
