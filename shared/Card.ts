@@ -1,7 +1,7 @@
 import { getEnumVals } from "./getEnumVals";
 
 export enum Card {
-  HIDDEN_CARD = -1,
+  HIDDEN_CARD,
   DUKE,
   AMBASSADOR,
   ASSASSIN,

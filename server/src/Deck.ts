@@ -13,15 +13,14 @@ export class Deck {
   _initDeck(): Card[] {
     const numCardsOfType = 3;
 
-    // first assemble a deck
-    const unshuffledDeck: Card[] = [];
+    // first assemble an unshuffled deck
+    let unshuffledDeck: Card[] = [];
     for (let i = 0; i < numCardsOfType; i++) {
-      // convert this to map
-      for (const card in ALL_CARDS)
-        unshuffledDeck.push(Card[Card[card] as any] as any);
+      unshuffledDeck = unshuffledDeck.concat(ALL_CARDS);
     }
 
-    // then shuffle it
+    // then shuffle it by inserting each card
+    //   in 'unshuffled' at a random position
     const shuffledDeck: Card[] = [];
     while (unshuffledDeck.length > 0) {
       const rand = getRandomNumber(0, unshuffledDeck.length - 1);
