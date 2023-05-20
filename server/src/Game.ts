@@ -11,6 +11,7 @@ import { playerDisconnect } from "./eventHandlers/playerDisconnect";
 import { acceptBlock } from "./eventHandlers/acceptBlock";
 import { GameEvent } from "../../shared/GameEvent";
 import { sendCurrentState } from "./actions/sendCurrentState";
+import { blockAction } from "./eventHandlers/blockAction";
 
 export const ACTIONS_ALLOWED_WHILE_PAUSED = [
   GameEventType.PLAYER_DISCONNECT,
@@ -82,6 +83,7 @@ export class GameRunner {
         break;
 
       case GameEventType.BLOCK_ACTION:
+        blockAction(this._gameState, gameEvent);
         break;
 
       case GameEventType.ACCEPT_BLOCK:
