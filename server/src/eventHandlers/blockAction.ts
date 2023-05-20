@@ -4,12 +4,14 @@ import { BLOCKABLE_ACTIONS, GameActionMove } from "../../../shared/enums";
 import { GameState } from "../GameState";
 
 export function blockAction(state: GameState, gameEvent: GameEvent) {
+  if (!state.currentAction) throw "There is no current action in play yet";
+
+  if (state.blockAction) throw "There is already a block action in play";
+
   if (gameEvent.user === state.currentPlayer.name)
-    throw "You cannot block your own action";
+    throw "Cannot block your own action";
 
   if (!gameEvent.data?.card) throw "Missing card to block with";
-
-  if (!state.currentAction) throw "There is no current action in play yet";
 
   if (!BLOCKABLE_ACTIONS.includes(state.currentAction.action!))
     throw "cannot block non-blockable action";

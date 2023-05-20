@@ -23,7 +23,7 @@ describe("blockAction event handler", function () {
     };
     assert.throws(function () {
       blockAction(state, event);
-    }, "cannot block your own action");
+    }, "Cannot block your own action");
     assert.isUndefined(state.blockAction);
   });
 
@@ -112,13 +112,13 @@ describe("blockAction event handler", function () {
   });
 
   it("should allow 'ambassador/captain' to block stealing'", function () {
-    const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
-    state.currentAction = {
-      action: GameActionMove.STEAL,
-      targetPlayer: "tester-1",
-    };
     [Card.AMBASSADOR, Card.CAPTAIN].forEach((card) => {
+      const state = generateStateWithNPlayers(2);
+      assert.equal(state.currentPlayer.name, "tester-0");
+      state.currentAction = {
+        action: GameActionMove.STEAL,
+        targetPlayer: "tester-1",
+      };
       const event: GameEvent = {
         event: GameEventType.BLOCK_ACTION,
         user: "tester-1",
@@ -160,6 +160,7 @@ describe("blockAction event handler", function () {
       const event: GameEvent = {
         event: GameEventType.BLOCK_ACTION,
         user: "tester-1",
+        data: { card: Card.ASSASSIN }, // doesn't really matter which card
       };
       assert.throws(function () {
         blockAction(state, event);
@@ -187,7 +188,7 @@ describe("blockAction event handler", function () {
     };
     assert.throws(function () {
       blockAction(state, event);
-    }, "there is already a block action in play");
+    }, "There is already a block action in play");
     assert.deepEqual(state.blockAction, blockActionData);
   });
 
