@@ -2,8 +2,13 @@ import { Card } from "../../../shared/Card";
 import { GameEvent } from "../../../shared/GameEvent";
 import { BLOCKABLE_ACTIONS, GameActionMove } from "../../../shared/enums";
 import { GameState } from "../GameState";
+import { messageAllFn } from "../messageFnTypes";
 
-export function blockAction(state: GameState, gameEvent: GameEvent) {
+export function blockAction(
+  state: GameState,
+  gameEvent: GameEvent,
+  messageAllFn: messageAllFn
+) {
   if (!state.currentAction) throw "There is no current action in play yet";
 
   if (state.blockAction) throw "There is already a block action in play";
@@ -29,6 +34,8 @@ export function blockAction(state: GameState, gameEvent: GameEvent) {
       throw "Blocking stealing requires ambassador or captain";
   } else
     throw `Missing block validator for action ${state.currentAction.action}`;
+
+  messageAllFn(gameEvent);
 
   state.blockAction = gameEvent;
 }

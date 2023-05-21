@@ -135,7 +135,7 @@ describe("ActionPickerView component", function () {
       })
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Card[Card.CAPTAIN].toString() })
+      screen.getByRole("button", { name: Card.CAPTAIN.toString() })
     );
 
     const expectedEvent: GameEvent = {

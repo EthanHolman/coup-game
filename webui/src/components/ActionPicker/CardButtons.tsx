@@ -14,7 +14,7 @@ const CardButtons = ({ onPickCard }: CardButtonsProps): JSX.Element => {
           key={card.toString()}
           onClick={() => onPickCard(card)}
         >
-          {Card[card]}
+          {card}
         </button>
       ))}
     </>

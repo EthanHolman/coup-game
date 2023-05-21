@@ -46,9 +46,6 @@ export const ALL_PLAYABLE_GAME_ACTION_MOVES = ALL_GAME_ACTION_MOVES.filter(
   (x) => ![GameActionMove.NONE, GameActionMove.LOSE_CARD].includes(x)
 );
 
-export const ALL_GAME_EVENT_TYPES =
-  getStrEnumVals<GameEventType>(GameEventType);
-
 export const CHALLENGEABLE_ACTIONS = [
   GameActionMove.ASSASSINATE,
   GameActionMove.EXCHANGE,
@@ -74,3 +71,6 @@ export const NON_TARGETED_ACTIONS = [
   GameActionMove.TAX,
   GameActionMove.EXCHANGE,
 ];
+
+export const ALL_GAME_EVENT_TYPES =
+  getStrEnumVals<GameEventType>(GameEventType);

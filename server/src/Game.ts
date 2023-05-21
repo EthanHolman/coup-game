@@ -83,7 +83,7 @@ export class GameRunner {
         break;
 
       case GameEventType.BLOCK_ACTION:
-        blockAction(this._gameState, gameEvent);
+        blockAction(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.ACCEPT_BLOCK:

@@ -5,5 +5,5 @@ export function getEnumVals<T>(theEnum: any) {
 }
 
 export function getStrEnumVals<T>(theEnum: any) {
-  return Object.keys(theEnum).map((x) => x as T);
+  return Object.values(theEnum).map((x) => x as T);
 }

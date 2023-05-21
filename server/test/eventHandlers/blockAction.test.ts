@@ -7,6 +7,7 @@ import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { ALL_CARDS } from "../../../shared/Card";
 import { ALL_GAME_ACTION_MOVES } from "../../../shared/enums";
 import { BLOCKABLE_ACTIONS } from "../../../shared/enums";
+import Sinon from "sinon";
 
 describe("blockAction event handler", function () {
   it("should not allow blocking user's own action", function () {
@@ -22,7 +23,7 @@ describe("blockAction event handler", function () {
       data: { card: Card.CAPTAIN },
     };
     assert.throws(function () {
-      blockAction(state, event);
+      blockAction(state, event, Sinon.stub());
     }, "Cannot block your own action");
     assert.isUndefined(state.blockAction);
   });
@@ -39,7 +40,7 @@ describe("blockAction event handler", function () {
       user: "tester-1",
       data: { card: Card.CONTESSA },
     };
-    blockAction(state, event);
+    blockAction(state, event, Sinon.stub());
     assert.deepEqual(state.blockAction, event);
   });
 
@@ -57,7 +58,7 @@ describe("blockAction event handler", function () {
         data: { card },
       };
       assert.throws(function () {
-        blockAction(state, event);
+        blockAction(state, event, Sinon.stub());
       }, "requires contessa");
       assert.isUndefined(state.blockAction);
     });
@@ -76,7 +77,7 @@ describe("blockAction event handler", function () {
       data: { card: Card.CONTESSA },
     };
     assert.throws(function () {
-      blockAction(state, event);
+      blockAction(state, event, Sinon.stub());
     }, "Only the target player can block using a contessa");
     assert.isUndefined(state.blockAction);
   });
@@ -90,7 +91,7 @@ describe("blockAction event handler", function () {
       user: "tester-1",
       data: { card: Card.DUKE },
     };
-    blockAction(state, event);
+    blockAction(state, event, Sinon.stub());
     assert.deepEqual(state.blockAction, event);
   });
 
@@ -105,7 +106,7 @@ describe("blockAction event handler", function () {
         data: { card },
       };
       assert.throws(function () {
-        blockAction(state, event);
+        blockAction(state, event, Sinon.stub());
       }, "requires duke");
       assert.isUndefined(state.blockAction);
     });
@@ -124,7 +125,7 @@ describe("blockAction event handler", function () {
         user: "tester-1",
         data: { card },
       };
-      blockAction(state, event);
+      blockAction(state, event, Sinon.stub());
       assert.deepEqual(state.blockAction, event);
     });
   });
@@ -145,7 +146,7 @@ describe("blockAction event handler", function () {
         data: { card },
       };
       assert.throws(function () {
-        blockAction(state, event);
+        blockAction(state, event, Sinon.stub());
       }, "requires ambassador or captain");
       assert.isUndefined(state.blockAction);
     });
@@ -163,7 +164,7 @@ describe("blockAction event handler", function () {
         data: { card: Card.ASSASSIN }, // doesn't really matter which card
       };
       assert.throws(function () {
-        blockAction(state, event);
+        blockAction(state, event, Sinon.stub());
       }, "cannot block non-blockable action");
       assert.isUndefined(state.blockAction);
     });
@@ -187,7 +188,7 @@ describe("blockAction event handler", function () {
       data: { card: Card.AMBASSADOR },
     };
     assert.throws(function () {
-      blockAction(state, event);
+      blockAction(state, event, Sinon.stub());
     }, "There is already a block action in play");
     assert.deepEqual(state.blockAction, blockActionData);
   });
@@ -200,7 +201,7 @@ describe("blockAction event handler", function () {
       data: { card: Card.CAPTAIN },
     };
     assert.throws(function () {
-      blockAction(state, event);
+      blockAction(state, event, Sinon.stub());
     }, "no current action in play yet");
     assert.isUndefined(state.blockAction);
   });
@@ -216,8 +217,25 @@ describe("blockAction event handler", function () {
       user: "tester-1",
     };
     assert.throws(function () {
-      blockAction(state, event);
+      blockAction(state, event, Sinon.stub());
     }, "Missing card to block with");
     assert.isUndefined(state.blockAction);
+  });
+
+  it("should send event to all users if event passes validation", function () {
+    const mockMessageAllFn = Sinon.stub();
+    const state = generateStateWithNPlayers(2);
+    assert.equal(state.currentPlayer.name, "tester-0");
+    state.currentAction = {
+      action: GameActionMove.ASSASSINATE,
+      targetPlayer: "tester-1",
+    };
+    const event: GameEvent = {
+      event: GameEventType.BLOCK_ACTION,
+      user: "tester-1",
+      data: { card: Card.CONTESSA },
+    };
+    blockAction(state, event, mockMessageAllFn);
+    Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
   });
 });

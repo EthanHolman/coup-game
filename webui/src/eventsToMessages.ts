@@ -41,7 +41,7 @@ export function eventToMessage({
     case GameEventType.ACCEPT_BLOCK:
       return { user, message: "I accept your block" };
     case GameEventType.BLOCK_ACTION:
-      return { user, message: "I'm blocking your action" };
+      return { user, message: `I'm blocking with ${data?.card}` };
     case GameEventType.CHALLENGE_ACTION:
       return { user, message: "BS! I'm challenging your action." };
     case GameEventType.CHALLENGE_BLOCK:
