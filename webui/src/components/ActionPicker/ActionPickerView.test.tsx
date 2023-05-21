@@ -2,9 +2,10 @@ import { render, screen } from "@testing-library/react";
 import Sinon from "sinon";
 import ActionPickerView from "./ActionPickerView";
 import { GameActionMove, GameEventType } from "../../../../shared/enums";
-import { assert, expect } from "chai";
+import { assert } from "chai";
 import userEvent from "@testing-library/user-event";
 import { GameEvent } from "../../../../shared/GameEvent";
+import { Card } from "../../../../shared/Card";
 
 describe("ActionPickerView component", function () {
   it("should list available actions as buttons", async function () {
@@ -86,6 +87,7 @@ describe("ActionPickerView component", function () {
     const expectedEvent: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
       user: "test1",
+      data: {},
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
     assert.equal(call, JSON.stringify(expectedEvent));
@@ -112,6 +114,34 @@ describe("ActionPickerView component", function () {
       event: GameEventType.CHOOSE_ACTION,
       user: "test1",
       data: { action: GameActionMove.ASSASSINATE, targetPlayer: "test2" },
+    };
+    const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
+    assert.equal(call, JSON.stringify(expectedEvent));
+  });
+
+  it("should trigger sendEvent callback after user selects block action and selects a card to block with", async function () {
+    const mockSendEvent = Sinon.stub();
+    render(
+      <ActionPickerView
+        availableActions={[GameEventType.BLOCK_ACTION]}
+        targetPlayers={[]}
+        username="test1"
+        sendEvent={mockSendEvent}
+      />
+    );
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: GameEventType.BLOCK_ACTION.toString(),
+      })
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Card[Card.CAPTAIN].toString() })
+    );
+
+    const expectedEvent: GameEvent = {
+      event: GameEventType.BLOCK_ACTION,
+      user: "test1",
+      data: { card: Card.CAPTAIN },
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
     assert.equal(call, JSON.stringify(expectedEvent));
