@@ -15,6 +15,9 @@ export function confirmAction(
   if (state.currentAction?.action !== GameActionMove.INCOME)
     messageAllFn(gameEvent);
 
+  if (state.blockAction)
+    throw "cannot confirm an action once someone has blocked it";
+
   switch (state.currentAction?.action) {
     case GameActionMove.ASSASSINATE:
     case GameActionMove.COUP:

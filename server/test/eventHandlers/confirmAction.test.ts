@@ -6,6 +6,7 @@ import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { assert } from "chai";
 import { GameActionMove, GameEventType } from "../../../shared/enums";
 import { GameEvent } from "../../../shared/GameEvent";
+import { Card } from "../../../shared/Card";
 
 describe("confirmAction event handler", function () {
   describe("assassinate/coup", function () {
@@ -69,36 +70,6 @@ describe("confirmAction event handler", function () {
     assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 5);
   });
 
-  it("should not allow confirms by the wrong users", function () {
-    // maybe::: "targeted actions should only be confirmable by target player"
-    //    and "non-targeted actions should only be confirmable by current player"
-  });
-
-  it("should broadcast incoming event to all users", function () {
-    const mockMessageAllFn = Sinon.stub();
-    const state = generateStateWithNPlayers(2);
-    state.currentAction = { action: GameActionMove.TAX };
-    const event: GameEvent = {
-      event: GameEventType.CONFIRM_ACTION,
-      user: "tester-0",
-    };
-    confirmAction(state, event, mockMessageAllFn, Sinon.stub());
-    Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
-  });
-
-  it("should trigger next turn", function () {
-    const stub_nextTurn = Sinon.stub(nextTurn_all, "nextTurn").returns();
-    const state = generateStateWithNPlayers(2);
-    state.currentAction = { action: GameActionMove.TAX };
-    const event: GameEvent = {
-      event: GameEventType.CONFIRM_ACTION,
-      user: "tester-0",
-    };
-    confirmAction(state, event, Sinon.stub(), Sinon.stub());
-    Sinon.assert.calledOnce(stub_nextTurn);
-    stub_nextTurn.restore();
-  });
-
   describe("stealing", function () {
     it("from player with >2 coins: target should lose 2, currentplayer should gain 2", function () {
       const state = generateStateWithNPlayers(2);
@@ -150,5 +121,52 @@ describe("confirmAction event handler", function () {
       assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
       assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 0);
     });
+  });
+
+  it("should not allow confirms by the wrong users", function () {
+    // maybe::: "targeted actions should only be confirmable by target player"
+    //    and "non-targeted actions should only be confirmable by current player"
+  });
+
+  it("should broadcast incoming event to all users", function () {
+    const mockMessageAllFn = Sinon.stub();
+    const state = generateStateWithNPlayers(2);
+    state.currentAction = { action: GameActionMove.TAX };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    confirmAction(state, event, mockMessageAllFn, Sinon.stub());
+    Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
+  });
+
+  it("should trigger next turn", function () {
+    const stub_nextTurn = Sinon.stub(nextTurn_all, "nextTurn").returns();
+    const state = generateStateWithNPlayers(2);
+    state.currentAction = { action: GameActionMove.TAX };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    Sinon.assert.calledOnce(stub_nextTurn);
+    stub_nextTurn.restore();
+  });
+
+  it("should not allow confirming if there is a block in play", function () {
+    const state = generateStateWithNPlayers(2);
+    state.currentAction = { action: GameActionMove.FOREIGN_AID };
+    state.blockAction = {
+      event: GameEventType.BLOCK_ACTION,
+      user: "tester-1",
+      data: { card: Card.DUKE },
+    };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    assert.throws(function () {
+      confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    }, "cannot confirm an action once someone has blocked it");
   });
 });

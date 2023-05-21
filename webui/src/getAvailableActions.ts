@@ -33,7 +33,8 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
   if (
     state.isMyTurn &&
     state.currentAction &&
-    NON_TARGETED_ACTIONS.includes(state.currentAction.action!)
+    NON_TARGETED_ACTIONS.includes(state.currentAction.action!) &&
+    !state.blockAction
   )
     actions.push(GameEventType.CONFIRM_ACTION);
 

@@ -59,12 +59,26 @@ describe("getAvailableActions", function () {
       assert.sameMembers(getAvailableActions(state), [GameActionMove.COUP]);
     });
 
-    it("should allow accepting block or challenging if it's thisPlayer's turn", function () {
+    it("should allow accepting block or challenging", function () {
       const state = generateClientState(2, 0, 0);
       state.blockAction = {
         event: GameEventType.BLOCK_ACTION,
         user: "player-1",
         data: { card: Card.CONTESSA },
+      };
+      assert.sameMembers(getAvailableActions(state), [
+        GameEventType.ACCEPT_BLOCK,
+        GameEventType.CHALLENGE_BLOCK,
+      ]);
+    });
+
+    it("should allow accepting block or challenging", function () {
+      const state = generateClientState(2, 0, 0);
+      state.currentAction = { action: GameActionMove.FOREIGN_AID };
+      state.blockAction = {
+        event: GameEventType.BLOCK_ACTION,
+        user: "player-1",
+        data: { card: Card.DUKE },
       };
       assert.sameMembers(getAvailableActions(state), [
         GameEventType.ACCEPT_BLOCK,
