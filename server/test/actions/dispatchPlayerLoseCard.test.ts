@@ -5,8 +5,8 @@ import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 
 import Sinon from "sinon";
 
-describe("dispatchPlayerLoseCard action handler", function () {
-  it("should set currentSecondaryPlayer to be targetPlayer", function () {
+describe("dispatchPlayerLoseCard action", function () {
+  it("should set playerLosingCard to be targetPlayer", function () {
     const state = generateStateWithNPlayers(3);
 
     dispatchPlayerLoseCard(
@@ -16,13 +16,12 @@ describe("dispatchPlayerLoseCard action handler", function () {
       "sad day you lose a card"
     );
 
-    assert.equal(state.currentSecondaryPlayerId, 1);
-    assert.equal(state.currentSecondaryPlayer.name, "tester-1");
+    assert.equal(state.playerLosingCard, "tester-1");
   });
 
-  it("should not be allowed when there is already a currentSecondaryPlayer", function () {
+  it("should not be allowed when there is already a player losing a card", function () {
     const state = generateStateWithNPlayers(3);
-    state.setCurrentSecondaryPlayerByName("tester-1");
+    state.playerLosingCard = "tester-1";
 
     assert.throws(function () {
       dispatchPlayerLoseCard(
@@ -31,12 +30,12 @@ describe("dispatchPlayerLoseCard action handler", function () {
         Sinon.stub(),
         "sad day you lose a card"
       );
-    });
+    }, "already losing a card");
   });
 
   it("should alert player losing card", function () {
     const state = generateStateWithNPlayers(3);
-    const messagePlayer = Sinon.fake();
+    const messagePlayer = Sinon.stub();
 
     dispatchPlayerLoseCard(
       state,
@@ -50,5 +49,18 @@ describe("dispatchPlayerLoseCard action handler", function () {
       user: "__server",
       data: { reason: "sad day you lose a card" },
     });
+  });
+
+  it("shouldn't allow players that don't exist to lose a card", function () {
+    const state = generateStateWithNPlayers(3);
+
+    assert.throws(function () {
+      dispatchPlayerLoseCard(
+        state,
+        "doesnt_exist",
+        Sinon.stub(),
+        "sad day you lose a card"
+      );
+    }, "could not find player doesnt_exist");
   });
 });

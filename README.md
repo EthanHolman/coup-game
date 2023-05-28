@@ -50,7 +50,7 @@ If someone blocks an action, they must choose which card they are using to block
 
 ### Losing a Card
 
-Players can lose a card when they are Assassinated, Coup'ed, or if they incorrectly challenge another player's action. In any of these events, the player to lose a card becomes the 'current secondary player', and the game awaits them to choose a card to lose. If they only have one card remaining, they must choose that card.
+Players can lose a card when they are Assassinated, Coup'ed, or if they incorrectly challenge another player's action. In any of these events, the game waits them to choose a card to lose. If they only have one card remaining, they must choose that card.
 
 After processing the card loss: if the player has no unrevealed cards left, then they are out of the game, and all players will be notified. If this leaves only one player in the game, all players will be notified of the WINNER!
 
@@ -140,6 +140,7 @@ All events include {event, user, data}. Fields noted below are members of the da
 - CONFIRM_ACTION: {}
 - CHALLENGE_ACTION: {}
 - BLOCK_ACTION: {card}
+- CHALLENGE_BLOCK: {}
 - PLAYER_LOSE_CARD: {card}
 - START_GAME: {}
 
@@ -153,11 +154,13 @@ If the action is "Income", it is processed immediately, since that action is not
 Otherwise, game is now waiting for one of the following events: [confirmAction, challenge, or block]:
 
 - confirmAction: executes `currentEvent` (if action is targeted, targetPlayer must confirm. if not, then currentPlayer confirms)
-- challenge: does `currentEvent.user` have required card for `currentEvent.data.action`? yes → challenger loses card, execute `currentEvent`. no → `currentEvent.user` loses a card, end of turn
+- challenge: does currentPlayer have required card for `currentEvent.data.action`?
+  - yes → challenger loses card; Execute `currentEvent`; currentPlayer discards the required card and draws a new one; end of turn.
+  - no → `currentEvent.user` loses a card; end of turn.
 - block: save this event as `blockEvent`. Game is now waiting for one of the following events: [acceptBlock, challengeBlock]
   - acceptBlock: no-op. next player's turn. (currentPlayer must confirm)
   - challengeBlock: does `blockEvent.user` have `blockEvent.data.card`?
-    - yes → `challengeBlockEvent.user` loses a card. block succeeds. end of turn.
+    - yes → `challengeBlockEvent.user` loses a card; block succeeds; `blockEvent.user` discards required card and draws a new one; end of turn.
     - no → `blockEvent.user` loses card, and execute `currentEvent`
 
 ## Clients losing connection:

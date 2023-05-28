@@ -9,10 +9,13 @@ export function dispatchPlayerLoseCard(
   messagePlayerFn: messagePlayerFn,
   reason: string
 ) {
-  if (state.currentSecondaryPlayerId !== -1)
-    throw `there is already a currentSecondaryPlayer: ${state.currentSecondaryPlayerId}`;
+  if (state.playerLosingCard)
+    throw `${state.playerLosingCard} is already losing a card`;
 
-  state.setCurrentSecondaryPlayerByName(player);
+  if (!state.players.find((x) => x.name === player))
+    throw `could not find player ${player}`;
+
+  state.playerLosingCard = player;
 
   const event = createServerEvent(GameEventType.PLAYER_LOSE_CARD, { reason });
 
