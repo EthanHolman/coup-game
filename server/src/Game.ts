@@ -12,6 +12,8 @@ import { acceptBlock } from "./eventHandlers/acceptBlock";
 import { GameEvent } from "../../shared/GameEvent";
 import { sendCurrentState } from "./actions/sendCurrentState";
 import { blockAction } from "./eventHandlers/blockAction";
+import { challengeBlock } from "./eventHandlers/challengeBlock";
+import { nextTurn } from "./actions/nextTurn";
 
 export const ACTIONS_ALLOWED_WHILE_PAUSED = [
   GameEventType.PLAYER_DISCONNECT,
@@ -91,10 +93,23 @@ export class GameRunner {
         break;
 
       case GameEventType.CHALLENGE_BLOCK:
+        challengeBlock(this._gameState, gameEvent, this._messagePlayer);
         break;
 
       case GameEventType.PLAYER_LOSE_CARD:
         playerLoseCard(this._gameState, gameEvent);
+
+        // In case of 'challenge' card losses, still want to
+        //  process currentAction if it's set
+        // Also: does this belong within playerLoseCard
+        if (this._gameState.currentAction) {
+          confirmAction(
+            this._gameState,
+            gameEvent,
+            this._messageAllFn,
+            this._messagePlayer
+          );
+        } else nextTurn(this._gameState);
         break;
 
       case GameEventType.PLAYER_DISCONNECT:

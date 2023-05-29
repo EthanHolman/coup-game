@@ -26,7 +26,7 @@ export function confirmAction(
 
       dispatchPlayerLoseCard(
         state,
-        state.currentAction!.targetPlayer!,
+        state.currentAction.targetPlayer,
         messagePlayerFn,
         `You were ${
           state.currentAction.action === GameActionMove.ASSASSINATE
