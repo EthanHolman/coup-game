@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { GameState } from "../../src/GameState";
+import { GameState, GameStatus } from "../../src/GameState";
 import { startGame } from "../../src/eventHandlers/startGame";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import Sinon from "sinon";
@@ -31,7 +31,8 @@ describe("startGame", function () {
 
     startGame(state, messageAllFn);
 
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
+    assert.equal(state.status, GameStatus.AWAITING_ACTION);
     assert.equal(state.currentPlayer.name, "tester-0");
   });
 
@@ -41,7 +42,8 @@ describe("startGame", function () {
 
     startGame(state, messageAllFn);
 
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
+    assert.equal(state.status, GameStatus.AWAITING_ACTION);
     assert.equal(state.currentPlayer.name, "tester-0");
   });
 

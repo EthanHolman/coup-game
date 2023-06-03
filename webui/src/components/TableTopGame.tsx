@@ -5,6 +5,7 @@ import PlayerCard from "./PlayerCard";
 import StartGame from "./StartGame";
 import React from "react";
 import ActionPicker from "./ActionPicker/ActionPicker";
+import { GameStatus } from "../../../server/src/GameState";
 
 const useStyles = createUseStyles({
   playerRow: { flex: 1, display: "flex", justifyContent: "space-around" },
@@ -33,10 +34,10 @@ const TableTopGame = ({ state, sendEvent }: TableTopGameProps): JSX.Element => {
         ))}
       </div>
       <div className={classes.tableCenter}>
-        {state.gameStatus === "PRE_GAME" && (
+        {state.status === GameStatus.PRE_GAME && (
           <StartGame state={state} sendEvent={sendEvent} />
         )}
-        {state.gameStatus === "RUNNING" && (
+        {state.status !== GameStatus.PRE_GAME && (
           <div>Deck: {state.deckCount} cards</div>
         )}
       </div>

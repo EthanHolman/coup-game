@@ -1,3 +1,4 @@
+import { GameStatus } from "../../../server/src/GameState";
 import { Card } from "../../../shared/Card";
 import { ClientPlayer } from "../../../shared/ClientGameState";
 import { ClientState } from "../ClientState";
@@ -30,7 +31,8 @@ export function generateClientState(
     thisPlayer: players[perspective],
     isMyTurn: players[currentPlayer].name === players[perspective].name,
     currentPlayerName: players[currentPlayer].name,
-    gameStatus: "RUNNING",
+    isPaused: false,
+    status: GameStatus.AWAITING_ACTION,
     currentAction: undefined,
     blockAction: undefined,
     players,

@@ -6,14 +6,14 @@ import { createServerEvent } from "../../src/utils/createServerEvent";
 import { GameState } from "../../src/GameState";
 
 describe("resumeGame event handler", function () {
-  it("should update gamestatus to RUNNING", function () {
+  it("should update isPaused to false", function () {
     const state = new GameState();
     state.pause();
     const messageAllFn = Sinon.stub();
 
     resumeGame(state, messageAllFn);
 
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
   });
 
   it("should alert all users that game is running again", function () {
@@ -28,7 +28,7 @@ describe("resumeGame event handler", function () {
     });
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
   });
 
   it("should allow custom resume reason", function () {
@@ -43,22 +43,16 @@ describe("resumeGame event handler", function () {
     });
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
   });
 
-  it("should fail if gamestatus is not paused", function () {
+  it("should fail if game is not paused", function () {
     const state = new GameState();
-    state._gameStatus = "PRE_GAME";
+    state.isPaused = false;
     const messageAllFn = Sinon.stub();
 
     assert.throws(function () {
       resumeGame(state, messageAllFn);
-    }, "game cannot be resumed");
-
-    state._gameStatus = "RUNNING";
-
-    assert.throws(function () {
-      resumeGame(state, messageAllFn);
-    }, "game cannot be resumed");
+    }, "not currently paused");
   });
 });

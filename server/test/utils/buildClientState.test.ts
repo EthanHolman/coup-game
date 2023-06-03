@@ -1,10 +1,11 @@
 import { assert } from "chai";
 import { Card } from "../../../shared/Card";
 import { GameActionMove, GameEventType } from "../../../shared/enums";
-import { GameState } from "../../src/GameState";
+import { GameState, GameStatus } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import { buildClientState } from "../../src/utils/buildClientState";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
+import Sinon from "sinon";
 
 describe("util buildClientState", function () {
   it("should map correct currentPlayer", function () {
@@ -15,9 +16,11 @@ describe("util buildClientState", function () {
 
   it("should map correct game status", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
+    assert.equal(state.status, GameStatus.AWAITING_ACTION);
     const result = buildClientState(state, "tester-1");
-    assert.equal(result.gameStatus, "RUNNING");
+    assert.isFalse(result.isPaused);
+    assert.equal(result.status, GameStatus.AWAITING_ACTION);
   });
 
   it("should map deck count correctly", function () {
@@ -48,6 +51,7 @@ describe("util buildClientState", function () {
 
   it("should include blockAction if present in state", function () {
     const state = generateStateWithNPlayers(2);
+    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_BLOCKED);
     const action = {
       event: GameEventType.BLOCK_ACTION,
       user: "tester-1",

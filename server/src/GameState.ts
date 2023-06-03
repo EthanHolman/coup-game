@@ -11,21 +11,24 @@ export enum GameStatus {
 }
 
 export class GameState {
+  private _players: Player[];
+  private _isStarted: boolean;
+
   currentPlayerId: number;
+  deck: Deck;
+  isPaused: boolean;
+
   currentAction?: GameEventData;
   blockAction?: GameEvent;
   playerLosingCard?: string;
-  _gameStatus: "PRE_GAME" | "RUNNING" | "PAUSED";
-  deck: Deck;
-  private _players: Player[];
 
   constructor() {
-    this.currentPlayerId = 0;
-    this.currentAction = undefined;
-    this.blockAction = undefined;
-    this._gameStatus = "PRE_GAME";
-    this.deck = new Deck();
     this._players = [];
+    this._isStarted = false;
+
+    this.currentPlayerId = 0;
+    this.deck = new Deck();
+    this.isPaused = false;
   }
 
   get currentPlayer(): Player {
@@ -39,11 +42,9 @@ export class GameState {
     return this._players;
   }
 
-  get gameStatus() {
-    return this._gameStatus;
-  }
-
   get status(): GameStatus {
+    if (!this._isStarted) return GameStatus.PRE_GAME;
+
     if (this.playerLosingCard) return GameStatus.PLAYER_LOSING_CARD;
 
     if (!this.currentAction && !this.blockAction && !this.playerLosingCard)
@@ -63,7 +64,7 @@ export class GameState {
   }
 
   removePlayer(name: string): void {
-    if (this.gameStatus !== "PRE_GAME")
+    if (this.status !== GameStatus.PRE_GAME)
       throw "players can only be removed during pre-game";
 
     const index = this.players.findIndex((x) => x.name === name);
@@ -73,15 +74,15 @@ export class GameState {
   }
 
   pause() {
-    this._gameStatus = "PAUSED";
+    this.isPaused = true;
   }
 
   resume() {
-    this._gameStatus = "RUNNING";
+    this.isPaused = false;
   }
 
   start() {
-    this._gameStatus = "RUNNING";
+    this._isStarted = true;
   }
 
   clearCurrentAction() {

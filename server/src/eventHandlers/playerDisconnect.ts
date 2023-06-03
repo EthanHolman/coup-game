@@ -1,5 +1,5 @@
 import { pauseGame } from "../actions/pauseGame";
-import { GameState } from "../GameState";
+import { GameState, GameStatus } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 import { GameEvent } from "../../../shared/GameEvent";
 
@@ -17,7 +17,7 @@ export function playerDisconnect(
     newHost.isHost = true;
   }
 
-  if (state.gameStatus === "PRE_GAME") {
+  if (state.status === GameStatus.PRE_GAME) {
     player.cards.forEach((x) => state.deck.discardCard(x.card));
     state.removePlayer(player.name);
     messageAllFn(gameEvent);

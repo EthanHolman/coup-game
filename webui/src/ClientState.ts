@@ -1,3 +1,4 @@
+import { GameStatus } from "../../server/src/GameState";
 import { ClientGameState, ClientPlayer } from "../../shared/ClientGameState";
 
 export type ClientState = ClientGameState & {
@@ -19,7 +20,8 @@ export const getInitialState = (): ClientState => ({
   thisPlayer: undefined as any,
   isMyTurn: false,
   currentPlayerName: "",
-  gameStatus: "" as any,
+  isPaused: false,
+  status: GameStatus.PRE_GAME,
   players: [],
   deckCount: 0,
 });

@@ -11,7 +11,8 @@ export function buildClientState(
 
   return {
     currentPlayerName: state.currentPlayer.name,
-    gameStatus: state.gameStatus,
+    isPaused: state.isPaused,
+    status: state.status,
     currentAction: state.currentAction,
     blockAction: state.blockAction,
     players: state.players.map((player) => ({

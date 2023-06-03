@@ -1,6 +1,6 @@
 import { GameEventType } from "../../../shared/enums";
 import { createServerEvent } from "../utils/createServerEvent";
-import { GameState } from "../GameState";
+import { GameState, GameStatus } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 
 export function pauseGame(
@@ -8,7 +8,7 @@ export function pauseGame(
   messageAllFn: messageAllFn,
   reason: string = "game paused"
 ) {
-  if (state.gameStatus === "PRE_GAME")
+  if (state.status === GameStatus.PRE_GAME)
     throw "cannot pause game during pre-game";
 
   const event = createServerEvent(GameEventType.PAUSE_GAME, { reason });

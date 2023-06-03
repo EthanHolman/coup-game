@@ -10,13 +10,19 @@ import {
 } from "../../shared/enums";
 import { GameEventType } from "../../shared/enums";
 import { Card } from "../../shared/Card";
+import { GameStatus } from "../../server/src/GameState";
 
 describe("getAvailableActions", function () {
   it("shouldn't allow any actions if the game isn't running", function () {
     const state = generateClientState(2, 0, 0);
-    state.gameStatus = "PAUSED";
+    state.isPaused = true;
     assert.isEmpty(getAvailableActions(state));
-    state.gameStatus = "PRE_GAME";
+  });
+
+  it("shouldn't allow any actions during pre-game", function () {
+    const state = generateClientState(2, 0, 0);
+    state.status = GameStatus.PRE_GAME;
+    assert.equal(state.status, GameStatus.PRE_GAME);
     assert.isEmpty(getAvailableActions(state));
   });
 

@@ -6,14 +6,14 @@ import { createServerEvent } from "../../src/utils/createServerEvent";
 import { GameState } from "../../src/GameState";
 
 describe("pauseGame", function () {
-  it("should update gamestatus to paused", function () {
+  it("should update isPaused to true", function () {
     const state = new GameState();
     state.start();
     const messageAllFn = Sinon.stub();
 
     pauseGame(state, messageAllFn);
 
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
   });
 
   it("should alert all users that game is paused with default reason", function () {
@@ -28,7 +28,7 @@ describe("pauseGame", function () {
     });
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
   });
 
   it("should allow pausing game with custom reason", function () {
@@ -43,7 +43,7 @@ describe("pauseGame", function () {
     });
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
   });
 
   it("should fail if game is not yet started", function () {

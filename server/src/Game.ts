@@ -40,7 +40,7 @@ export class GameRunner {
 
   onEvent(gameEvent: GameEvent) {
     if (
-      this._gameState.gameStatus === "PAUSED" &&
+      this._gameState.isPaused &&
       !ACTIONS_ALLOWED_WHILE_PAUSED.includes(gameEvent.event)
     ) {
       throw "no actions are allowed until the game is unpaused!";

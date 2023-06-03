@@ -1,6 +1,6 @@
 import { resumeGame } from "../actions/resumeGame";
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameState } from "../GameState";
+import { GameState, GameStatus } from "../GameState";
 import { Player } from "../Player";
 import { messageAllFn } from "../messageFnTypes";
 
@@ -9,7 +9,7 @@ export function playerJoinGame(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ) {
-  if (state.gameStatus !== "PRE_GAME") {
+  if (state.status !== GameStatus.PRE_GAME) {
     // allow disconnected players to reconnect
     const player = state.players.find(
       (x) => x.name === gameEvent.user && !x.isConnected

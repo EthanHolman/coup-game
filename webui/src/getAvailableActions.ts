@@ -1,3 +1,4 @@
+import { GameStatus } from "../../server/src/GameState";
 import {
   BLOCKABLE_ACTIONS,
   CHALLENGEABLE_ACTIONS,
@@ -12,7 +13,7 @@ export type ClientGameAction = GameEventType | GameActionMove;
 export function getAvailableActions(state: ClientState): ClientGameAction[] {
   let actions: ClientGameAction[] = [];
 
-  if (state.gameStatus !== "RUNNING") return [];
+  if (state.isPaused || state.status === GameStatus.PRE_GAME) return [];
 
   if (state.isMyTurn && !state.currentAction && !state.blockAction) {
     if (state.thisPlayer.coins >= 10) {

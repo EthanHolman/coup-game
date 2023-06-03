@@ -109,12 +109,13 @@ describe("playerJoinGame event handler", function () {
 
   it("should allow players to rejoin if disconnected", function () {
     const state = new GameState();
+    state.start();
     state.pause();
     const testPlayer = new Player("tommy tester", [Card.DUKE, Card.DUKE]);
     testPlayer.isConnected = false;
     state.addPlayer(testPlayer);
 
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
     assert.equal(state.players.length, 1);
 
     const playerJoinEvent: GameEvent = {
@@ -124,20 +125,21 @@ describe("playerJoinGame event handler", function () {
 
     playerJoinGame(state, playerJoinEvent, Sinon.stub());
 
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
     assert.equal(state.players.length, 1);
     assert.isTrue(state.players[0].isConnected);
   });
 
   it("rejoined players should still have their cards", function () {
     const state = new GameState();
+    state.start();
     state.pause();
     const testPlayer = new Player("tommy tester", [Card.DUKE, Card.CONTESSA]);
     testPlayer.revealCard(Card.DUKE);
     testPlayer.isConnected = false;
     state.addPlayer(testPlayer);
 
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
     assert.equal(state.players.length, 1);
 
     const playerJoinEvent: GameEvent = {
@@ -155,6 +157,7 @@ describe("playerJoinGame event handler", function () {
 
   it("should not restart the game if only one of two disconnected players rejoin", function () {
     const state = new GameState();
+    state.start();
     state.pause();
 
     const testPlayer1 = new Player("lois", [Card.DUKE, Card.DUKE]);
@@ -165,7 +168,7 @@ describe("playerJoinGame event handler", function () {
     testPlayer2.isConnected = false;
     state.addPlayer(testPlayer2);
 
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
     assert.equal(state.players.length, 2);
 
     const playerJoinEvent: GameEvent = {
@@ -175,7 +178,7 @@ describe("playerJoinGame event handler", function () {
 
     playerJoinGame(state, playerJoinEvent, Sinon.stub());
 
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
     assert.equal(state.players.length, 2);
     assert.isTrue(state.players.find((x) => x.name === "lois")!.isConnected);
     assert.isFalse(state.players.find((x) => x.name === "peter")!.isConnected);
@@ -183,6 +186,7 @@ describe("playerJoinGame event handler", function () {
 
   it("should restart the game when all disconnected players rejoin", function () {
     const state = new GameState();
+    state.start();
     state.pause();
 
     const testPlayer1 = new Player("lois", [Card.DUKE, Card.DUKE]);
@@ -193,7 +197,7 @@ describe("playerJoinGame event handler", function () {
     testPlayer2.isConnected = false;
     state.addPlayer(testPlayer2);
 
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
     assert.equal(state.players.length, 2);
 
     const playerJoinEvent: GameEvent = {
@@ -203,13 +207,13 @@ describe("playerJoinGame event handler", function () {
 
     playerJoinGame(state, playerJoinEvent, Sinon.stub());
 
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
     assert.isTrue(state.players.find((x) => x.name === "lois")!.isConnected);
     assert.isFalse(state.players.find((x) => x.name === "peter")!.isConnected);
 
     playerJoinGame(state, { ...playerJoinEvent, user: "peter" }, Sinon.stub());
 
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
     assert.equal(state.players.length, 2);
     assert.isTrue(state.players.find((x) => x.name === "lois")?.isConnected);
     assert.isTrue(state.players.find((x) => x.name === "peter")?.isConnected);

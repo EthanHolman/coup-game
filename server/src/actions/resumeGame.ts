@@ -8,7 +8,7 @@ export function resumeGame(
   messageAllFn: messageAllFn,
   reason: string = "game resumed"
 ) {
-  if (state.gameStatus !== "PAUSED")
+  if (!state.isPaused)
     throw "game cannot be resumed if it is not currently paused";
 
   const event = createServerEvent(GameEventType.RESUME_GAME, { reason });

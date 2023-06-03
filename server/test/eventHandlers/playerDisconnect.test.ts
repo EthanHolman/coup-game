@@ -5,7 +5,7 @@ import { Deck } from "../../src/Deck";
 import { Card } from "../../../shared/Card";
 import { playerDisconnect } from "../../src/eventHandlers/playerDisconnect";
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameState } from "../../src/GameState";
+import { GameState, GameStatus } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 
@@ -24,12 +24,12 @@ describe("playerDisconnect event handler", function () {
     playerDisconnect(state, event, Sinon.stub());
 
     assert.isFalse(state.players[0].isConnected);
-    assert.equal(state.gameStatus, "PAUSED");
+    assert.isTrue(state.isPaused);
   });
 
   it("should remove player from state if player disconnects during pre-game", function () {
     const state = new GameState();
-    assert.equal(state.gameStatus, "PRE_GAME");
+    assert.equal(state.status, GameStatus.PRE_GAME);
     const player = new Player("elon musk", [Card.AMBASSADOR, Card.DUKE]);
     state.addPlayer(player);
 
@@ -49,7 +49,7 @@ describe("playerDisconnect event handler", function () {
   it("should discard player cards if this happens pre-game", function () {
     const state = new GameState();
     state.deck = new Deck([Card.AMBASSADOR, Card.ASSASSIN, Card.CONTESSA]);
-    assert.equal(state.gameStatus, "PRE_GAME");
+    assert.equal(state.status, GameStatus.PRE_GAME);
 
     const player = new Player("elon musk", state.deck.drawCard(2));
     state.addPlayer(player);
@@ -73,7 +73,7 @@ describe("playerDisconnect event handler", function () {
 
   it("should alert all other players in pre-game of player disconnecting", function () {
     const state = new GameState();
-    assert.equal(state.gameStatus, "PRE_GAME");
+    assert.equal(state.status, GameStatus.PRE_GAME);
 
     const player = new Player("elon musk", state.deck.drawCard(2));
     state.addPlayer(player);
@@ -93,7 +93,7 @@ describe("playerDisconnect event handler", function () {
   it("should make someone else host if host disconnects", function () {
     const state = generateStateWithNPlayers(2);
     assert.isTrue(state.players[0].isHost);
-    assert.equal(state.gameStatus, "RUNNING");
+    assert.isFalse(state.isPaused);
 
     playerDisconnect(
       state,

@@ -1,3 +1,4 @@
+import { GameStatus } from "../server/src/GameState";
 import { Card } from "./Card";
 import { GameEvent, GameEventData } from "./GameEvent";
 
@@ -11,7 +12,8 @@ export type ClientPlayer = {
 
 export type ClientGameState = {
   currentPlayerName: string;
-  gameStatus: "PRE_GAME" | "RUNNING" | "PAUSED";
+  isPaused: boolean;
+  status: GameStatus;
   currentAction?: GameEventData;
   blockAction?: GameEvent;
   players: ClientPlayer[];
