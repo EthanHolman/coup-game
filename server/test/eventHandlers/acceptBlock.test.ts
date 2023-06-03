@@ -6,6 +6,7 @@ import { acceptBlock } from "../../src/eventHandlers/acceptBlock";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { assert } from "chai";
 import * as nextTurn_all from "../../src/actions/nextTurn";
+import { GameStatus } from "../../src/GameState";
 
 describe("acceptBlock event handler", function () {
   it("should forward block acceptance event to all users", function () {
@@ -69,18 +70,15 @@ describe("acceptBlock event handler", function () {
     }, "Only current player can accept");
   });
 
-  it("should not allow accepting a block that doesn't exist", function () {
+  it("should not allow accepting a block when GameStatus is not ACTION_BLOCKED", function () {
     const state = generateStateWithNPlayers(2);
-    state.currentAction = {
-      action: GameActionMove.ASSASSINATE,
-      targetPlayer: "tester-1",
-    };
+    Sinon.replaceGetter(state, "status", () => GameStatus.AWAITING_ACTION);
     const event: GameEvent = {
       event: GameEventType.ACCEPT_BLOCK,
       user: "tester-0",
     };
     assert.throws(function () {
       acceptBlock(state, event, Sinon.stub());
-    }, "isn't a block action currently");
+    }, "accept block is only valid when status = ACTION_BLOCKED");
   });
 });

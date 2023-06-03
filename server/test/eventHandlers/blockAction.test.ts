@@ -8,6 +8,7 @@ import { ALL_CARDS } from "../../../shared/Card";
 import { ALL_GAME_ACTION_MOVES } from "../../../shared/enums";
 import { BLOCKABLE_ACTIONS } from "../../../shared/enums";
 import Sinon from "sinon";
+import { GameStatus } from "../../src/GameState";
 
 describe("blockAction event handler", function () {
   it("should not allow blocking user's own action", function () {
@@ -170,18 +171,9 @@ describe("blockAction event handler", function () {
     });
   });
 
-  it("shouldn't allow blocking if there's already a blockAction in play", function () {
+  it("shouldn't allow blocking if GameStatus is not ACTION_SELECTED", function () {
     const state = generateStateWithNPlayers(3);
-    state.currentAction = {
-      action: GameActionMove.STEAL,
-      targetPlayer: "tester-1",
-    };
-    const blockActionData = {
-      event: GameEventType.BLOCK_ACTION,
-      user: "tester-1",
-      data: { card: Card.CAPTAIN },
-    };
-    state.blockAction = blockActionData;
+    Sinon.replaceGetter(state, "status", () => GameStatus.AWAITING_ACTION);
     const event: GameEvent = {
       event: GameEventType.BLOCK_ACTION,
       user: "tester-2",
@@ -189,21 +181,7 @@ describe("blockAction event handler", function () {
     };
     assert.throws(function () {
       blockAction(state, event, Sinon.stub());
-    }, "There is already a block action in play");
-    assert.deepEqual(state.blockAction, blockActionData);
-  });
-
-  it("shouldn't allow blocking if there isn't a currentAction in play", function () {
-    const state = generateStateWithNPlayers(3);
-    const event: GameEvent = {
-      event: GameEventType.BLOCK_ACTION,
-      user: "tester-1",
-      data: { card: Card.CAPTAIN },
-    };
-    assert.throws(function () {
-      blockAction(state, event, Sinon.stub());
-    }, "no current action in play yet");
-    assert.isUndefined(state.blockAction);
+    }, "blockAction only valid when status = ACTION_SELECTED");
   });
 
   it("should throw error if missing card to block with", function () {

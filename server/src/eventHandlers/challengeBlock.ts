@@ -1,5 +1,5 @@
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameState } from "../GameState";
+import { GameState, GameStatus } from "../GameState";
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
 import { givePlayerNewCard } from "../actions/givePlayerNewCard";
 import { messagePlayerFn } from "../messageFnTypes";
@@ -10,9 +10,10 @@ export function challengeBlock(
   messagePlayerFn: messagePlayerFn
 ) {
   // validations
-  if (!state.blockAction) throw `there is currently no block action in play`;
-  if (state.playerLosingCard) throw `action not valid at this time`;
-  if (state.blockAction.user === gameEvent.user)
+  if (state.status !== GameStatus.ACTION_BLOCKED)
+    throw "challengeBlock only valid when status = ACTION_BLOCKED";
+
+  if (state.blockAction!.user === gameEvent.user)
     throw "you cannot challenge your own block";
 
   const blockingPlayer = state.players.find(
@@ -20,7 +21,7 @@ export function challengeBlock(
   );
   if (!blockingPlayer) throw `couldn't find player being blocked`;
 
-  const card = state.blockAction.data?.card;
+  const card = state.blockAction!.data?.card;
   if (!card) throw "missing card";
 
   if (blockingPlayer.hasCard(card)) {
@@ -28,7 +29,7 @@ export function challengeBlock(
       state,
       gameEvent.user,
       messagePlayerFn,
-      `${state.blockAction.user} has a ${card} card. You failed the challenge.`
+      `${state.blockAction!.user} has a ${card} card. You failed the challenge.`
     );
 
     // block succeeds, so remove currentAction
@@ -39,7 +40,7 @@ export function challengeBlock(
   } else {
     dispatchPlayerLoseCard(
       state,
-      state.blockAction.user,
+      state.blockAction!.user,
       messagePlayerFn,
       "You were caught bluffing!"
     );

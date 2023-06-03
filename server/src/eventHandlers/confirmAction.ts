@@ -1,6 +1,6 @@
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
 import { GameActionMove } from "../../../shared/enums";
-import { GameState } from "../GameState";
+import { GameState, GameStatus } from "../GameState";
 import { messageAllFn, messagePlayerFn } from "../messageFnTypes";
 import { nextTurn } from "../actions/nextTurn";
 import { GameEvent } from "../../../shared/GameEvent";
@@ -11,12 +11,12 @@ export function confirmAction(
   messageAllFn: messageAllFn,
   messagePlayerFn: messagePlayerFn
 ) {
+  if (state.status !== GameStatus.ACTION_SELECTED)
+    throw "confirmAction only valid when status = ACTION_SELECTED";
+
   // income is auto-confirmed, so we don't want to double notify the users
   if (state.currentAction?.action !== GameActionMove.INCOME)
     messageAllFn(gameEvent);
-
-  if (state.blockAction)
-    throw "cannot confirm an action once someone has blocked it";
 
   switch (state.currentAction?.action) {
     case GameActionMove.ASSASSINATE:

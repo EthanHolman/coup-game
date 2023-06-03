@@ -2,6 +2,14 @@ import { Deck } from "./Deck";
 import { Player } from "./Player";
 import { GameEvent, GameEventData } from "../../shared/GameEvent";
 
+export enum GameStatus {
+  PRE_GAME,
+  AWAITING_ACTION,
+  ACTION_SELECTED,
+  ACTION_BLOCKED,
+  PLAYER_LOSING_CARD,
+}
+
 export class GameState {
   currentPlayerId: number;
   currentAction?: GameEventData;
@@ -33,6 +41,21 @@ export class GameState {
 
   get gameStatus() {
     return this._gameStatus;
+  }
+
+  get status(): GameStatus {
+    if (this.playerLosingCard) return GameStatus.PLAYER_LOSING_CARD;
+
+    if (!this.currentAction && !this.blockAction && !this.playerLosingCard)
+      return GameStatus.AWAITING_ACTION;
+
+    if (this.currentAction && !this.blockAction && !this.playerLosingCard)
+      return GameStatus.ACTION_SELECTED;
+
+    if (this.currentAction && this.blockAction && !this.playerLosingCard)
+      return GameStatus.ACTION_BLOCKED;
+
+    throw "unable to determine valid GameStatus";
   }
 
   addPlayer(player: Player): void {

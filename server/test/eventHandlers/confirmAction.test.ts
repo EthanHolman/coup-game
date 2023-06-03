@@ -7,6 +7,7 @@ import { assert } from "chai";
 import { GameActionMove, GameEventType } from "../../../shared/enums";
 import { GameEvent } from "../../../shared/GameEvent";
 import { Card } from "../../../shared/Card";
+import { GameStatus } from "../../src/GameState";
 
 describe("confirmAction event handler", function () {
   describe("assassinate/coup", function () {
@@ -153,20 +154,15 @@ describe("confirmAction event handler", function () {
     stub_nextTurn.restore();
   });
 
-  it("should not allow confirming if there is a block in play", function () {
+  it("should not allow confirming if GameStatus is not ACTION_SELECTED", function () {
     const state = generateStateWithNPlayers(2);
-    state.currentAction = { action: GameActionMove.FOREIGN_AID };
-    state.blockAction = {
-      event: GameEventType.BLOCK_ACTION,
-      user: "tester-1",
-      data: { card: Card.DUKE },
-    };
+    Sinon.replaceGetter(state, "status", () => GameStatus.AWAITING_ACTION);
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
     assert.throws(function () {
       confirmAction(state, event, Sinon.stub(), Sinon.stub());
-    }, "cannot confirm an action once someone has blocked it");
+    }, "confirmAction only valid when status = ACTION_SELECTED");
   });
 });

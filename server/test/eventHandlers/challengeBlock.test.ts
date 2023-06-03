@@ -5,7 +5,7 @@ import { challengeBlock } from "../../src/eventHandlers/challengeBlock";
 import { GameEvent } from "../../../shared/GameEvent";
 import Sinon from "sinon";
 import { Card } from "../../../shared/Card";
-import { GameState } from "../../src/GameState";
+import { GameState, GameStatus } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import * as module_dispatchPlayerLoseCard from "../../src/actions/dispatchPlayerLoseCard";
 import * as module_givePlayerNewCard from "../../src/actions/givePlayerNewCard";
@@ -30,40 +30,16 @@ describe("challengeBlock event handler", function () {
     mock_givePlayerNewCard.restore();
   });
 
-  it("shouldn't allow event if there isn't a block action in play", function () {
+  it("shouldn't allow event if GameStatus is not ACTION_BLOCKED", function () {
     const state = generateStateWithNPlayers(2);
-    state.currentAction = {
-      action: GameActionMove.ASSASSINATE,
-      targetPlayer: "tester-1",
-    };
+    Sinon.replaceGetter(state, "status", () => GameStatus.AWAITING_ACTION);
     const event: GameEvent = {
       event: GameEventType.CHALLENGE_BLOCK,
       user: "tester-1",
     };
     assert.throws(function () {
       challengeBlock(state, event, Sinon.stub());
-    }, "no block action in play");
-  });
-
-  it("shouldn't allow challenging while player is losing card", function () {
-    const state = generateStateWithNPlayers(3);
-    state.currentAction = {
-      action: GameActionMove.ASSASSINATE,
-      targetPlayer: "tester-1",
-    };
-    state.blockAction = {
-      event: GameEventType.BLOCK_ACTION,
-      user: "tester-1",
-      data: { card: Card.CONTESSA },
-    };
-    state.playerLosingCard = "tester-1";
-    const event: GameEvent = {
-      event: GameEventType.CHALLENGE_BLOCK,
-      user: "tester-0",
-    };
-    assert.throws(function () {
-      challengeBlock(state, event, Sinon.stub());
-    }, "action not valid at this time");
+    }, "challengeBlock only valid when status = ACTION_BLOCKED");
   });
 
   it("shouldn't allow blocker to challenge their own block", function () {

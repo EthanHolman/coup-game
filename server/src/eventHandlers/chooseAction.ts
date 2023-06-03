@@ -2,7 +2,7 @@ import {
   ALL_PLAYABLE_GAME_ACTION_MOVES,
   GameActionMove,
 } from "../../../shared/enums";
-import { GameState } from "../GameState";
+import { GameState, GameStatus } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 import { GameEvent } from "../../../shared/GameEvent";
 
@@ -11,10 +11,8 @@ export function chooseAction(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ) {
-  if (state.gameStatus !== "RUNNING")
-    throw `cannot choose an action when the game is not running`;
-
-  if (state.currentAction) throw "there is already an action in play";
+  if (state.status !== GameStatus.AWAITING_ACTION)
+    throw "chooseAction only valid when status = AWAITING_ACTION";
 
   if (gameEvent.user !== state.currentPlayer.name)
     throw `it is not currently ${gameEvent.user}'s turn`;

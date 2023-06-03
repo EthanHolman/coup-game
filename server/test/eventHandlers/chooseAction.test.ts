@@ -2,7 +2,7 @@ import Sinon from "sinon";
 import { chooseAction } from "../../src/eventHandlers/chooseAction";
 import { assert } from "chai";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
-import { GameState } from "../../src/GameState";
+import { GameState, GameStatus } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import { Card } from "../../../shared/Card";
 import {
@@ -37,9 +37,9 @@ describe("chooseAction event handler", function () {
     Sinon.assert.calledOnceWithExactly(messageAllFn, event);
   });
 
-  it("shouldn't allow choosing an action if one has been chosen already", function () {
+  it("shouldn't allow choosing an action if GameStatus is not AWAITING_ACTION", function () {
     const state = generateStateWithNPlayers(2);
-    state.currentAction = { action: GameActionMove.INCOME };
+    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
     const event: GameEvent = {
       event: GameEventType.CHOOSE_ACTION,
       user: "tester-0",
@@ -47,7 +47,7 @@ describe("chooseAction event handler", function () {
     };
     assert.throws(function () {
       chooseAction(state, event, Sinon.stub());
-    }, "already an action");
+    }, "chooseAction only valid when status = AWAITING_ACTION");
   });
 
   it("should not allow proposing invalid actions", function () {
@@ -106,23 +106,6 @@ describe("chooseAction event handler", function () {
       );
     }, "not currently tester-1's turn");
     assert.isUndefined(state.currentAction);
-  });
-
-  it("should not allow actions if the game is not running", function () {
-    const state = new GameState();
-    assert.equal(state.gameStatus, "PRE_GAME");
-    const event = {
-      event: GameEventType.CHOOSE_ACTION,
-      user: "tester-0",
-      data: { action: GameActionMove.COUP, targetPlayer: "tester-1" },
-    };
-    assert.throws(function () {
-      chooseAction(state, event, Sinon.stub());
-    }, "cannot choose an action when the game is not running");
-    state.pause();
-    assert.throws(function () {
-      chooseAction(state, event, Sinon.stub());
-    }, "cannot choose an action when the game is not running");
   });
 
   it("should not allow actions other than COUP if player has 10 coins", function () {
