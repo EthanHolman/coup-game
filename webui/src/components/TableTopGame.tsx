@@ -5,7 +5,7 @@ import PlayerCard from "./PlayerCard";
 import StartGame from "./StartGame";
 import React from "react";
 import ActionPicker from "./ActionPicker/ActionPicker";
-import { GameStatus } from "../../../server/src/GameState";
+import { GameStatus } from "../../../shared/enums";
 
 const useStyles = createUseStyles({
   playerRow: { flex: 1, display: "flex", justifyContent: "space-around" },

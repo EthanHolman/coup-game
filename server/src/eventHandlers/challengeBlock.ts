@@ -1,5 +1,6 @@
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameState, GameStatus } from "../GameState";
+import { GameStatus } from "../../../shared/enums";
+import { GameState } from "../GameState";
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
 import { givePlayerNewCard } from "../actions/givePlayerNewCard";
 import { messagePlayerFn } from "../messageFnTypes";

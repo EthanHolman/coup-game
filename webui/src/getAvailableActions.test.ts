@@ -6,11 +6,11 @@ import {
   BLOCKABLE_ACTIONS,
   CHALLENGEABLE_ACTIONS,
   GameActionMove,
+  GameStatus,
   NON_TARGETED_ACTIONS,
 } from "../../shared/enums";
 import { GameEventType } from "../../shared/enums";
 import { Card } from "../../shared/Card";
-import { GameStatus } from "../../server/src/GameState";
 
 describe("getAvailableActions", function () {
   it("shouldn't allow any actions if the game isn't running", function () {

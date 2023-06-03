@@ -1,14 +1,17 @@
 import { assert } from "chai";
 import { Card } from "../../../shared/Card";
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameActionMove, GameEventType } from "../../../shared/enums";
+import {
+  GameActionMove,
+  GameEventType,
+  GameStatus,
+} from "../../../shared/enums";
 import { blockAction } from "../../src/eventHandlers/blockAction";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { ALL_CARDS } from "../../../shared/Card";
 import { ALL_GAME_ACTION_MOVES } from "../../../shared/enums";
 import { BLOCKABLE_ACTIONS } from "../../../shared/enums";
 import Sinon from "sinon";
-import { GameStatus } from "../../src/GameState";
 
 describe("blockAction event handler", function () {
   it("should not allow blocking user's own action", function () {

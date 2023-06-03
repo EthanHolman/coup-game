@@ -1,6 +1,6 @@
-import { GameStatus } from "../../../server/src/GameState";
 import { Card } from "../../../shared/Card";
 import { ClientPlayer } from "../../../shared/ClientGameState";
+import { GameStatus } from "../../../shared/enums";
 import { ClientState } from "../ClientState";
 
 export function generateClientState(

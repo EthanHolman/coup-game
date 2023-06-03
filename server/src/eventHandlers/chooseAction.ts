@@ -1,8 +1,9 @@
 import {
   ALL_PLAYABLE_GAME_ACTION_MOVES,
   GameActionMove,
+  GameStatus,
 } from "../../../shared/enums";
-import { GameState, GameStatus } from "../GameState";
+import { GameState } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 import { GameEvent } from "../../../shared/GameEvent";
 

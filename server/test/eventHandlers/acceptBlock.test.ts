@@ -1,12 +1,15 @@
 import Sinon from "sinon";
 import { Card } from "../../../shared/Card";
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameActionMove, GameEventType } from "../../../shared/enums";
+import {
+  GameActionMove,
+  GameEventType,
+  GameStatus,
+} from "../../../shared/enums";
 import { acceptBlock } from "../../src/eventHandlers/acceptBlock";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { assert } from "chai";
 import * as nextTurn_all from "../../src/actions/nextTurn";
-import { GameStatus } from "../../src/GameState";
 
 describe("acceptBlock event handler", function () {
   it("should forward block acceptance event to all users", function () {

@@ -1,8 +1,9 @@
 import { resumeGame } from "../actions/resumeGame";
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameState, GameStatus } from "../GameState";
+import { GameState } from "../GameState";
 import { Player } from "../Player";
 import { messageAllFn } from "../messageFnTypes";
+import { GameStatus } from "../../../shared/enums";
 
 export function playerJoinGame(
   state: GameState,

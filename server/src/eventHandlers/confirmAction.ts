@@ -1,6 +1,6 @@
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
-import { GameActionMove } from "../../../shared/enums";
-import { GameState, GameStatus } from "../GameState";
+import { GameActionMove, GameStatus } from "../../../shared/enums";
+import { GameState } from "../GameState";
 import { messageAllFn, messagePlayerFn } from "../messageFnTypes";
 import { nextTurn } from "../actions/nextTurn";
 import { GameEvent } from "../../../shared/GameEvent";

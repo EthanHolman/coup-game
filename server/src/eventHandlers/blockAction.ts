@@ -1,7 +1,11 @@
 import { Card } from "../../../shared/Card";
 import { GameEvent } from "../../../shared/GameEvent";
-import { BLOCKABLE_ACTIONS, GameActionMove } from "../../../shared/enums";
-import { GameState, GameStatus } from "../GameState";
+import {
+  BLOCKABLE_ACTIONS,
+  GameActionMove,
+  GameStatus,
+} from "../../../shared/enums";
+import { GameState } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 
 export function blockAction(

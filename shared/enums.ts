@@ -1,5 +1,13 @@
 import { getStrEnumVals } from "./getEnumVals";
 
+export enum GameStatus {
+  PRE_GAME,
+  AWAITING_ACTION,
+  ACTION_SELECTED,
+  ACTION_BLOCKED,
+  PLAYER_LOSING_CARD,
+}
+
 export enum GameEventType {
   PLAYER_JOIN_GAME = "PLAYER_JOIN_GAME",
   START_GAME = "START_GAME",

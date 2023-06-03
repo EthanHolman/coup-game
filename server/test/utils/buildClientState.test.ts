@@ -1,7 +1,11 @@
 import { assert } from "chai";
 import { Card } from "../../../shared/Card";
-import { GameActionMove, GameEventType } from "../../../shared/enums";
-import { GameState, GameStatus } from "../../src/GameState";
+import {
+  GameActionMove,
+  GameEventType,
+  GameStatus,
+} from "../../../shared/enums";
+import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import { buildClientState } from "../../src/utils/buildClientState";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";

@@ -1,14 +1,7 @@
 import { Deck } from "./Deck";
 import { Player } from "./Player";
 import { GameEvent, GameEventData } from "../../shared/GameEvent";
-
-export enum GameStatus {
-  PRE_GAME,
-  AWAITING_ACTION,
-  ACTION_SELECTED,
-  ACTION_BLOCKED,
-  PLAYER_LOSING_CARD,
-}
+import { GameStatus } from "../../shared/enums";
 
 export class GameState {
   private _players: Player[];

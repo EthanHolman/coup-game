@@ -1,5 +1,5 @@
-import { GameStatus } from "../../server/src/GameState";
 import { ClientGameState, ClientPlayer } from "../../shared/ClientGameState";
+import { GameStatus } from "../../shared/enums";
 
 export type ClientState = ClientGameState & {
   username: string;

@@ -1,7 +1,8 @@
-import { GameState, GameStatus } from "../GameState";
+import { GameState } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 import { nextTurn } from "../actions/nextTurn";
 import { GameEvent } from "../../../shared/GameEvent";
+import { GameStatus } from "../../../shared/enums";
 
 export function acceptBlock(
   state: GameState,

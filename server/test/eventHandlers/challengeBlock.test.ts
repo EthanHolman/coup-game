@@ -1,11 +1,15 @@
 import { assert } from "chai";
-import { GameActionMove, GameEventType } from "../../../shared/enums";
+import {
+  GameActionMove,
+  GameEventType,
+  GameStatus,
+} from "../../../shared/enums";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { challengeBlock } from "../../src/eventHandlers/challengeBlock";
 import { GameEvent } from "../../../shared/GameEvent";
 import Sinon from "sinon";
 import { Card } from "../../../shared/Card";
-import { GameState, GameStatus } from "../../src/GameState";
+import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import * as module_dispatchPlayerLoseCard from "../../src/actions/dispatchPlayerLoseCard";
 import * as module_givePlayerNewCard from "../../src/actions/givePlayerNewCard";

@@ -1,6 +1,6 @@
-import { GameStatus } from "../server/src/GameState";
 import { Card } from "./Card";
 import { GameEvent, GameEventData } from "./GameEvent";
+import { GameStatus } from "./enums";
 
 export type ClientPlayer = {
   name: string;

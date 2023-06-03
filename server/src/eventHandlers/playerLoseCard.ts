@@ -1,5 +1,6 @@
-import { GameState, GameStatus } from "../GameState";
+import { GameState } from "../GameState";
 import { GameEvent } from "../../../shared/GameEvent";
+import { GameStatus } from "../../../shared/enums";
 
 export function playerLoseCard(state: GameState, gameEvent: GameEvent) {
   if (state.status !== GameStatus.PLAYER_LOSING_CARD)

@@ -1,6 +1,6 @@
-import { GameEventType } from "../../../shared/enums";
+import { GameEventType, GameStatus } from "../../../shared/enums";
 import { createServerEvent } from "../utils/createServerEvent";
-import { GameState, GameStatus } from "../GameState";
+import { GameState } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 
 export function pauseGame(

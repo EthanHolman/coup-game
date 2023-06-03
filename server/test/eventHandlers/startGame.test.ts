@@ -1,9 +1,9 @@
 import { assert } from "chai";
-import { GameState, GameStatus } from "../../src/GameState";
+import { GameState } from "../../src/GameState";
 import { startGame } from "../../src/eventHandlers/startGame";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import Sinon from "sinon";
-import { GameEventType } from "../../../shared/enums";
+import { GameEventType, GameStatus } from "../../../shared/enums";
 import { SERVER_USERNAME } from "../../src/globals";
 
 describe("startGame", function () {

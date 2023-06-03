@@ -4,10 +4,12 @@ import * as dispatchPlayerLoseCard_all from "../../src/actions/dispatchPlayerLos
 import * as nextTurn_all from "../../src/actions/nextTurn";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { assert } from "chai";
-import { GameActionMove, GameEventType } from "../../../shared/enums";
+import {
+  GameActionMove,
+  GameEventType,
+  GameStatus,
+} from "../../../shared/enums";
 import { GameEvent } from "../../../shared/GameEvent";
-import { Card } from "../../../shared/Card";
-import { GameStatus } from "../../src/GameState";
 
 describe("confirmAction event handler", function () {
   describe("assassinate/coup", function () {

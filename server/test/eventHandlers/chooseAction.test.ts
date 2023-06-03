@@ -2,7 +2,7 @@ import Sinon from "sinon";
 import { chooseAction } from "../../src/eventHandlers/chooseAction";
 import { assert } from "chai";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
-import { GameState, GameStatus } from "../../src/GameState";
+import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import { Card } from "../../../shared/Card";
 import {
@@ -10,6 +10,7 @@ import {
   GameActionMove,
   ALL_PLAYABLE_GAME_ACTION_MOVES,
   TARGETED_ACTIONS,
+  GameStatus,
 } from "../../../shared/enums";
 import { GameEvent } from "../../../shared/GameEvent";
 

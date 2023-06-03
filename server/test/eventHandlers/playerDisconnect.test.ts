@@ -1,11 +1,11 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { GameEventType } from "../../../shared/enums";
+import { GameEventType, GameStatus } from "../../../shared/enums";
 import { Deck } from "../../src/Deck";
 import { Card } from "../../../shared/Card";
 import { playerDisconnect } from "../../src/eventHandlers/playerDisconnect";
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameState, GameStatus } from "../../src/GameState";
+import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 
