@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { dispatchPlayerLoseCard } from "../../src/actions/dispatchPlayerLoseCard";
-import { GameEventType } from "../../../shared/enums";
+import { GameEventType, GameStatus } from "../../../shared/enums";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 
 import Sinon from "sinon";
@@ -16,12 +16,14 @@ describe("dispatchPlayerLoseCard action", function () {
       "sad day you lose a card"
     );
 
-    assert.equal(state.playerLosingCard, "tester-1");
+    assert.equal(state.playerLosingCard?.player, "tester-1");
+    assert.equal(state.playerLosingCard?.reason, "sad day you lose a card");
   });
 
   it("should not be allowed when there is already a player losing a card", function () {
     const state = generateStateWithNPlayers(3);
-    state.playerLosingCard = "tester-1";
+    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    state.playerLosingCard = { player: "tester-1", reason: "idk" };
 
     assert.throws(function () {
       dispatchPlayerLoseCard(

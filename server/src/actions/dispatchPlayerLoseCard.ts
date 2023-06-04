@@ -10,13 +10,14 @@ export function dispatchPlayerLoseCard(
   reason: string
 ) {
   if (state.playerLosingCard)
-    throw `${state.playerLosingCard} is already losing a card`;
+    throw `${state.playerLosingCard.player} is already losing a card`;
 
   if (!state.players.find((x) => x.name === player))
     throw `could not find player ${player}`;
 
-  state.playerLosingCard = player;
+  state.playerLosingCard = { player, reason };
 
+  // TODO: might not need this event anymore
   const event = createServerEvent(GameEventType.PLAYER_LOSE_CARD, { reason });
 
   messagePlayerFn(player, event);

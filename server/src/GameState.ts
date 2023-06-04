@@ -2,6 +2,7 @@ import { Deck } from "./Deck";
 import { Player } from "./Player";
 import { GameEvent, GameEventData } from "../../shared/GameEvent";
 import { GameStatus } from "../../shared/enums";
+import { PlayerLoseCardAction } from "../../shared/types";
 
 export class GameState {
   private _players: Player[];
@@ -13,7 +14,7 @@ export class GameState {
 
   currentAction?: GameEventData;
   blockAction?: GameEvent;
-  playerLosingCard?: string;
+  playerLosingCard?: PlayerLoseCardAction;
 
   constructor() {
     this._players = [];
