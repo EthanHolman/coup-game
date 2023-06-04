@@ -6,7 +6,8 @@ import { ClientState } from "../ClientState";
 export function generateClientState(
   numPlayers = 2,
   currentPlayer = 0,
-  perspective = 0 // who to "generate state for"
+  perspective = 0, // who to "generate state for"
+  status = GameStatus.AWAITING_ACTION
 ): ClientState {
   if (currentPlayer >= numPlayers) throw "currentPlayer out of bounds";
 
@@ -32,7 +33,7 @@ export function generateClientState(
     isMyTurn: players[currentPlayer].name === players[perspective].name,
     currentPlayerName: players[currentPlayer].name,
     isPaused: false,
-    status: GameStatus.AWAITING_ACTION,
+    status,
     currentAction: undefined,
     blockAction: undefined,
     players,

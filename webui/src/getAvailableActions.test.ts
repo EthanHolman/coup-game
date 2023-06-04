@@ -13,7 +13,7 @@ import { GameEventType } from "../../shared/enums";
 import { Card } from "../../shared/Card";
 
 describe("getAvailableActions", function () {
-  it("shouldn't allow any actions if the game isn't running", function () {
+  it("shouldn't allow any actions if the game is paused", function () {
     const state = generateClientState(2, 0, 0);
     state.isPaused = true;
     assert.isEmpty(getAvailableActions(state));
@@ -22,7 +22,6 @@ describe("getAvailableActions", function () {
   it("shouldn't allow any actions during pre-game", function () {
     const state = generateClientState(2, 0, 0);
     state.status = GameStatus.PRE_GAME;
-    assert.equal(state.status, GameStatus.PRE_GAME);
     assert.isEmpty(getAvailableActions(state));
   });
 
@@ -65,27 +64,13 @@ describe("getAvailableActions", function () {
       assert.sameMembers(getAvailableActions(state), [GameActionMove.COUP]);
     });
 
-    it("should allow accepting block or challenging", function () {
-      const state = generateClientState(2, 0, 0);
-      state.blockAction = {
-        event: GameEventType.BLOCK_ACTION,
-        user: "player-1",
-        data: { card: Card.CONTESSA },
-      };
-      assert.sameMembers(getAvailableActions(state), [
-        GameEventType.ACCEPT_BLOCK,
-        GameEventType.CHALLENGE_BLOCK,
-      ]);
-    });
-
-    it("should allow accepting block or challenging", function () {
-      const state = generateClientState(2, 0, 0);
-      state.currentAction = { action: GameActionMove.FOREIGN_AID };
-      state.blockAction = {
-        event: GameEventType.BLOCK_ACTION,
-        user: "player-1",
-        data: { card: Card.DUKE },
-      };
+    it("should allow accept or challenge block", function () {
+      const state = generateClientState(2, 0, 0, GameStatus.ACTION_BLOCKED);
+      // state.blockAction = {
+      //   event: GameEventType.BLOCK_ACTION,
+      //   user: "player-1",
+      //   data: { card: Card.CONTESSA },
+      // };
       assert.sameMembers(getAvailableActions(state), [
         GameEventType.ACCEPT_BLOCK,
         GameEventType.CHALLENGE_BLOCK,
@@ -93,17 +78,13 @@ describe("getAvailableActions", function () {
     });
 
     it("should not allow blocking own action", function () {
-      const state = generateClientState(2, 0, 0);
-      state.currentAction = {
-        action: GameActionMove.STEAL,
-        targetPlayer: "player-1",
-      };
+      const state = generateClientState(2, 0, 0, GameStatus.ACTION_SELECTED);
       assert.notInclude(getAvailableActions(state), GameEventType.BLOCK_ACTION);
     });
 
     it("should allow confirming action if currentAction is non-targeted", function () {
       NON_TARGETED_ACTIONS.forEach((action) => {
-        const state = generateClientState(2, 0, 0);
+        const state = generateClientState(2, 0, 0, GameStatus.ACTION_SELECTED);
         state.currentAction = { action };
         assert.include(
           getAvailableActions(state),
@@ -114,27 +95,22 @@ describe("getAvailableActions", function () {
   });
 
   describe("if not isMyTurn", function () {
-    it("should not allow any actions if no currentAction or blockAction are present", function () {
+    it("should not allow any actions if status is AWAITING_ACTION", function () {
       const state = generateClientState(2, 0, 1);
       assert.isEmpty(getAvailableActions(state));
     });
 
-    it("should only allow challenging block if currentAction and blockAction are present", function () {
-      const state = generateClientState(3, 0, 2);
-      state.blockAction = {
-        event: GameEventType.BLOCK_ACTION,
-        user: "player-1",
-        data: { card: Card.CONTESSA },
-      };
+    it("should only allow challenging block if status is ACTION_BLOCKED", function () {
+      const state = generateClientState(3, 0, 2, GameStatus.ACTION_BLOCKED);
       assert.sameMembers(getAvailableActions(state), [
         GameEventType.CHALLENGE_BLOCK,
       ]);
     });
 
     it("should allow blocking blockable actions", function () {
-      const state = generateClientState(3, 0, 2);
       assert.isNotEmpty(BLOCKABLE_ACTIONS);
       BLOCKABLE_ACTIONS.forEach((action) => {
+        const state = generateClientState(3, 0, 2, GameStatus.ACTION_SELECTED);
         state.currentAction = {
           action,
           targetPlayer: "player-1",
@@ -144,10 +120,10 @@ describe("getAvailableActions", function () {
     });
 
     it("should not allow blocking non-blockable actions", function () {
-      const state = generateClientState(3, 0, 2);
       ALL_PLAYABLE_GAME_ACTION_MOVES.filter(
         (x) => !BLOCKABLE_ACTIONS.includes(x)
       ).forEach((action) => {
+        const state = generateClientState(3, 0, 2, GameStatus.ACTION_SELECTED);
         state.currentAction = {
           action,
           targetPlayer: "player-1",
@@ -160,9 +136,9 @@ describe("getAvailableActions", function () {
     });
 
     it("should allow challenging currentAction if it is challengeable", function () {
-      const state = generateClientState(3, 0, 2);
       assert.isNotEmpty(CHALLENGEABLE_ACTIONS);
       CHALLENGEABLE_ACTIONS.forEach((action) => {
+        const state = generateClientState(3, 0, 2, GameStatus.ACTION_SELECTED);
         state.currentAction = {
           action,
           targetPlayer: "player-1",
@@ -175,10 +151,10 @@ describe("getAvailableActions", function () {
     });
 
     it("should not allow challenging non-challengeable actions", function () {
-      const state = generateClientState(3, 0, 2);
       ALL_PLAYABLE_GAME_ACTION_MOVES.filter(
         (x) => !CHALLENGEABLE_ACTIONS.includes(x)
       ).forEach((action) => {
+        const state = generateClientState(3, 0, 2, GameStatus.ACTION_SELECTED);
         state.currentAction = {
           action,
           targetPlayer: "player-1",
@@ -191,7 +167,7 @@ describe("getAvailableActions", function () {
     });
 
     it("should allow confirming currentAction if target is thisPlayer", function () {
-      const state = generateClientState(3, 1, 0);
+      const state = generateClientState(3, 1, 0, GameStatus.ACTION_SELECTED);
       state.currentAction = {
         action: GameActionMove.ASSASSINATE,
         targetPlayer: "player-0",
@@ -200,7 +176,7 @@ describe("getAvailableActions", function () {
     });
 
     it("should NOT allow confirming currentAction by other players", function () {
-      const state = generateClientState(3, 1, 1);
+      const state = generateClientState(3, 1, 1, GameStatus.ACTION_SELECTED);
       state.currentAction = {
         action: GameActionMove.ASSASSINATE,
         targetPlayer: "player-0",
@@ -214,7 +190,7 @@ describe("getAvailableActions", function () {
 
   it("should allow everyone except blocker to challenge a block", function () {
     for (let i = 1; i < 3; i++) {
-      const state = generateClientState(3, 1, i);
+      const state = generateClientState(3, 1, i, GameStatus.ACTION_BLOCKED);
       state.blockAction = {
         event: GameEventType.BLOCK_ACTION,
         user: "player-0",
@@ -225,7 +201,7 @@ describe("getAvailableActions", function () {
   });
 
   it("shouldn't allow blocker to challenge their own block", function () {
-    const state = generateClientState(3, 1, 0);
+    const state = generateClientState(3, 1, 0, GameStatus.ACTION_BLOCKED);
     state.blockAction = {
       event: GameEventType.BLOCK_ACTION,
       user: "player-0",
@@ -238,13 +214,23 @@ describe("getAvailableActions", function () {
   });
 
   it("should not allow accepting block by non-current players", function () {
-    const player2State = generateClientState(3, 0, 2);
+    const player2State = generateClientState(
+      3,
+      0,
+      2,
+      GameStatus.ACTION_BLOCKED
+    );
     player2State.blockAction = {
       event: GameEventType.BLOCK_ACTION,
       user: "player-1",
       data: { card: Card.CONTESSA },
     };
-    const player1State = generateClientState(3, 0, 1);
+    const player1State = generateClientState(
+      3,
+      0,
+      1,
+      GameStatus.ACTION_BLOCKED
+    );
     player2State.blockAction = {
       event: GameEventType.BLOCK_ACTION,
       user: "player-1",
