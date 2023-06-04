@@ -23,7 +23,7 @@ export function generateClientState(
       coins: 2,
       isHost: x === 0,
       isOut: false,
-      cards: playerCards,
+      cards: playerCards.map((card) => ({ card, isRevealed: false })),
     });
   }
 

@@ -66,11 +66,6 @@ describe("getAvailableActions", function () {
 
     it("should allow accept or challenge block", function () {
       const state = generateClientState(2, 0, 0, GameStatus.ACTION_BLOCKED);
-      // state.blockAction = {
-      //   event: GameEventType.BLOCK_ACTION,
-      //   user: "player-1",
-      //   data: { card: Card.CONTESSA },
-      // };
       assert.sameMembers(getAvailableActions(state), [
         GameEventType.ACCEPT_BLOCK,
         GameEventType.CHALLENGE_BLOCK,

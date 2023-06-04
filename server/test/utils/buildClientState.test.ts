@@ -93,19 +93,28 @@ describe("util buildClientState", function () {
     assert.equal(player0.coins, 2);
     assert.isFalse(player0.isHost);
     assert.isFalse(player0.isOut);
-    assert.sameMembers(player0.cards, [Card.HIDDEN_CARD, Card.HIDDEN_CARD]);
+    assert.sameDeepMembers(player0.cards, [
+      { card: Card.HIDDEN_CARD, isRevealed: false },
+      { card: Card.HIDDEN_CARD, isRevealed: false },
+    ]);
 
     const player1 = players.find((x) => x.name === "tester-1")!;
     assert.equal(player1.coins, 0);
     assert.isFalse(player1.isHost);
     assert.isFalse(player1.isOut);
-    assert.sameMembers(player1.cards, [Card.HIDDEN_CARD, Card.AMBASSADOR]);
+    assert.sameDeepMembers(player1.cards, [
+      { card: Card.HIDDEN_CARD, isRevealed: false },
+      { card: Card.AMBASSADOR, isRevealed: true },
+    ]);
 
     const player2 = players.find((x) => x.name === "tester-2")!;
     assert.equal(player2.coins, 7);
     assert.isTrue(player2.isHost);
     assert.isTrue(player2.isOut);
-    assert.sameMembers(player2.cards, [Card.DUKE, Card.CAPTAIN]);
+    assert.sameDeepMembers(player2.cards, [
+      { card: Card.DUKE, isRevealed: true },
+      { card: Card.CAPTAIN, isRevealed: true },
+    ]);
   });
 
   it("should not hide cards for the player we build state for", function () {
@@ -118,8 +127,14 @@ describe("util buildClientState", function () {
     const { players } = buildClientState(state, "tester-1");
 
     const player0 = players.find((x) => x.name === "tester-0")!;
-    assert.sameMembers(player0.cards, [Card.HIDDEN_CARD, Card.HIDDEN_CARD]);
+    assert.sameDeepMembers(player0.cards, [
+      { card: Card.HIDDEN_CARD, isRevealed: false },
+      { card: Card.HIDDEN_CARD, isRevealed: false },
+    ]);
     const player1 = players.find((x) => x.name === "tester-1")!;
-    assert.sameMembers(player1.cards, [Card.ASSASSIN, Card.CAPTAIN]);
+    assert.sameDeepMembers(player1.cards, [
+      { card: Card.ASSASSIN, isRevealed: false },
+      { card: Card.CAPTAIN, isRevealed: false },
+    ]);
   });
 });

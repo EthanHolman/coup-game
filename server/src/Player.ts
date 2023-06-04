@@ -1,9 +1,5 @@
 import { ALL_CARDS, Card } from "../../shared/Card";
-
-export type PlayerCard = {
-  card: Card;
-  isRevealed: boolean;
-};
+import { PlayerCard } from "../../shared/PlayerCard";
 
 export class Player {
   private _cards: PlayerCard[] = [];

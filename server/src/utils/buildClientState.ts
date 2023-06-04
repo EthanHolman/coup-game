@@ -4,10 +4,10 @@ import { GameState } from "../GameState";
 
 export function buildClientState(
   state: GameState,
-  playerName: string
+  forPlayerName: string
 ): ClientGameState {
-  if (!state.players.find((x) => x.name === playerName))
-    throw `could not find player ${playerName} in gamestate`;
+  if (!state.players.find((x) => x.name === forPlayerName))
+    throw `could not find player ${forPlayerName} in gamestate`;
 
   return {
     currentPlayerName: state.currentPlayer.name,
@@ -21,9 +21,9 @@ export function buildClientState(
       isHost: player.isHost,
       isOut: player.isOut,
       cards: player.cards.map((card) =>
-        card.isRevealed || player.name === playerName
-          ? card.card
-          : Card.HIDDEN_CARD
+        card.isRevealed || player.name === forPlayerName
+          ? card
+          : { ...card, card: Card.HIDDEN_CARD }
       ),
     })),
     deckCount: state.deck.count,

@@ -1,5 +1,5 @@
-import { Card } from "./Card";
 import { GameEvent, GameEventData } from "./GameEvent";
+import { PlayerCard } from "./PlayerCard";
 import { GameStatus } from "./enums";
 
 export type ClientPlayer = {
@@ -7,7 +7,7 @@ export type ClientPlayer = {
   coins: number;
   isHost: boolean;
   isOut: boolean;
-  cards: Card[];
+  cards: PlayerCard[];
 };
 
 export type ClientGameState = {
