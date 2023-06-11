@@ -28,8 +28,7 @@ describe("confirmAction event handler", function () {
           dispatchPlayerLoseCard_all,
           "dispatchPlayerLoseCard"
         ).returns();
-        const messagePlayerFn = Sinon.stub();
-        confirmAction(state, event, Sinon.stub(), messagePlayerFn);
+        confirmAction(state, event, Sinon.stub());
         Sinon.assert.calledOnce(stub_dispatchPlayerLoseCard);
         assert.isUndefined(state.currentAction);
         stub_dispatchPlayerLoseCard.restore();
@@ -45,7 +44,7 @@ describe("confirmAction event handler", function () {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
-    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    confirmAction(state, event, Sinon.stub());
     assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 4);
   });
 
@@ -57,7 +56,7 @@ describe("confirmAction event handler", function () {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
-    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    confirmAction(state, event, Sinon.stub());
     assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 3);
   });
 
@@ -69,7 +68,7 @@ describe("confirmAction event handler", function () {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
-    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    confirmAction(state, event, Sinon.stub());
     assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 5);
   });
 
@@ -86,7 +85,7 @@ describe("confirmAction event handler", function () {
         event: GameEventType.CONFIRM_ACTION,
         user: "tester-1",
       };
-      confirmAction(state, event, Sinon.stub(), Sinon.stub());
+      confirmAction(state, event, Sinon.stub());
       assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 4);
       assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 1);
     });
@@ -103,7 +102,7 @@ describe("confirmAction event handler", function () {
         event: GameEventType.CONFIRM_ACTION,
         user: "tester-1",
       };
-      confirmAction(state, event, Sinon.stub(), Sinon.stub());
+      confirmAction(state, event, Sinon.stub());
       assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 3);
       assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 0);
     });
@@ -120,7 +119,7 @@ describe("confirmAction event handler", function () {
         event: GameEventType.CONFIRM_ACTION,
         user: "tester-1",
       };
-      confirmAction(state, event, Sinon.stub(), Sinon.stub());
+      confirmAction(state, event, Sinon.stub());
       assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
       assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 0);
     });
@@ -139,7 +138,7 @@ describe("confirmAction event handler", function () {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
-    confirmAction(state, event, mockMessageAllFn, Sinon.stub());
+    confirmAction(state, event, mockMessageAllFn);
     Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
   });
 
@@ -151,7 +150,7 @@ describe("confirmAction event handler", function () {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
-    confirmAction(state, event, Sinon.stub(), Sinon.stub());
+    confirmAction(state, event, Sinon.stub());
     Sinon.assert.calledOnce(stub_nextTurn);
     stub_nextTurn.restore();
   });
@@ -164,7 +163,7 @@ describe("confirmAction event handler", function () {
       user: "tester-0",
     };
     assert.throws(function () {
-      confirmAction(state, event, Sinon.stub(), Sinon.stub());
+      confirmAction(state, event, Sinon.stub());
     }, "confirmAction only valid when status = ACTION_SELECTED");
   });
 });

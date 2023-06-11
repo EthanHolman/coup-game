@@ -42,7 +42,7 @@ describe("challengeBlock event handler", function () {
       user: "tester-1",
     };
     assert.throws(function () {
-      challengeBlock(state, event, Sinon.stub());
+      challengeBlock(state, event);
     }, "challengeBlock only valid when status = ACTION_BLOCKED");
   });
 
@@ -62,7 +62,7 @@ describe("challengeBlock event handler", function () {
       user: "tester-1",
     };
     assert.throws(function () {
-      challengeBlock(state, event, Sinon.stub());
+      challengeBlock(state, event);
     }, "cannot challenge your own block");
   });
 
@@ -93,13 +93,12 @@ describe("challengeBlock event handler", function () {
         user: "tester-0",
       };
 
-      challengeBlock(state, event, Sinon.stub());
+      challengeBlock(state, event);
 
       Sinon.assert.calledOnceWithExactly(
         mock_dispatchPlayerLoseCard,
         Sinon.match.any,
         "tester-0",
-        Sinon.match.any,
         Sinon.match("You failed the challenge")
       );
     });
@@ -111,7 +110,7 @@ describe("challengeBlock event handler", function () {
         user: "tester-0",
       };
 
-      challengeBlock(state, event, Sinon.stub());
+      challengeBlock(state, event);
 
       Sinon.assert.calledOnceWithExactly(
         mock_givePlayerNewCard,
@@ -128,7 +127,7 @@ describe("challengeBlock event handler", function () {
         user: "tester-0",
       };
 
-      challengeBlock(state, event, Sinon.stub());
+      challengeBlock(state, event);
 
       assert.isUndefined(state.currentAction);
     });
@@ -161,13 +160,12 @@ describe("challengeBlock event handler", function () {
         user: "tester-0",
       };
 
-      challengeBlock(state, event, Sinon.stub());
+      challengeBlock(state, event);
 
       Sinon.assert.calledOnceWithExactly(
         mock_dispatchPlayerLoseCard,
         Sinon.match.any,
         "tester-1",
-        Sinon.match.any,
         Sinon.match("You were caught bluffing")
       );
     });

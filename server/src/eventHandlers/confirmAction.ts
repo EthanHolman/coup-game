@@ -1,15 +1,14 @@
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
 import { GameActionMove, GameStatus } from "../../../shared/enums";
 import { GameState } from "../GameState";
-import { messageAllFn, messagePlayerFn } from "../messageFnTypes";
+import { messageAllFn } from "../messageFnTypes";
 import { nextTurn } from "../actions/nextTurn";
 import { GameEvent } from "../../../shared/GameEvent";
 
 export function confirmAction(
   state: GameState,
   gameEvent: GameEvent,
-  messageAllFn: messageAllFn,
-  messagePlayerFn: messagePlayerFn
+  messageAllFn: messageAllFn
 ) {
   if (state.status !== GameStatus.ACTION_SELECTED)
     throw "confirmAction only valid when status = ACTION_SELECTED";
@@ -27,7 +26,6 @@ export function confirmAction(
       dispatchPlayerLoseCard(
         state,
         state.currentAction.targetPlayer,
-        messagePlayerFn,
         `You were ${
           state.currentAction.action === GameActionMove.ASSASSINATE
             ? "assassinated"

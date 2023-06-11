@@ -10,4 +10,6 @@ export function givePlayerNewCard(
   const newCard = deck.drawCard(1)[0];
   player.replaceCard(oldCard, newCard);
   deck.discardCard(oldCard);
+
+  // TODO: should alert player they recieved a new card
 }

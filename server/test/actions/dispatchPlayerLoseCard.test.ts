@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { dispatchPlayerLoseCard } from "../../src/actions/dispatchPlayerLoseCard";
-import { GameEventType, GameStatus } from "../../../shared/enums";
+import { GameStatus } from "../../../shared/enums";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 
 import Sinon from "sinon";
@@ -9,12 +9,7 @@ describe("dispatchPlayerLoseCard action", function () {
   it("should set playerLosingCard to be targetPlayer", function () {
     const state = generateStateWithNPlayers(3);
 
-    dispatchPlayerLoseCard(
-      state,
-      "tester-1",
-      Sinon.stub(),
-      "sad day you lose a card"
-    );
+    dispatchPlayerLoseCard(state, "tester-1", "sad day you lose a card");
 
     assert.equal(state.playerLosingCard?.player, "tester-1");
     assert.equal(state.playerLosingCard?.reason, "sad day you lose a card");
@@ -26,43 +21,15 @@ describe("dispatchPlayerLoseCard action", function () {
     state.playerLosingCard = { player: "tester-1", reason: "idk" };
 
     assert.throws(function () {
-      dispatchPlayerLoseCard(
-        state,
-        "tester-2",
-        Sinon.stub(),
-        "sad day you lose a card"
-      );
+      dispatchPlayerLoseCard(state, "tester-2", "sad day you lose a card");
     }, "already losing a card");
-  });
-
-  it("should alert player losing card", function () {
-    const state = generateStateWithNPlayers(3);
-    const messagePlayer = Sinon.stub();
-
-    dispatchPlayerLoseCard(
-      state,
-      "tester-1",
-      messagePlayer,
-      "sad day you lose a card"
-    );
-
-    Sinon.assert.calledOnceWithExactly(messagePlayer, "tester-1", {
-      event: GameEventType.PLAYER_LOSE_CARD,
-      user: "__server",
-      data: { reason: "sad day you lose a card" },
-    });
   });
 
   it("shouldn't allow players that don't exist to lose a card", function () {
     const state = generateStateWithNPlayers(3);
 
     assert.throws(function () {
-      dispatchPlayerLoseCard(
-        state,
-        "doesnt_exist",
-        Sinon.stub(),
-        "sad day you lose a card"
-      );
+      dispatchPlayerLoseCard(state, "doesnt_exist", "sad day you lose a card");
     }, "could not find player doesnt_exist");
   });
 });

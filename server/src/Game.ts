@@ -62,26 +62,16 @@ export class GameRunner {
 
         // Income action is auto-confirmed
         if (this._gameState.currentAction?.action === GameActionMove.INCOME) {
-          confirmAction(
-            this._gameState,
-            gameEvent,
-            this._messageAllFn,
-            this._messagePlayer
-          );
+          confirmAction(this._gameState, gameEvent, this._messageAllFn);
         }
         break;
 
       case GameEventType.CONFIRM_ACTION:
-        confirmAction(
-          this._gameState,
-          gameEvent,
-          this._messageAllFn,
-          this._messagePlayer
-        );
+        confirmAction(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.CHALLENGE_ACTION:
-        challengeAction(this._gameState, gameEvent, this._messagePlayer);
+        challengeAction(this._gameState, gameEvent);
         break;
 
       case GameEventType.BLOCK_ACTION:
@@ -93,7 +83,7 @@ export class GameRunner {
         break;
 
       case GameEventType.CHALLENGE_BLOCK:
-        challengeBlock(this._gameState, gameEvent, this._messagePlayer);
+        challengeBlock(this._gameState, gameEvent);
         break;
 
       case GameEventType.PLAYER_LOSE_CARD:
@@ -103,12 +93,7 @@ export class GameRunner {
         //  process currentAction if it's set
         // Also: does this belong within playerLoseCard
         if (this._gameState.currentAction) {
-          confirmAction(
-            this._gameState,
-            gameEvent,
-            this._messageAllFn,
-            this._messagePlayer
-          );
+          confirmAction(this._gameState, gameEvent, this._messageAllFn);
         } else nextTurn(this._gameState);
         break;
 
