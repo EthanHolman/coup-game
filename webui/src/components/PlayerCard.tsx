@@ -43,7 +43,7 @@ const PlayerCard = ({
       <br />
       Coins: {player.coins}
       <br />
-      Cards: {player.cards.join(", ")}
+      Cards: {player.cards.map((x) => x.card).join(", ")}
     </div>
   );
 };

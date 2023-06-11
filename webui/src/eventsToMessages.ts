@@ -57,7 +57,7 @@ export function eventToMessage({
     case GameEventType.PLAYER_JOIN_GAME:
       return { user, message: "Howdy, I've joined the game!" };
     case GameEventType.PLAYER_LOSE_CARD:
-      return { user, message: "[PLAYER LOSE CARD]" };
+      return { user, message: `I have lost the ${data?.card}` };
     case GameEventType.PLAYER_REVEAL_CARD:
       return { user, message: "[REVEAL CARD]" };
     case GameEventType.RESUME_GAME:

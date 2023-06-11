@@ -87,7 +87,7 @@ export class GameRunner {
         break;
 
       case GameEventType.PLAYER_LOSE_CARD:
-        playerLoseCard(this._gameState, gameEvent);
+        playerLoseCard(this._gameState, gameEvent, this._messageAllFn);
 
         // In case of 'challenge' card losses, still want to
         //  process currentAction if it's set

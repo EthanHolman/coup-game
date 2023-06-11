@@ -6,6 +6,7 @@ import StartGame from "./StartGame";
 import React from "react";
 import ActionPicker from "./ActionPicker/ActionPicker";
 import { GameStatus } from "../../../shared/enums";
+import LoseCard from "./LoseCard/LoseCard";
 
 const useStyles = createUseStyles({
   playerRow: { flex: 1, display: "flex", justifyContent: "space-around" },
@@ -20,6 +21,10 @@ type TableTopGameProps = {
 
 const TableTopGame = ({ state, sendEvent }: TableTopGameProps): JSX.Element => {
   const classes = useStyles();
+
+  const isThisPlayerLosingCard =
+    state.status === GameStatus.PLAYER_LOSING_CARD &&
+    state.playerLosingCard?.player === state.username;
 
   return (
     <>
@@ -41,6 +46,9 @@ const TableTopGame = ({ state, sendEvent }: TableTopGameProps): JSX.Element => {
           <div>Deck: {state.deckCount} cards</div>
         )}
       </div>
+      {isThisPlayerLosingCard && (
+        <LoseCard state={state} sendEvent={sendEvent} />
+      )}
       <ActionPicker state={state} sendEvent={sendEvent} />
     </>
   );

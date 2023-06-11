@@ -18,7 +18,7 @@ export enum GameEventType {
   ACCEPT_BLOCK = "ACCEPT_BLOCK",
   CHALLENGE_BLOCK = "CHALLENGE_BLOCK",
   PLAYER_LOSE_CARD = "PLAYER_LOSE_CARD",
-  PLAYER_REVEAL_CARD = "PLAYER_REVEAL_CARD",
+  PLAYER_REVEAL_CARD = "PLAYER_REVEAL_CARD", // I don't think this is used anymore
   WELCOME = "WELCOME", // i don't think this is used anymore
   PAUSE_GAME = "PAUSE_GAME",
   RESUME_GAME = "RESUME_GAME",
