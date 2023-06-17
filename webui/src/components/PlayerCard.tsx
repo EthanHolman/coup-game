@@ -14,6 +14,9 @@ const useStyles = createUseStyles({
   isCurrentPlayer: {
     border: "2px solid #0c6",
   },
+  cardRevealed: {
+    textDecoration: "line-through",
+  },
 });
 
 export type PlayerCardProps = {
@@ -43,7 +46,10 @@ const PlayerCard = ({
       <br />
       Coins: {player.coins}
       <br />
-      Cards: {player.cards.map((x) => x.card).join(", ")}
+      Cards:{" "}
+      {player.cards.map((x) => (
+        <div className={x.isRevealed ? classes.cardRevealed : ""}>{x.card}</div>
+      ))}
     </div>
   );
 };
