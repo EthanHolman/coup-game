@@ -26,14 +26,16 @@ export function challengeAction(
     dispatchPlayerLoseCard(
       state,
       gameEvent.user,
-      `${state.currentPlayer.name} has a ${requiredCard}, so your challenge fails`
+      `${state.currentPlayer.name} has a ${requiredCard}, and the challenge failed`,
+      messageAllFn
     );
     givePlayerNewCard(state, state.currentPlayer, requiredCard);
   } else {
     dispatchPlayerLoseCard(
       state,
       state.currentPlayer.name,
-      `${gameEvent.user} called your bluff`
+      `${gameEvent.user} called your bluff`,
+      messageAllFn
     );
     state.clearCurrentAction();
   }

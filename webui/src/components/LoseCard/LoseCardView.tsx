@@ -18,7 +18,7 @@ const LoseCardView = ({
 }: LoseCardViewProps): JSX.Element => {
   const handleLoseCard = (card: Card) => {
     sendEvent({
-      event: GameEventType.PLAYER_LOSE_CARD,
+      event: GameEventType.PLAYER_REVEAL_CARD,
       user: username,
       data: { card },
     });

@@ -38,7 +38,7 @@ describe("LoseCardView component", function () {
     );
 
     const expectedEvent: GameEvent = {
-      event: GameEventType.PLAYER_LOSE_CARD,
+      event: GameEventType.PLAYER_REVEAL_CARD,
       user: "bob",
       data: { card: Card.AMBASSADOR },
     };

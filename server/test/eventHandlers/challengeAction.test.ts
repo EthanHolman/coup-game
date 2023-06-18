@@ -89,6 +89,7 @@ describe("challengeAction event handler", function () {
       mock_dispatchPlayerLoseCard,
       Sinon.match.any,
       "tester-1",
+      Sinon.match.any,
       Sinon.match.any
     );
   });
@@ -150,6 +151,7 @@ describe("challengeAction event handler", function () {
       mock_dispatchPlayerLoseCard,
       Sinon.match.any,
       "tester-0",
+      Sinon.match.any,
       Sinon.match.any
     );
   });

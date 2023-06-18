@@ -3,8 +3,13 @@ import { GameStatus } from "../../../shared/enums";
 import { GameState } from "../GameState";
 import { dispatchPlayerLoseCard } from "../actions/dispatchPlayerLoseCard";
 import { givePlayerNewCard } from "../actions/givePlayerNewCard";
+import { messageAllFn } from "../messageFnTypes";
 
-export function challengeBlock(state: GameState, gameEvent: GameEvent) {
+export function challengeBlock(
+  state: GameState,
+  gameEvent: GameEvent,
+  messageAllFn: messageAllFn
+) {
   // validations
   if (state.status !== GameStatus.ACTION_BLOCKED)
     throw "challengeBlock only valid when status = ACTION_BLOCKED";
@@ -24,7 +29,10 @@ export function challengeBlock(state: GameState, gameEvent: GameEvent) {
     dispatchPlayerLoseCard(
       state,
       gameEvent.user,
-      `${state.blockAction!.user} has a ${card} card. You failed the challenge.`
+      `${
+        state.blockAction!.user
+      } has a ${card} card. You failed the challenge.`,
+      messageAllFn
     );
 
     // block succeeds, so remove currentAction
@@ -36,7 +44,8 @@ export function challengeBlock(state: GameState, gameEvent: GameEvent) {
     dispatchPlayerLoseCard(
       state,
       state.blockAction!.user,
-      "You were caught bluffing!"
+      "You were caught bluffing!",
+      messageAllFn
     );
   }
 }

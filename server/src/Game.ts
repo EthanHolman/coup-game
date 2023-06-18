@@ -2,7 +2,7 @@ import { GameActionMove, GameEventType } from "../../shared/enums";
 import { challengeAction } from "./eventHandlers/challengeAction";
 import { confirmAction } from "./eventHandlers/confirmAction";
 import { playerJoinGame } from "./eventHandlers/playerJoinGame";
-import { playerLoseCard } from "./eventHandlers/playerLoseCard";
+import { playerRevealCard } from "./eventHandlers/playerRevealCard";
 import { chooseAction } from "./eventHandlers/chooseAction";
 import { startGame } from "./eventHandlers/startGame";
 import { GameState } from "./GameState";
@@ -83,11 +83,11 @@ export class GameRunner {
         break;
 
       case GameEventType.CHALLENGE_BLOCK:
-        challengeBlock(this._gameState, gameEvent);
+        challengeBlock(this._gameState, gameEvent, this._messageAllFn);
         break;
 
-      case GameEventType.PLAYER_LOSE_CARD:
-        playerLoseCard(this._gameState, gameEvent, this._messageAllFn);
+      case GameEventType.PLAYER_REVEAL_CARD:
+        playerRevealCard(this._gameState, gameEvent, this._messageAllFn);
 
         // In case of 'challenge' card losses, still want to
         //  process currentAction if it's set

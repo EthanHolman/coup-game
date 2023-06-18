@@ -1,5 +1,5 @@
 import { GameEventType } from "../../../shared/enums";
-import { SERVER_USERNAME } from "../globals";
+import { SERVER_USERNAME } from "../../../shared/globals";
 import { GameEventData, GameEvent } from "../../../shared/GameEvent";
 
 export function createServerEvent(

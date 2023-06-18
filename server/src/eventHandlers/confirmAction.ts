@@ -30,7 +30,8 @@ export function confirmAction(
           state.currentAction.action === GameActionMove.ASSASSINATE
             ? "assassinated"
             : "couped"
-        }`
+        }`,
+        messageAllFn
       );
       state.clearCurrentAction();
       break;

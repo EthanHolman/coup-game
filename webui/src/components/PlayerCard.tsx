@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { createUseStyles } from "react-jss";
-import { Card } from "../../../shared/Card";
 import { ClientPlayer } from "../../../shared/ClientGameState";
 
 const useStyles = createUseStyles({
@@ -47,8 +46,10 @@ const PlayerCard = ({
       Coins: {player.coins}
       <br />
       Cards:{" "}
-      {player.cards.map((x) => (
-        <div className={x.isRevealed ? classes.cardRevealed : ""}>{x.card}</div>
+      {player.cards.map((x, i) => (
+        <div key={i} className={x.isRevealed ? classes.cardRevealed : ""}>
+          {x.card}
+        </div>
       ))}
     </div>
   );

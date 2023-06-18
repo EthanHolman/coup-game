@@ -116,20 +116,12 @@ All events include {event, user, data}. Fields noted below are members of the da
 - START_GAME: {}
 - CHOOSE_ACTION: {action, targetPlayer}
 - CONFIRM_ACTION: {targetPlayer}
-- passAction: {}
-- revealCards: {playerName, card} // called after coup, challenging, assassination, etc
 - nextTurn: {currentPlayerName}
 - PLAYER_DISCONNECT: {} if received during pre-game, clients should delete player from state, as said player has left
 - CURRENT_STATE: {state}
 - PAUSE_GAME: {reason}
 - RESUME_GAME: {reason}
-
-## Server events (broadcast to single player):
-
-All events include {event, data}. Fields noted below are members of the data object.
-
-- PLAYER_LOSE_CARD: {}
-- WELCOME: {playerNames} used during pre-game to update clients on the list of players
+- PLAYER_LOSE_CARD: {targetPlayer, reason}
 
 ## Client events:
 
@@ -141,7 +133,7 @@ All events include {event, user, data}. Fields noted below are members of the da
 - CHALLENGE_ACTION: {}
 - BLOCK_ACTION: {card}
 - CHALLENGE_BLOCK: {}
-- PLAYER_LOSE_CARD: {card}
+- PLAYER_REVEAL_CARD: {card}
 - START_GAME: {}
 
 ## Server Action Handling:

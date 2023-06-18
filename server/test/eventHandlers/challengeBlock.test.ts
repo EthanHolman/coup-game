@@ -42,7 +42,7 @@ describe("challengeBlock event handler", function () {
       user: "tester-1",
     };
     assert.throws(function () {
-      challengeBlock(state, event);
+      challengeBlock(state, event, Sinon.stub());
     }, "challengeBlock only valid when status = ACTION_BLOCKED");
   });
 
@@ -62,7 +62,7 @@ describe("challengeBlock event handler", function () {
       user: "tester-1",
     };
     assert.throws(function () {
-      challengeBlock(state, event);
+      challengeBlock(state, event, Sinon.stub());
     }, "cannot challenge your own block");
   });
 
@@ -93,13 +93,14 @@ describe("challengeBlock event handler", function () {
         user: "tester-0",
       };
 
-      challengeBlock(state, event);
+      challengeBlock(state, event, Sinon.stub());
 
       Sinon.assert.calledOnceWithExactly(
         mock_dispatchPlayerLoseCard,
         Sinon.match.any,
         "tester-0",
-        Sinon.match("You failed the challenge")
+        Sinon.match("You failed the challenge"),
+        Sinon.match.any
       );
     });
 
@@ -110,7 +111,7 @@ describe("challengeBlock event handler", function () {
         user: "tester-0",
       };
 
-      challengeBlock(state, event);
+      challengeBlock(state, event, Sinon.stub());
 
       Sinon.assert.calledOnceWithExactly(
         mock_givePlayerNewCard,
@@ -127,7 +128,7 @@ describe("challengeBlock event handler", function () {
         user: "tester-0",
       };
 
-      challengeBlock(state, event);
+      challengeBlock(state, event, Sinon.stub());
 
       assert.isUndefined(state.currentAction);
     });
@@ -160,13 +161,14 @@ describe("challengeBlock event handler", function () {
         user: "tester-0",
       };
 
-      challengeBlock(state, event);
+      challengeBlock(state, event, Sinon.stub());
 
       Sinon.assert.calledOnceWithExactly(
         mock_dispatchPlayerLoseCard,
         Sinon.match.any,
         "tester-1",
-        Sinon.match("You were caught bluffing")
+        Sinon.match("You were caught bluffing"),
+        Sinon.match.any
       );
     });
   });

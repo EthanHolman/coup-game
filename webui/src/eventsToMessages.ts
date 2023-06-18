@@ -1,5 +1,6 @@
 import { GameActionMove, GameEventType } from "../../shared/enums";
 import { GameEvent, GameEventData } from "../../shared/GameEvent";
+import { SERVER_USERNAME } from "../../shared/globals";
 
 export type UIMessage = {
   user: string;
@@ -37,6 +38,8 @@ export function eventToMessage({
 }: GameEvent): UIMessage {
   if (error) return { user: "[Error]", message: error, isError: true };
 
+  if (user === SERVER_USERNAME) user = "Server";
+
   switch (event) {
     case GameEventType.ACCEPT_BLOCK:
       return { user, message: "I accept your block" };
@@ -57,9 +60,12 @@ export function eventToMessage({
     case GameEventType.PLAYER_JOIN_GAME:
       return { user, message: "Howdy, I've joined the game!" };
     case GameEventType.PLAYER_LOSE_CARD:
-      return { user, message: `I have lost the ${data?.card}` };
+      return {
+        user,
+        message: `${data?.targetPlayer} must chose a card to reveal, because ${data?.reason}.`,
+      };
     case GameEventType.PLAYER_REVEAL_CARD:
-      return { user, message: "[REVEAL CARD]" };
+      return { user, message: `I have revealed my ${data?.card}.` };
     case GameEventType.RESUME_GAME:
       return { user, message: `I've resumed the game: ${data?.reason}` };
     case GameEventType.START_GAME:

@@ -4,7 +4,7 @@ import { startGame } from "../../src/eventHandlers/startGame";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import Sinon from "sinon";
 import { GameEventType, GameStatus } from "../../../shared/enums";
-import { SERVER_USERNAME } from "../../src/globals";
+import { SERVER_USERNAME } from "../../../shared/globals";
 
 describe("startGame", function () {
   it("shouldn't be able to start without players", function () {

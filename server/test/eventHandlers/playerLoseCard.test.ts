@@ -2,23 +2,23 @@ import Sinon from "sinon";
 import { Card } from "../../../shared/Card";
 import { Player } from "../../src/Player";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
-import { playerLoseCard } from "../../src/eventHandlers/playerLoseCard";
+import { playerRevealCard } from "../../src/eventHandlers/playerRevealCard";
 import { GameEvent } from "../../../shared/GameEvent";
 import { GameEventType, GameStatus } from "../../../shared/enums";
 import { assert } from "chai";
 
-describe("playerLoseCard event handler", function () {
+describe("playerRevealCard event handler", function () {
   it("should throw error when GameStatus is not PLAYER_LOSING_CARD", function () {
     const state = generateStateWithNPlayers(2);
     Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
     const event: GameEvent = {
-      event: GameEventType.PLAYER_LOSE_CARD,
+      event: GameEventType.PLAYER_REVEAL_CARD,
       user: "unlucky",
       data: { card: Card.AMBASSADOR },
     };
 
     assert.throws(function () {
-      playerLoseCard(state, event, Sinon.stub());
+      playerRevealCard(state, event, Sinon.stub());
     }, "only valid when status = PLAYER_LOSING_CARD");
   });
 
@@ -27,13 +27,13 @@ describe("playerLoseCard event handler", function () {
     Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "" };
     const event: GameEvent = {
-      event: GameEventType.PLAYER_LOSE_CARD,
+      event: GameEventType.PLAYER_REVEAL_CARD,
       user: "tester-0",
       data: { card: Card.AMBASSADOR },
     };
 
     assert.throws(function () {
-      playerLoseCard(state, event, Sinon.stub());
+      playerRevealCard(state, event, Sinon.stub());
     }, "wrong user");
   });
 
@@ -42,12 +42,12 @@ describe("playerLoseCard event handler", function () {
     Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "" };
     const event: GameEvent = {
-      event: GameEventType.PLAYER_LOSE_CARD,
+      event: GameEventType.PLAYER_REVEAL_CARD,
       user: "tester-1",
     };
 
     assert.throws(function () {
-      playerLoseCard(state, event, Sinon.stub());
+      playerRevealCard(state, event, Sinon.stub());
     }, "missing card to lose");
   });
 
@@ -66,12 +66,12 @@ describe("playerLoseCard event handler", function () {
     state.addPlayer(playerLosingCard);
 
     const event: GameEvent = {
-      event: GameEventType.PLAYER_LOSE_CARD,
+      event: GameEventType.PLAYER_REVEAL_CARD,
       user: "unlucky",
       data: { card: Card.AMBASSADOR },
     };
 
-    playerLoseCard(state, event, Sinon.stub());
+    playerRevealCard(state, event, Sinon.stub());
 
     Sinon.assert.calledOnceWithExactly(stub_revealCard, Card.AMBASSADOR);
   });
@@ -81,12 +81,12 @@ describe("playerLoseCard event handler", function () {
     Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "" };
     const event: GameEvent = {
-      event: GameEventType.PLAYER_LOSE_CARD,
+      event: GameEventType.PLAYER_REVEAL_CARD,
       user: "tester-1",
       data: { card: Card.CONTESSA },
     };
 
-    playerLoseCard(state, event, Sinon.stub());
+    playerRevealCard(state, event, Sinon.stub());
 
     assert.isUndefined(state.playerLosingCard);
   });
@@ -96,13 +96,13 @@ describe("playerLoseCard event handler", function () {
     Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "" };
     const event: GameEvent = {
-      event: GameEventType.PLAYER_LOSE_CARD,
+      event: GameEventType.PLAYER_REVEAL_CARD,
       user: "tester-1",
       data: { card: Card.CONTESSA },
     };
     const mockMessageAllPlayerFn = Sinon.stub();
 
-    playerLoseCard(state, event, mockMessageAllPlayerFn);
+    playerRevealCard(state, event, mockMessageAllPlayerFn);
 
     Sinon.assert.calledOnceWithMatch(mockMessageAllPlayerFn, event);
   });
