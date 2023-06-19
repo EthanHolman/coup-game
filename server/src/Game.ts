@@ -62,7 +62,7 @@ export class GameRunner {
 
         // Income action is auto-confirmed
         if (this._gameState.currentAction?.action === GameActionMove.INCOME) {
-          confirmAction(this._gameState, gameEvent, this._messageAllFn);
+          confirmAction(this._gameState, gameEvent, this._messageAllFn, true);
         }
         break;
 
@@ -91,9 +91,8 @@ export class GameRunner {
 
         // In case of 'challenge' card losses, still want to
         //  process currentAction if it's set
-        // Also: does this belong within playerLoseCard
         if (this._gameState.currentAction) {
-          confirmAction(this._gameState, gameEvent, this._messageAllFn);
+          confirmAction(this._gameState, gameEvent, this._messageAllFn, true);
         } else nextTurn(this._gameState);
         break;
 

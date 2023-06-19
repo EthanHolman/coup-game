@@ -125,9 +125,33 @@ describe("confirmAction event handler", function () {
     });
   });
 
-  it("should not allow confirms by the wrong users", function () {
-    // maybe::: "targeted actions should only be confirmable by target player"
-    //    and "non-targeted actions should only be confirmable by current player"
+  it("should not allow targeted actions to be confirmed by others than targetPlayer", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.equal(state.currentPlayer.name, "tester-0");
+    state.currentAction = {
+      action: GameActionMove.ASSASSINATE,
+      targetPlayer: "tester-1",
+    };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    assert.throws(function () {
+      confirmAction(state, event, Sinon.stub());
+    }, "Wrong user");
+  });
+
+  it("should not allow non-targeted actions to be confirmed others than currentPlayer", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.equal(state.currentPlayer.name, "tester-0");
+    state.currentAction = { action: GameActionMove.TAX };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-1",
+    };
+    assert.throws(function () {
+      confirmAction(state, event, Sinon.stub());
+    }, "Wrong user");
   });
 
   it("should broadcast incoming event to all users", function () {
@@ -165,5 +189,46 @@ describe("confirmAction event handler", function () {
     assert.throws(function () {
       confirmAction(state, event, Sinon.stub());
     }, "confirmAction only valid when status = ACTION_SELECTED");
+  });
+
+  it("should not broadcast event if autoConfirm is true", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.equal(state.currentPlayer.name, "tester-0");
+    state.currentAction = {
+      action: GameActionMove.STEAL,
+      targetPlayer: "tester-1",
+    };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-1",
+    };
+    const mockMessageAllFn = Sinon.stub();
+    confirmAction(state, event, mockMessageAllFn, true);
+    Sinon.assert.notCalled(mockMessageAllFn);
+  });
+
+  it("should bypass targeted player checks if autoConfirm is true", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.equal(state.currentPlayer.name, "tester-0");
+    state.currentAction = {
+      action: GameActionMove.ASSASSINATE,
+      targetPlayer: "tester-1",
+    };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    confirmAction(state, event, Sinon.stub(), true);
+  });
+
+  it("should bypass nontargeted player checks if autoConfirm is true", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.equal(state.currentPlayer.name, "tester-0");
+    state.currentAction = { action: GameActionMove.TAX };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-1",
+    };
+    confirmAction(state, event, Sinon.stub(), true);
   });
 });
