@@ -83,5 +83,15 @@ export function confirmAction(
       throw `cannot process unexpected action ${state.currentAction?.action}`;
   }
 
-  nextTurn(state);
+  // trigger next turn if action is complete at this point in the execution
+  //  i.e., we're not waiting for an exchange or player to lose a card
+  if (
+    [
+      GameActionMove.FOREIGN_AID,
+      GameActionMove.INCOME,
+      GameActionMove.STEAL,
+      GameActionMove.TAX,
+    ].includes(state.currentAction?.action)
+  )
+    nextTurn(state);
 }
