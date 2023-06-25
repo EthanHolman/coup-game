@@ -3,6 +3,8 @@ import { dispatchPlayerLoseCard } from "../../src/actions/dispatchPlayerLoseCard
 import { GameStatus } from "../../../shared/enums";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import Sinon from "sinon";
+import { Card } from "../../../shared/Card";
+import { Player } from "../../src/Player";
 
 describe("dispatchPlayerLoseCard action", function () {
   it("should set playerLosingCard to be targetPlayer", function () {
@@ -69,5 +71,25 @@ describe("dispatchPlayerLoseCard action", function () {
       user: "__server",
     };
     assert.deepEqual(call, expectedEvent as any);
+  });
+
+  it("should not allow a player who's out of the game", function () {
+    const state = generateStateWithNPlayers(2);
+    const unluckyPlayer = new Player("unlucky", [
+      Card.AMBASSADOR,
+      Card.ASSASSIN,
+    ]);
+    unluckyPlayer.revealCard(Card.ASSASSIN);
+    unluckyPlayer.revealCard(Card.AMBASSADOR);
+    state.addPlayer(unluckyPlayer);
+
+    assert.throws(function () {
+      dispatchPlayerLoseCard(
+        state,
+        "unlucky",
+        "he is just unlucky",
+        Sinon.stub()
+      );
+    }, "unlucky is out of the game");
   });
 });

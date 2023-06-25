@@ -12,8 +12,12 @@ export function dispatchPlayerLoseCard(
   if (state.playerLosingCard)
     throw `${state.playerLosingCard.player} is already losing a card`;
 
-  if (!state.players.find((x) => x.name === player))
-    throw `could not find player ${player}`;
+  const playerObj = state.players.find((x) => x.name === player);
+
+  if (!playerObj) throw `could not find player ${player}`;
+
+  if (playerObj.isOut)
+    throw `${playerObj.name} is out of the game, they cannot lose a card`;
 
   state.playerLosingCard = { player, reason };
 

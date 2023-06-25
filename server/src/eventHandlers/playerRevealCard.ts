@@ -1,7 +1,12 @@
 import { GameState } from "../GameState";
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameStatus } from "../../../shared/enums";
+import {
+  GameActionMove,
+  GameEventType,
+  GameStatus,
+} from "../../../shared/enums";
 import { messageAllFn } from "../messageFnTypes";
+import { createServerEvent } from "../utils/createServerEvent";
 
 export function playerRevealCard(
   state: GameState,
@@ -23,4 +28,19 @@ export function playerRevealCard(
   state.playerLosingCard = undefined;
 
   messageAllFn(gameEvent);
+
+  if (player.isOut) {
+    messageAllFn(
+      createServerEvent(GameEventType.PLAYER_OUT, { name: player.name })
+    );
+
+    if (
+      state.currentAction &&
+      state.currentAction?.targetPlayer === player.name &&
+      [GameActionMove.COUP, GameActionMove.ASSASSINATE].includes(
+        state.currentAction?.action!
+      )
+    )
+      state.clearCurrentAction();
+  }
 }

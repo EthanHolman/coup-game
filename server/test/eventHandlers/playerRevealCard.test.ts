@@ -4,8 +4,13 @@ import { Player } from "../../src/Player";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { playerRevealCard } from "../../src/eventHandlers/playerRevealCard";
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameEventType, GameStatus } from "../../../shared/enums";
+import {
+  GameActionMove,
+  GameEventType,
+  GameStatus,
+} from "../../../shared/enums";
 import { assert } from "chai";
+import { SERVER_USERNAME } from "../../../shared/globals";
 
 describe("playerRevealCard event handler", function () {
   it("should throw error when GameStatus is not PLAYER_LOSING_CARD", function () {
@@ -105,5 +110,62 @@ describe("playerRevealCard event handler", function () {
     playerRevealCard(state, event, mockMessageAllPlayerFn);
 
     Sinon.assert.calledOnceWithMatch(mockMessageAllPlayerFn, event);
+  });
+
+  it("should alert all players if the player is now out of the game", function () {
+    const state = generateStateWithNPlayers(2);
+    const unluckyPlayer = new Player("unlucky", [
+      Card.AMBASSADOR,
+      Card.ASSASSIN,
+    ]);
+    unluckyPlayer.revealCard(Card.ASSASSIN);
+    state.addPlayer(unluckyPlayer);
+    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    state.playerLosingCard = { player: unluckyPlayer.name, reason: "" };
+    const event: GameEvent = {
+      event: GameEventType.PLAYER_REVEAL_CARD,
+      user: unluckyPlayer.name,
+      data: { card: Card.AMBASSADOR },
+    };
+    const mockMessageAllPlayerFn = Sinon.stub();
+
+    playerRevealCard(state, event, mockMessageAllPlayerFn);
+
+    assert.isTrue(unluckyPlayer.isOut);
+    const calls = mockMessageAllPlayerFn.getCalls();
+    assert.lengthOf(calls, 2);
+    assert.deepStrictEqual(calls[0].args[0], event);
+    assert.deepStrictEqual(calls[1].args[0], {
+      event: GameEventType.PLAYER_OUT,
+      user: SERVER_USERNAME,
+      data: { name: "unlucky" },
+    });
+  });
+
+  it("should clear current action if it's a coup/assassinate targeting the player who is now out", function () {
+    const state = generateStateWithNPlayers(2);
+    const unluckyPlayer = new Player("unlucky", [
+      Card.AMBASSADOR,
+      Card.ASSASSIN,
+    ]);
+    unluckyPlayer.revealCard(Card.ASSASSIN);
+    state.addPlayer(unluckyPlayer);
+    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    state.playerLosingCard = { player: unluckyPlayer.name, reason: "" };
+    state.currentAction = {
+      action: GameActionMove.ASSASSINATE,
+      targetPlayer: "unlucky",
+    };
+    const event: GameEvent = {
+      event: GameEventType.PLAYER_REVEAL_CARD,
+      user: unluckyPlayer.name,
+      data: { card: Card.AMBASSADOR },
+    };
+    const mockMessageAllPlayerFn = Sinon.stub();
+    assert.isDefined(state.currentAction);
+
+    playerRevealCard(state, event, mockMessageAllPlayerFn);
+
+    assert.isUndefined(state.currentAction);
   });
 });

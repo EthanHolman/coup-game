@@ -122,6 +122,7 @@ All events include {event, user, data}. Fields noted below are members of the da
 - PAUSE_GAME: {reason}
 - RESUME_GAME: {reason}
 - PLAYER_LOSE_CARD: {targetPlayer, reason}
+- PLAYER_OUT: {name}
 
 ## Client events:
 

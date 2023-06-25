@@ -70,6 +70,8 @@ export function eventToMessage({
       return { user, message: `I've resumed the game: ${data?.reason}` };
     case GameEventType.START_GAME:
       return { user, message: "The game is starting! Hope you're ready" };
+    case GameEventType.PLAYER_OUT:
+      return { user, message: `${data?.name} is out of the game.` };
 
     default:
       const message = `${event} doesn't have an eventToMessage handler`;
