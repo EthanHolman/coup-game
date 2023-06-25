@@ -24,6 +24,7 @@ export enum GameEventType {
   PLAYER_DISCONNECT = "PLAYER_DISCONNECT",
   CURRENT_STATE = "CURRENT_STATE",
   PLAYER_OUT = "PLAYER_OUT",
+  NEXT_TURN = "NEXT_TURN",
 }
 
 export enum GameActionMove {

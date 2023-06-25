@@ -1,7 +1,7 @@
 import Sinon from "sinon";
 import { confirmAction } from "../../src/eventHandlers/confirmAction";
 import * as dispatchPlayerLoseCard_all from "../../src/actions/dispatchPlayerLoseCard";
-import * as nextTurn_all from "../../src/actions/nextTurn";
+import * as module_nextTurn from "../../src/actions/nextTurn";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { assert } from "chai";
 import {
@@ -12,6 +12,16 @@ import {
 import { GameEvent } from "../../../shared/GameEvent";
 
 describe("confirmAction event handler", function () {
+  let mock_nextTurn: Sinon.SinonStub;
+
+  this.beforeEach(function () {
+    mock_nextTurn = Sinon.stub(module_nextTurn, "nextTurn").returns();
+  });
+
+  this.afterEach(function () {
+    mock_nextTurn.restore();
+  });
+
   describe("assassinate/coup", function () {
     it("should trigger playerLoseCard and clear current action", function () {
       [GameActionMove.ASSASSINATE, GameActionMove.COUP].forEach((action) => {
@@ -167,7 +177,6 @@ describe("confirmAction event handler", function () {
   });
 
   it("should trigger next turn", function () {
-    const stub_nextTurn = Sinon.stub(nextTurn_all, "nextTurn").returns();
     const state = generateStateWithNPlayers(2);
     state.currentAction = { action: GameActionMove.TAX };
     const event: GameEvent = {
@@ -175,8 +184,7 @@ describe("confirmAction event handler", function () {
       user: "tester-0",
     };
     confirmAction(state, event, Sinon.stub());
-    Sinon.assert.calledOnce(stub_nextTurn);
-    stub_nextTurn.restore();
+    Sinon.assert.calledOnce(mock_nextTurn);
   });
 
   it("should not allow confirming if GameStatus is not ACTION_SELECTED", function () {

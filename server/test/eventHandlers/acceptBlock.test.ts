@@ -9,9 +9,19 @@ import {
 import { acceptBlock } from "../../src/eventHandlers/acceptBlock";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import { assert } from "chai";
-import * as nextTurn_all from "../../src/actions/nextTurn";
+import * as module_nextTurn from "../../src/actions/nextTurn";
 
 describe("acceptBlock event handler", function () {
+  let mock_nextTurn: Sinon.SinonStub;
+
+  this.beforeEach(function () {
+    mock_nextTurn = Sinon.stub(module_nextTurn, "nextTurn").returns();
+  });
+
+  this.afterEach(function () {
+    mock_nextTurn.restore();
+  });
+
   it("should forward block acceptance event to all users", function () {
     const mockMessageAllFn = Sinon.stub();
     const state = generateStateWithNPlayers(2);
@@ -33,7 +43,6 @@ describe("acceptBlock event handler", function () {
   });
 
   it("should trigger next turn", function () {
-    const stub_nextTurn = Sinon.stub(nextTurn_all, "nextTurn").returns();
     const state = generateStateWithNPlayers(2);
     state.currentAction = {
       action: GameActionMove.ASSASSINATE,
@@ -49,8 +58,7 @@ describe("acceptBlock event handler", function () {
       user: "tester-0",
     };
     acceptBlock(state, event, Sinon.stub());
-    Sinon.assert.calledOnce(stub_nextTurn);
-    stub_nextTurn.restore();
+    Sinon.assert.calledOnce(mock_nextTurn);
   });
 
   it("should not allow players other than current player to accept", function () {

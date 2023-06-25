@@ -116,7 +116,7 @@ All events include {event, user, data}. Fields noted below are members of the da
 - START_GAME: {}
 - CHOOSE_ACTION: {action, targetPlayer}
 - CONFIRM_ACTION: {targetPlayer}
-- nextTurn: {currentPlayerName}
+- NEXT_TURN: {name} name = new current player
 - PLAYER_DISCONNECT: {} if received during pre-game, clients should delete player from state, as said player has left
 - CURRENT_STATE: {state}
 - PAUSE_GAME: {reason}

@@ -93,7 +93,7 @@ export class GameRunner {
         //  process currentAction if it's set
         if (this._gameState.currentAction) {
           confirmAction(this._gameState, gameEvent, this._messageAllFn, true);
-        } else nextTurn(this._gameState);
+        } else nextTurn(this._gameState, this._messageAllFn);
         break;
 
       case GameEventType.PLAYER_DISCONNECT:

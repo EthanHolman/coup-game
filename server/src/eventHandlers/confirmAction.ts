@@ -93,5 +93,5 @@ export function confirmAction(
       GameActionMove.TAX,
     ].includes(state.currentAction?.action)
   )
-    nextTurn(state);
+    nextTurn(state, messageAllFn);
 }

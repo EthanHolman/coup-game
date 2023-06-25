@@ -16,5 +16,6 @@ export function acceptBlock(
     throw "Only current player can accept the block";
 
   messageAllFn(gameEvent);
-  nextTurn(state);
+
+  nextTurn(state, messageAllFn);
 }
