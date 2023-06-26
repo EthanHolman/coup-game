@@ -8,7 +8,7 @@ export function pauseGame(
   messageAllFn: messageAllFn,
   reason: string = "game paused"
 ) {
-  if (state.status === GameStatus.PRE_GAME)
+  if (state.getStatus() === GameStatus.PRE_GAME)
     throw "cannot pause game during pre-game";
 
   const event = createServerEvent(GameEventType.PAUSE_GAME, { reason });

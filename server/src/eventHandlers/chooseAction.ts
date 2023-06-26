@@ -12,7 +12,7 @@ export function chooseAction(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ) {
-  if (state.status !== GameStatus.AWAITING_ACTION)
+  if (state.getStatus() !== GameStatus.AWAITING_ACTION)
     throw "chooseAction only valid when status = AWAITING_ACTION";
 
   if (gameEvent.user !== state.currentPlayer.name)

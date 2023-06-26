@@ -176,7 +176,7 @@ describe("blockAction event handler", function () {
 
   it("shouldn't allow blocking if GameStatus is not ACTION_SELECTED", function () {
     const state = generateStateWithNPlayers(3);
-    Sinon.replaceGetter(state, "status", () => GameStatus.AWAITING_ACTION);
+    Sinon.replace(state, "getStatus", () => GameStatus.AWAITING_ACTION);
     const event: GameEvent = {
       event: GameEventType.BLOCK_ACTION,
       user: "tester-2",

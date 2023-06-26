@@ -189,7 +189,7 @@ describe("confirmAction event handler", function () {
 
   it("should not allow confirming if GameStatus is not ACTION_SELECTED", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.AWAITING_ACTION);
+    Sinon.replace(state, "getStatus", () => GameStatus.AWAITING_ACTION);
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",

@@ -18,7 +18,7 @@ export function playerDisconnect(
     newHost.isHost = true;
   }
 
-  if (state.status === GameStatus.PRE_GAME) {
+  if (state.getStatus() === GameStatus.PRE_GAME) {
     player.cards.forEach((x) => state.deck.discardCard(x.card));
     state.removePlayer(player.name);
     messageAllFn(gameEvent);

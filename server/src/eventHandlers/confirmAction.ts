@@ -16,7 +16,7 @@ export function confirmAction(
   messageAllFn: messageAllFn,
   autoConfirm?: boolean // bypass player validation and event messaging to all users
 ) {
-  if (state.status !== GameStatus.ACTION_SELECTED)
+  if (state.getStatus() !== GameStatus.ACTION_SELECTED)
     throw "confirmAction only valid when status = ACTION_SELECTED";
 
   if (!autoConfirm) {

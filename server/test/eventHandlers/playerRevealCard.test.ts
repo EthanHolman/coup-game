@@ -11,11 +11,12 @@ import {
 } from "../../../shared/enums";
 import { assert } from "chai";
 import { SERVER_USERNAME } from "../../../shared/globals";
+import { GameState } from "../../src/GameState";
 
 describe("playerRevealCard event handler", function () {
   it("should throw error when GameStatus is not PLAYER_LOSING_CARD", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
     const event: GameEvent = {
       event: GameEventType.PLAYER_REVEAL_CARD,
       user: "unlucky",
@@ -29,7 +30,7 @@ describe("playerRevealCard event handler", function () {
 
   it("should throw error when the wrong people send event to lose a card", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    Sinon.replace(state, "getStatus", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "" };
     const event: GameEvent = {
       event: GameEventType.PLAYER_REVEAL_CARD,
@@ -44,7 +45,7 @@ describe("playerRevealCard event handler", function () {
 
   it("should throw error if card is missing from event data", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    Sinon.replace(state, "getStatus", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "" };
     const event: GameEvent = {
       event: GameEventType.PLAYER_REVEAL_CARD,
@@ -58,7 +59,7 @@ describe("playerRevealCard event handler", function () {
 
   it("should update appropriate player: call player.revealCard", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    Sinon.replace(state, "getStatus", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "unlucky", reason: "" };
     const playerLosingCard = new Player("unlucky", [
       Card.CAPTAIN,
@@ -83,7 +84,7 @@ describe("playerRevealCard event handler", function () {
 
   it("should clear playerLosingCard from gameState", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    Sinon.replace(state, "getStatus", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "" };
     const event: GameEvent = {
       event: GameEventType.PLAYER_REVEAL_CARD,
@@ -98,7 +99,7 @@ describe("playerRevealCard event handler", function () {
 
   it("should forward event to all users", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    Sinon.replace(state, "getStatus", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "" };
     const event: GameEvent = {
       event: GameEventType.PLAYER_REVEAL_CARD,
@@ -120,7 +121,7 @@ describe("playerRevealCard event handler", function () {
     ]);
     unluckyPlayer.revealCard(Card.ASSASSIN);
     state.addPlayer(unluckyPlayer);
-    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    Sinon.replace(state, "getStatus", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: unluckyPlayer.name, reason: "" };
     const event: GameEvent = {
       event: GameEventType.PLAYER_REVEAL_CARD,
@@ -150,7 +151,7 @@ describe("playerRevealCard event handler", function () {
     ]);
     unluckyPlayer.revealCard(Card.ASSASSIN);
     state.addPlayer(unluckyPlayer);
-    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    Sinon.replace(state, "getStatus", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: unluckyPlayer.name, reason: "" };
     state.currentAction = {
       action: GameActionMove.ASSASSINATE,
@@ -167,5 +168,40 @@ describe("playerRevealCard event handler", function () {
     playerRevealCard(state, event, mockMessageAllPlayerFn);
 
     assert.isUndefined(state.currentAction);
+  });
+
+  it("should send game_over message to all players if player losing card triggered end of game", function () {
+    const state = new GameState();
+    const player0 = new Player("player0", [Card.AMBASSADOR, Card.ASSASSIN]);
+    player0.revealCard(Card.ASSASSIN);
+    state.addPlayer(player0);
+    const player1 = new Player("player1", [Card.CAPTAIN, Card.CONTESSA]);
+    player1.revealCard(Card.CAPTAIN);
+    state.addPlayer(player1);
+    const player2 = new Player("player2", [Card.CAPTAIN, Card.CONTESSA]);
+    player2.revealCard(Card.CAPTAIN);
+    player2.revealCard(Card.CONTESSA);
+    state.addPlayer(player2);
+    state.start();
+
+    state.playerLosingCard = { player: "player0", reason: "he sux" };
+    const mockMessageAllPlayerFn = Sinon.stub();
+
+    const event: GameEvent = {
+      event: GameEventType.PLAYER_REVEAL_CARD,
+      user: "player0",
+      data: { card: Card.AMBASSADOR },
+    };
+
+    playerRevealCard(state, event, mockMessageAllPlayerFn);
+
+    assert.equal(state.getStatus(), GameStatus.GAME_OVER);
+    const calls = mockMessageAllPlayerFn.getCalls();
+    assert.lengthOf(calls, 3);
+    assert.deepStrictEqual(calls[2].args[0], {
+      event: GameEventType.GAME_OVER,
+      user: SERVER_USERNAME,
+      data: { name: "player1" },
+    });
   });
 });

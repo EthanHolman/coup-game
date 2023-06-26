@@ -12,7 +12,7 @@ export function buildClientState(
   return {
     currentPlayerName: state.currentPlayer.name,
     isPaused: state.isPaused,
-    status: state.status,
+    status: state.getStatus(),
     currentAction: state.currentAction,
     blockAction: state.blockAction,
     playerLosingCard: state.playerLosingCard,

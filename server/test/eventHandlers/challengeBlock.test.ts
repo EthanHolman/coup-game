@@ -36,7 +36,7 @@ describe("challengeBlock event handler", function () {
 
   it("shouldn't allow event if GameStatus is not ACTION_BLOCKED", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.AWAITING_ACTION);
+    Sinon.replace(state, "getStatus", () => GameStatus.AWAITING_ACTION);
     const event: GameEvent = {
       event: GameEventType.CHALLENGE_BLOCK,
       user: "tester-1",

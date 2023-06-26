@@ -32,7 +32,7 @@ describe("startGame", function () {
     startGame(state, messageAllFn);
 
     assert.isFalse(state.isPaused);
-    assert.equal(state.status, GameStatus.AWAITING_ACTION);
+    assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
     assert.equal(state.currentPlayer.name, "tester-0");
   });
 
@@ -43,7 +43,7 @@ describe("startGame", function () {
     startGame(state, messageAllFn);
 
     assert.isFalse(state.isPaused);
-    assert.equal(state.status, GameStatus.AWAITING_ACTION);
+    assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
     assert.equal(state.currentPlayer.name, "tester-0");
   });
 

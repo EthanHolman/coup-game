@@ -9,7 +9,7 @@ export function acceptBlock(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ) {
-  if (state.status !== GameStatus.ACTION_BLOCKED)
+  if (state.getStatus() !== GameStatus.ACTION_BLOCKED)
     throw "accept block is only valid when status = ACTION_BLOCKED";
 
   if (gameEvent.user !== state.currentPlayer.name)

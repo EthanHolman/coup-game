@@ -36,8 +36,11 @@ export class GameState {
     return this._players;
   }
 
-  get status(): GameStatus {
+  getStatus(): GameStatus {
     if (!this._isStarted) return GameStatus.PRE_GAME;
+
+    if (this.players.filter((x) => !x.isOut).length < 2)
+      return GameStatus.GAME_OVER;
 
     if (this.playerLosingCard) return GameStatus.PLAYER_LOSING_CARD;
 
@@ -58,7 +61,7 @@ export class GameState {
   }
 
   removePlayer(name: string): void {
-    if (this.status !== GameStatus.PRE_GAME)
+    if (this.getStatus() !== GameStatus.PRE_GAME)
       throw "players can only be removed during pre-game";
 
     const index = this.players.findIndex((x) => x.name === name);

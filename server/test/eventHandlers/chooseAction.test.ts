@@ -40,7 +40,7 @@ describe("chooseAction event handler", function () {
 
   it("shouldn't allow choosing an action if GameStatus is not AWAITING_ACTION", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
     const event: GameEvent = {
       event: GameEventType.CHOOSE_ACTION,
       user: "tester-0",

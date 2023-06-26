@@ -23,7 +23,7 @@ describe("dispatchPlayerLoseCard action", function () {
 
   it("should not be allowed when there is already a player losing a card", function () {
     const state = generateStateWithNPlayers(3);
-    Sinon.replaceGetter(state, "status", () => GameStatus.PLAYER_LOSING_CARD);
+    Sinon.replace(state, "getStatus", () => GameStatus.PLAYER_LOSING_CARD);
     state.playerLosingCard = { player: "tester-1", reason: "idk" };
 
     assert.throws(function () {

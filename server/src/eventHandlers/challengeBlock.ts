@@ -11,7 +11,7 @@ export function challengeBlock(
   messageAllFn: messageAllFn
 ) {
   // validations
-  if (state.status !== GameStatus.ACTION_BLOCKED)
+  if (state.getStatus() !== GameStatus.ACTION_BLOCKED)
     throw "challengeBlock only valid when status = ACTION_BLOCKED";
 
   if (state.blockAction!.user === gameEvent.user)

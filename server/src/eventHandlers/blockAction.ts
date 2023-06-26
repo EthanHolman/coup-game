@@ -13,7 +13,7 @@ export function blockAction(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ) {
-  if (state.status !== GameStatus.ACTION_SELECTED)
+  if (state.getStatus() !== GameStatus.ACTION_SELECTED)
     throw "blockAction only valid when status = ACTION_SELECTED";
 
   if (gameEvent.user === state.currentPlayer.name)

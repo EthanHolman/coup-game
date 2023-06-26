@@ -13,12 +13,12 @@ describe("playerDisconnect event handler", function () {
   it("should update the player as no longer connected, and pause game, if game is started", function () {
     const state = new GameState();
     state.start();
-    const player = new Player("elon musk", [Card.AMBASSADOR, Card.DUKE]);
+    const player = new Player("some dude", [Card.AMBASSADOR, Card.DUKE]);
     state.addPlayer(player);
 
     const event: GameEvent = {
       event: GameEventType.PLAYER_DISCONNECT,
-      user: "elon musk",
+      user: "some dude",
     };
 
     playerDisconnect(state, event, Sinon.stub());
@@ -29,19 +29,19 @@ describe("playerDisconnect event handler", function () {
 
   it("should remove player from state if player disconnects during pre-game", function () {
     const state = new GameState();
-    assert.equal(state.status, GameStatus.PRE_GAME);
-    const player = new Player("elon musk", [Card.AMBASSADOR, Card.DUKE]);
+    assert.equal(state.getStatus(), GameStatus.PRE_GAME);
+    const player = new Player("some dude", [Card.AMBASSADOR, Card.DUKE]);
     state.addPlayer(player);
 
     const event: GameEvent = {
       event: GameEventType.PLAYER_DISCONNECT,
-      user: "elon musk",
+      user: "some dude",
     };
 
     playerDisconnect(state, event, Sinon.stub());
 
     assert.equal(
-      state.players.findIndex((x) => x.name === "elon musk"),
+      state.players.findIndex((x) => x.name === "some dude"),
       -1
     );
   });
@@ -49,14 +49,14 @@ describe("playerDisconnect event handler", function () {
   it("should discard player cards if this happens pre-game", function () {
     const state = new GameState();
     state.deck = new Deck([Card.AMBASSADOR, Card.ASSASSIN, Card.CONTESSA]);
-    assert.equal(state.status, GameStatus.PRE_GAME);
+    assert.equal(state.getStatus(), GameStatus.PRE_GAME);
 
-    const player = new Player("elon musk", state.deck.drawCard(2));
+    const player = new Player("some dude", state.deck.drawCard(2));
     state.addPlayer(player);
 
     const event: GameEvent = {
       event: GameEventType.PLAYER_DISCONNECT,
-      user: "elon musk",
+      user: "some dude",
     };
 
     assert.equal(state.deck._deck.length, 1);
@@ -73,14 +73,14 @@ describe("playerDisconnect event handler", function () {
 
   it("should alert all other players in pre-game of player disconnecting", function () {
     const state = new GameState();
-    assert.equal(state.status, GameStatus.PRE_GAME);
+    assert.equal(state.getStatus(), GameStatus.PRE_GAME);
 
-    const player = new Player("elon musk", state.deck.drawCard(2));
+    const player = new Player("some dude", state.deck.drawCard(2));
     state.addPlayer(player);
 
     const event: GameEvent = {
       event: GameEventType.PLAYER_DISCONNECT,
-      user: "elon musk",
+      user: "some dude",
     };
 
     const messageAllFn = Sinon.fake();

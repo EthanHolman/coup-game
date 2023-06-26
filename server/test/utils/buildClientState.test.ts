@@ -21,7 +21,7 @@ describe("util buildClientState", function () {
   it("should map correct game status", function () {
     const state = generateStateWithNPlayers(2);
     assert.isFalse(state.isPaused);
-    assert.equal(state.status, GameStatus.AWAITING_ACTION);
+    assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
     const result = buildClientState(state, "tester-1");
     assert.isFalse(result.isPaused);
     assert.equal(result.status, GameStatus.AWAITING_ACTION);
@@ -55,7 +55,7 @@ describe("util buildClientState", function () {
 
   it("should include blockAction if present in state", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_BLOCKED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_BLOCKED);
     const action = {
       event: GameEventType.BLOCK_ACTION,
       user: "tester-1",

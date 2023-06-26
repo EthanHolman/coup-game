@@ -36,7 +36,7 @@ describe("challengeAction event handler", function () {
 
   it("should not allow event if GameState is not ACTION_SELECTED", function () {
     const state = generateStateWithNPlayers(2);
-    Sinon.replaceGetter(state, "status", () => GameStatus.AWAITING_ACTION);
+    Sinon.replace(state, "getStatus", () => GameStatus.AWAITING_ACTION);
 
     const event: GameEvent = {
       event: GameEventType.CHALLENGE_ACTION,
@@ -51,7 +51,7 @@ describe("challengeAction event handler", function () {
   it("should not be allowed by current player", function () {
     const state = generateStateWithNPlayers(2);
     assert.equal(state.currentPlayer.name, "tester-0");
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
     state.currentAction = { action: GameActionMove.STEAL };
 
     const event: GameEvent = {
@@ -71,7 +71,7 @@ describe("challengeAction event handler", function () {
     );
     state.addPlayer(new Player("tester-1", [Card.AMBASSADOR, Card.CONTESSA]));
     state.start();
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
 
     state.currentAction = {
       action: GameActionMove.STEAL,
@@ -104,7 +104,7 @@ describe("challengeAction event handler", function () {
     state.addPlayer(player0);
     state.addPlayer(new Player("tester-1", [Card.AMBASSADOR, Card.CONTESSA]));
     state.start();
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
 
     state.currentAction = {
       action: GameActionMove.STEAL,
@@ -133,7 +133,7 @@ describe("challengeAction event handler", function () {
     );
     state.addPlayer(new Player("tester-1", [Card.AMBASSADOR, Card.CONTESSA]));
     state.start();
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
 
     state.currentAction = {
       action: GameActionMove.STEAL,
@@ -163,7 +163,7 @@ describe("challengeAction event handler", function () {
     );
     state.addPlayer(new Player("tester-1", [Card.AMBASSADOR, Card.CONTESSA]));
     state.start();
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
 
     state.currentAction = {
       action: GameActionMove.STEAL,
@@ -188,7 +188,7 @@ describe("challengeAction event handler", function () {
     );
     state.addPlayer(new Player("tester-1", [Card.AMBASSADOR, Card.CONTESSA]));
     state.start();
-    Sinon.replaceGetter(state, "status", () => GameStatus.ACTION_SELECTED);
+    Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
 
     state.currentAction = {
       action: GameActionMove.STEAL,

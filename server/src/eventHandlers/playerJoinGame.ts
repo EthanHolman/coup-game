@@ -10,7 +10,7 @@ export function playerJoinGame(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ) {
-  if (state.status !== GameStatus.PRE_GAME) {
+  if (state.getStatus() !== GameStatus.PRE_GAME) {
     // allow disconnected players to reconnect
     const player = state.players.find(
       (x) => x.name === gameEvent.user && !x.isConnected
