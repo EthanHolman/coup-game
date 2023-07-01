@@ -10,17 +10,17 @@ import { SERVER_USERNAME } from "../../../shared/globals";
 describe("nextTurn action handler", function () {
   it("should update currentPlayerId from 0 to 1", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayerId, 0);
+    assert.strictEqual(state.currentPlayerId, 0);
     nextTurn(state, Sinon.stub());
-    assert.equal(state.currentPlayerId, 1);
+    assert.strictEqual(state.currentPlayerId, 1);
   });
 
   it("should update currentPlayerId from 2 to 0", function () {
     const state = generateStateWithNPlayers(3);
     state.currentPlayerId = 2;
-    assert.equal(state.currentPlayerId, 2);
+    assert.strictEqual(state.currentPlayerId, 2);
     nextTurn(state, Sinon.stub());
-    assert.equal(state.currentPlayerId, 0);
+    assert.strictEqual(state.currentPlayerId, 0);
   });
 
   it("should update currentPlayerId from 1 to 0 when playerId 2 is out", function () {
@@ -30,9 +30,9 @@ describe("nextTurn action handler", function () {
     player.revealCard(Card.ASSASSIN);
     state.addPlayer(player);
     state.currentPlayerId = 1;
-    assert.equal(state.currentPlayerId, 1);
+    assert.strictEqual(state.currentPlayerId, 1);
     nextTurn(state, Sinon.stub());
-    assert.equal(state.currentPlayerId, 0);
+    assert.strictEqual(state.currentPlayerId, 0);
   });
 
   it("should clear playerLosingCard", function () {
@@ -65,7 +65,7 @@ describe("nextTurn action handler", function () {
 
   it("should send event to all players that its a new player's turn", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     const mockMessageAllFn = Sinon.stub();
     nextTurn(state, mockMessageAllFn);
     Sinon.assert.calledOnce(mockMessageAllFn);

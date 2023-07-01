@@ -7,7 +7,7 @@ describe("deck", function () {
     const numCards = 15;
 
     const deck = new Deck();
-    assert.equal(deck._deck.length, numCards);
+    assert.strictEqual(deck._deck.length, numCards);
 
     for (let x = 0; x < numCards; x++) {
       assert.include(ALL_CARDS, deck._deck[x]);
@@ -31,7 +31,7 @@ describe("deck", function () {
     actualDeckCards.sort();
 
     for (let i = 0; i < expectedDeckCards.length; i++)
-      assert.equal(expectedDeckCards[i], actualDeckCards[i]);
+      assert.strictEqual(expectedDeckCards[i], actualDeckCards[i]);
   });
 
   it("should allow peeking at a card", function () {
@@ -41,9 +41,9 @@ describe("deck", function () {
     const card = deck.peekCard();
 
     assert.include(ALL_CARDS, card);
-    assert.equal(deck._deck[0], card);
-    assert.equal(originalLength, deck._deck.length);
-    assert.equal(originalLength, deck.count);
+    assert.strictEqual(deck._deck[0], card);
+    assert.strictEqual(originalLength, deck._deck.length);
+    assert.strictEqual(originalLength, deck.count);
   });
 
   it("should allow drawing a card from top of deck", function () {
@@ -51,10 +51,10 @@ describe("deck", function () {
 
     const card = deck.drawCard()[0];
 
-    assert.equal(card, Card.AMBASSADOR);
-    assert.equal(deck._deck[0], Card.ASSASSIN);
+    assert.strictEqual(card, Card.AMBASSADOR);
+    assert.strictEqual(deck._deck[0], Card.ASSASSIN);
     assert.lengthOf(deck._deck, 2);
-    assert.equal(deck.count, 2);
+    assert.strictEqual(deck.count, 2);
   });
 
   it("should allow drawing multiple cards", function () {
@@ -62,11 +62,11 @@ describe("deck", function () {
 
     const card = deck.drawCard(2);
 
-    assert.equal(card[0], Card.AMBASSADOR);
-    assert.equal(card[1], Card.ASSASSIN);
-    assert.equal(deck._deck[0], Card.CAPTAIN);
+    assert.strictEqual(card[0], Card.AMBASSADOR);
+    assert.strictEqual(card[1], Card.ASSASSIN);
+    assert.strictEqual(deck._deck[0], Card.CAPTAIN);
     assert.lengthOf(deck._deck, 1);
-    assert.equal(deck.count, 1);
+    assert.strictEqual(deck.count, 1);
   });
 
   it("should not allow drawing less than 1 cards", function () {
@@ -86,10 +86,10 @@ describe("deck", function () {
     deck.discardCard(toDiscard);
 
     assert.lengthOf(deck._deck, 3);
-    assert.equal(deck.count, 3);
-    assert.equal(deck._deck[0], Card.AMBASSADOR);
-    assert.equal(deck._deck[1], Card.ASSASSIN);
-    assert.equal(deck._deck[2], Card.CONTESSA);
+    assert.strictEqual(deck.count, 3);
+    assert.strictEqual(deck._deck[0], Card.AMBASSADOR);
+    assert.strictEqual(deck._deck[1], Card.ASSASSIN);
+    assert.strictEqual(deck._deck[2], Card.CONTESSA);
   });
 
   it("should not allow discarding something that isnt a 'card'", function () {

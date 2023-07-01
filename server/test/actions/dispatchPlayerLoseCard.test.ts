@@ -17,8 +17,11 @@ describe("dispatchPlayerLoseCard action", function () {
       Sinon.stub()
     );
 
-    assert.equal(state.playerLosingCard?.player, "tester-1");
-    assert.equal(state.playerLosingCard?.reason, "sad day you lose a card");
+    assert.strictEqual(state.playerLosingCard?.player, "tester-1");
+    assert.strictEqual(
+      state.playerLosingCard?.reason,
+      "sad day you lose a card"
+    );
   });
 
   it("should not be allowed when there is already a player losing a card", function () {

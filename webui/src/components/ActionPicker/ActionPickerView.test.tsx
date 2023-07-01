@@ -65,7 +65,7 @@ describe("ActionPickerView component", function () {
       data: { action: GameActionMove.INCOME },
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
-    assert.equal(call, JSON.stringify(expectedEvent));
+    assert.strictEqual(call, JSON.stringify(expectedEvent));
   });
 
   it("should trigger sendEvent callback when user selects a GameEventType", async function () {
@@ -90,7 +90,7 @@ describe("ActionPickerView component", function () {
       data: {},
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
-    assert.equal(call, JSON.stringify(expectedEvent));
+    assert.strictEqual(call, JSON.stringify(expectedEvent));
   });
 
   it("should trigger sendEvent callback after user selects a player for targeted action", async function () {
@@ -116,7 +116,7 @@ describe("ActionPickerView component", function () {
       data: { action: GameActionMove.ASSASSINATE, targetPlayer: "test2" },
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
-    assert.equal(call, JSON.stringify(expectedEvent));
+    assert.strictEqual(call, JSON.stringify(expectedEvent));
   });
 
   it("should trigger sendEvent callback after user selects block action and selects a card to block with", async function () {
@@ -144,6 +144,6 @@ describe("ActionPickerView component", function () {
       data: { card: Card.CAPTAIN },
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
-    assert.equal(call, JSON.stringify(expectedEvent));
+    assert.strictEqual(call, JSON.stringify(expectedEvent));
   });
 });

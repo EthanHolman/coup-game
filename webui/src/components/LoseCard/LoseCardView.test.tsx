@@ -45,6 +45,6 @@ describe("LoseCardView component", function () {
 
     Sinon.assert.calledOnce(mockSendEvent);
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
-    assert.equal(call, JSON.stringify(expectedEvent));
+    assert.strictEqual(call, JSON.stringify(expectedEvent));
   });
 });

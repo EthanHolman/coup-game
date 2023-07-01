@@ -94,7 +94,7 @@ describe("chooseAction event handler", function () {
 
   it("should not accept actions from non-current user", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     assert.throws(function () {
       chooseAction(
         state,
@@ -144,7 +144,7 @@ describe("chooseAction event handler", function () {
 
   it("coup should not be allowed without enough coins", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.coins, 2);
+    assert.strictEqual(state.currentPlayer.coins, 2);
     const event = {
       event: GameEventType.CHOOSE_ACTION,
       user: "tester-0",
@@ -347,7 +347,7 @@ describe("chooseAction event handler", function () {
     chooseAction(state, event, Sinon.stub());
 
     assert.deepEqual(state.currentAction, event.data);
-    assert.equal(player1.coins, 1);
+    assert.strictEqual(player1.coins, 1);
   });
 
   it("should charge currentPlayer 3 coins if they're going to assassinate", function () {
@@ -367,6 +367,6 @@ describe("chooseAction event handler", function () {
     chooseAction(state, event, Sinon.stub());
 
     assert.deepEqual(state.currentAction, event.data);
-    assert.equal(player1.coins, 1);
+    assert.strictEqual(player1.coins, 1);
   });
 });

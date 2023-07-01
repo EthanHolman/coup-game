@@ -50,7 +50,7 @@ describe("challengeAction event handler", function () {
 
   it("should not be allowed by current player", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     Sinon.replace(state, "getStatus", () => GameStatus.ACTION_SELECTED);
     state.currentAction = { action: GameActionMove.STEAL };
 

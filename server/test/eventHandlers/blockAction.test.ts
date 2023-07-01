@@ -16,7 +16,7 @@ import Sinon from "sinon";
 describe("blockAction event handler", function () {
   it("should not allow blocking user's own action", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.STEAL,
       targetPlayer: "tester-1",
@@ -34,7 +34,7 @@ describe("blockAction event handler", function () {
 
   it("should allow 'contessa' to block assassination'", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.ASSASSINATE,
       targetPlayer: "tester-1",
@@ -50,7 +50,7 @@ describe("blockAction event handler", function () {
 
   it("should not allow blocking assassination with cards other than contessa", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.ASSASSINATE,
       targetPlayer: "tester-1",
@@ -70,7 +70,7 @@ describe("blockAction event handler", function () {
 
   it("shouldn't allow blocking as contessa if user isn't the action target", function () {
     const state = generateStateWithNPlayers(3);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.ASSASSINATE,
       targetPlayer: "tester-1",
@@ -88,7 +88,7 @@ describe("blockAction event handler", function () {
 
   it("should allow 'duke' to block foreign aid'", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = { action: GameActionMove.FOREIGN_AID };
     const event: GameEvent = {
       event: GameEventType.BLOCK_ACTION,
@@ -101,7 +101,7 @@ describe("blockAction event handler", function () {
 
   it("should not allow blocking foreign aid with cards other than duke", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = { action: GameActionMove.FOREIGN_AID };
     ALL_CARDS.filter((card) => card !== Card.DUKE).forEach((card) => {
       const event: GameEvent = {
@@ -119,7 +119,7 @@ describe("blockAction event handler", function () {
   it("should allow 'ambassador/captain' to block stealing'", function () {
     [Card.AMBASSADOR, Card.CAPTAIN].forEach((card) => {
       const state = generateStateWithNPlayers(2);
-      assert.equal(state.currentPlayer.name, "tester-0");
+      assert.strictEqual(state.currentPlayer.name, "tester-0");
       state.currentAction = {
         action: GameActionMove.STEAL,
         targetPlayer: "tester-1",
@@ -136,7 +136,7 @@ describe("blockAction event handler", function () {
 
   it("should not allow blocking stealing with cards other than ambassador/captain", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.STEAL,
       targetPlayer: "tester-1",
@@ -206,7 +206,7 @@ describe("blockAction event handler", function () {
   it("should send event to all users if event passes validation", function () {
     const mockMessageAllFn = Sinon.stub();
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.ASSASSINATE,
       targetPlayer: "tester-1",

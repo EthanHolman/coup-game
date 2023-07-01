@@ -34,8 +34,8 @@ describe("startGame", function () {
 
     stub.restore();
     assert.isFalse(state.isPaused);
-    assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.getStatus(), GameStatus.AWAITING_ACTION);
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
   });
 
   it("should be able to start with more than 2 players", function () {
@@ -47,8 +47,8 @@ describe("startGame", function () {
 
     stub.restore();
     assert.isFalse(state.isPaused);
-    assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.getStatus(), GameStatus.AWAITING_ACTION);
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
   });
 
   it("should send event to all users that game is starting", function () {

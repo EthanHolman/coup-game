@@ -195,7 +195,7 @@ describe("playerRevealCard event handler", function () {
 
     playerRevealCard(state, event, mockMessageAllPlayerFn);
 
-    assert.equal(state.getStatus(), GameStatus.GAME_OVER);
+    assert.strictEqual(state.getStatus(), GameStatus.GAME_OVER);
     const calls = mockMessageAllPlayerFn.getCalls();
     assert.lengthOf(calls, 3);
     assert.deepStrictEqual(calls[2].args[0], {

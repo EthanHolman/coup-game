@@ -9,7 +9,7 @@ describe("CardButtons component", function () {
   it("should display all cards as buttons", function () {
     render(<CardButtons onPickCard={Sinon.stub()} />);
     const buttons = screen.getAllByRole("button");
-    assert.equal(buttons.length, ALL_CARDS.length);
+    assert.strictEqual(buttons.length, ALL_CARDS.length);
     buttons.forEach((button) => {
       assert.isTrue(ALL_CARDS.includes(button.textContent as any));
     });

@@ -29,7 +29,7 @@ describe("playerDisconnect event handler", function () {
 
   it("should remove player from state if player disconnects during pre-game", function () {
     const state = new GameState();
-    assert.equal(state.getStatus(), GameStatus.PRE_GAME);
+    assert.strictEqual(state.getStatus(), GameStatus.PRE_GAME);
     const player = new Player("some dude", [Card.AMBASSADOR, Card.DUKE]);
     state.addPlayer(player);
 
@@ -40,7 +40,7 @@ describe("playerDisconnect event handler", function () {
 
     playerDisconnect(state, event, Sinon.stub());
 
-    assert.equal(
+    assert.strictEqual(
       state.players.findIndex((x) => x.name === "some dude"),
       -1
     );
@@ -49,7 +49,7 @@ describe("playerDisconnect event handler", function () {
   it("should discard player cards if this happens pre-game", function () {
     const state = new GameState();
     state.deck = new Deck([Card.AMBASSADOR, Card.ASSASSIN, Card.CONTESSA]);
-    assert.equal(state.getStatus(), GameStatus.PRE_GAME);
+    assert.strictEqual(state.getStatus(), GameStatus.PRE_GAME);
 
     const player = new Player("some dude", state.deck.drawCard(2));
     state.addPlayer(player);
@@ -59,8 +59,8 @@ describe("playerDisconnect event handler", function () {
       user: "some dude",
     };
 
-    assert.equal(state.deck._deck.length, 1);
-    assert.equal(state.deck.peekCard(), Card.CONTESSA);
+    assert.strictEqual(state.deck._deck.length, 1);
+    assert.strictEqual(state.deck.peekCard(), Card.CONTESSA);
 
     playerDisconnect(state, event, Sinon.stub());
 
@@ -73,7 +73,7 @@ describe("playerDisconnect event handler", function () {
 
   it("should alert all other players in pre-game of player disconnecting", function () {
     const state = new GameState();
-    assert.equal(state.getStatus(), GameStatus.PRE_GAME);
+    assert.strictEqual(state.getStatus(), GameStatus.PRE_GAME);
 
     const player = new Player("some dude", state.deck.drawCard(2));
     state.addPlayer(player);

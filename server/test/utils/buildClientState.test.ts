@@ -15,24 +15,24 @@ describe("util buildClientState", function () {
   it("should map correct currentPlayer", function () {
     const state = generateStateWithNPlayers(2);
     const result = buildClientState(state, "tester-1");
-    assert.equal(result.currentPlayerName, "tester-0");
+    assert.strictEqual(result.currentPlayerName, "tester-0");
   });
 
   it("should map correct game status", function () {
     const state = generateStateWithNPlayers(2);
     assert.isFalse(state.isPaused);
-    assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
+    assert.strictEqual(state.getStatus(), GameStatus.AWAITING_ACTION);
     const result = buildClientState(state, "tester-1");
     assert.isFalse(result.isPaused);
-    assert.equal(result.status, GameStatus.AWAITING_ACTION);
+    assert.strictEqual(result.status, GameStatus.AWAITING_ACTION);
   });
 
   it("should map deck count correctly", function () {
     const state = generateStateWithNPlayers(2);
     state.deck.drawCard(1);
-    assert.equal(state.deck.count, 14);
+    assert.strictEqual(state.deck.count, 14);
     const result = buildClientState(state, "tester-1");
-    assert.equal(result.deckCount, 14);
+    assert.strictEqual(result.deckCount, 14);
   });
 
   it("should not include currentAction or blockAction if missing", function () {
@@ -90,7 +90,7 @@ describe("util buildClientState", function () {
     assert.lengthOf(players, 4);
 
     const player0 = players.find((x) => x.name === "tester-0")!;
-    assert.equal(player0.coins, 2);
+    assert.strictEqual(player0.coins, 2);
     assert.isFalse(player0.isHost);
     assert.isFalse(player0.isOut);
     assert.sameDeepMembers(player0.cards, [
@@ -99,7 +99,7 @@ describe("util buildClientState", function () {
     ]);
 
     const player1 = players.find((x) => x.name === "tester-1")!;
-    assert.equal(player1.coins, 0);
+    assert.strictEqual(player1.coins, 0);
     assert.isFalse(player1.isHost);
     assert.isFalse(player1.isOut);
     assert.sameDeepMembers(player1.cards, [
@@ -108,7 +108,7 @@ describe("util buildClientState", function () {
     ]);
 
     const player2 = players.find((x) => x.name === "tester-2")!;
-    assert.equal(player2.coins, 7);
+    assert.strictEqual(player2.coins, 7);
     assert.isTrue(player2.isHost);
     assert.isTrue(player2.isOut);
     assert.sameDeepMembers(player2.cards, [

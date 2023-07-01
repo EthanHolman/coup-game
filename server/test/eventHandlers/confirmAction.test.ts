@@ -48,44 +48,65 @@ describe("confirmAction event handler", function () {
 
   it("foreign aid should increase currentPlayers coins by 2", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+    assert.strictEqual(
+      state.players.find((x) => x.name === "tester-0")?.coins,
+      2
+    );
     state.currentAction = { action: GameActionMove.FOREIGN_AID };
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
     confirmAction(state, event, Sinon.stub());
-    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 4);
+    assert.strictEqual(
+      state.players.find((x) => x.name === "tester-0")?.coins,
+      4
+    );
   });
 
   it("income should increase currentPlayers coins by 1", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+    assert.strictEqual(
+      state.players.find((x) => x.name === "tester-0")?.coins,
+      2
+    );
     state.currentAction = { action: GameActionMove.INCOME };
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
     confirmAction(state, event, Sinon.stub());
-    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 3);
+    assert.strictEqual(
+      state.players.find((x) => x.name === "tester-0")?.coins,
+      3
+    );
   });
 
   it("tax should increase currentPlayers coins by 3", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+    assert.strictEqual(
+      state.players.find((x) => x.name === "tester-0")?.coins,
+      2
+    );
     state.currentAction = { action: GameActionMove.TAX };
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
       user: "tester-0",
     };
     confirmAction(state, event, Sinon.stub());
-    assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 5);
+    assert.strictEqual(
+      state.players.find((x) => x.name === "tester-0")?.coins,
+      5
+    );
   });
 
   describe("stealing", function () {
     it("from player with >2 coins: target should lose 2, currentplayer should gain 2", function () {
       const state = generateStateWithNPlayers(2);
-      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-0")?.coins,
+        2
+      );
       state.players.find((x) => x.name === "tester-1")!.coins = 3;
       state.currentAction = {
         action: GameActionMove.STEAL,
@@ -96,14 +117,23 @@ describe("confirmAction event handler", function () {
         user: "tester-1",
       };
       confirmAction(state, event, Sinon.stub());
-      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 4);
-      assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 1);
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-0")?.coins,
+        4
+      );
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-1")?.coins,
+        1
+      );
     });
 
     it("from player with 1 coin: target should lose 1 and currentplayer should gain 1", function () {
       const state = generateStateWithNPlayers(2);
       state.players.find((x) => x.name === "tester-1")!.coins = 1;
-      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-0")?.coins,
+        2
+      );
       state.currentAction = {
         action: GameActionMove.STEAL,
         targetPlayer: "tester-1",
@@ -113,13 +143,22 @@ describe("confirmAction event handler", function () {
         user: "tester-1",
       };
       confirmAction(state, event, Sinon.stub());
-      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 3);
-      assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 0);
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-0")?.coins,
+        3
+      );
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-1")?.coins,
+        0
+      );
     });
 
     it("from player with 0 coins should be no-op", function () {
       const state = generateStateWithNPlayers(2);
-      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-0")?.coins,
+        2
+      );
       state.players.find((x) => x.name === "tester-1")!.coins = 0;
       state.currentAction = {
         action: GameActionMove.STEAL,
@@ -130,14 +169,20 @@ describe("confirmAction event handler", function () {
         user: "tester-1",
       };
       confirmAction(state, event, Sinon.stub());
-      assert.equal(state.players.find((x) => x.name === "tester-0")?.coins, 2);
-      assert.equal(state.players.find((x) => x.name === "tester-1")?.coins, 0);
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-0")?.coins,
+        2
+      );
+      assert.strictEqual(
+        state.players.find((x) => x.name === "tester-1")?.coins,
+        0
+      );
     });
   });
 
   it("should not allow targeted actions to be confirmed by others than targetPlayer", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.ASSASSINATE,
       targetPlayer: "tester-1",
@@ -153,7 +198,7 @@ describe("confirmAction event handler", function () {
 
   it("should not allow non-targeted actions to be confirmed others than currentPlayer", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = { action: GameActionMove.TAX };
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
@@ -201,7 +246,7 @@ describe("confirmAction event handler", function () {
 
   it("should not broadcast event if autoConfirm is true", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.STEAL,
       targetPlayer: "tester-1",
@@ -217,7 +262,7 @@ describe("confirmAction event handler", function () {
 
   it("should bypass targeted player checks if autoConfirm is true", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = {
       action: GameActionMove.ASSASSINATE,
       targetPlayer: "tester-1",
@@ -231,7 +276,7 @@ describe("confirmAction event handler", function () {
 
   it("should bypass nontargeted player checks if autoConfirm is true", function () {
     const state = generateStateWithNPlayers(2);
-    assert.equal(state.currentPlayer.name, "tester-0");
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
     state.currentAction = { action: GameActionMove.TAX };
     const event: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,

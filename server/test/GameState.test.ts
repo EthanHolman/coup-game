@@ -9,7 +9,7 @@ describe("GameState", function () {
   describe("getStatus", function () {
     it("PRE_GAME", function () {
       const state = new GameState();
-      assert.equal(state.getStatus(), GameStatus.PRE_GAME);
+      assert.strictEqual(state.getStatus(), GameStatus.PRE_GAME);
     });
 
     it("GAME_OVER", function () {
@@ -20,24 +20,24 @@ describe("GameState", function () {
       player.revealCard(Card.ASSASSIN);
       state.addPlayer(player);
       state.start();
-      assert.equal(state.getStatus(), GameStatus.GAME_OVER);
+      assert.strictEqual(state.getStatus(), GameStatus.GAME_OVER);
     });
 
     it("PLAYER_LOSING_CARD", function () {
       const state = generateStateWithNPlayers(2);
       state.playerLosingCard = { player: "someone", reason: "they suck" };
-      assert.equal(state.getStatus(), GameStatus.PLAYER_LOSING_CARD);
+      assert.strictEqual(state.getStatus(), GameStatus.PLAYER_LOSING_CARD);
     });
 
     it("AWAITING_ACTION", function () {
       const state = generateStateWithNPlayers(2);
-      assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
+      assert.strictEqual(state.getStatus(), GameStatus.AWAITING_ACTION);
     });
 
     it("ACTION_SELECTED", function () {
       const state = generateStateWithNPlayers(2);
       state.currentAction = { action: GameActionMove.INCOME };
-      assert.equal(state.getStatus(), GameStatus.ACTION_SELECTED);
+      assert.strictEqual(state.getStatus(), GameStatus.ACTION_SELECTED);
     });
 
     it("ACTION_BLOCKED", function () {
@@ -51,7 +51,7 @@ describe("GameState", function () {
         user: "tester-1",
         data: { card: Card.CAPTAIN },
       };
-      assert.equal(state.getStatus(), GameStatus.ACTION_BLOCKED);
+      assert.strictEqual(state.getStatus(), GameStatus.ACTION_BLOCKED);
     });
   });
 });

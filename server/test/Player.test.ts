@@ -6,8 +6,8 @@ describe("player", function () {
   it("should be creatable with name and cards", function () {
     const cards = [Card.CONTESSA, Card.ASSASSIN];
     const player = new Player("Kody", cards);
-    assert.equal(player.name, "Kody");
-    assert.equal(player.cards.length, 2);
+    assert.strictEqual(player.name, "Kody");
+    assert.strictEqual(player.cards.length, 2);
     assert.includeMembers(
       cards,
       player.cards.map((x) => x.card)
@@ -16,7 +16,7 @@ describe("player", function () {
 
   it("should be given 2 coins to start with", function () {
     const player = new Player("Roger", [Card.DUKE, Card.DUKE]);
-    assert.equal(player.coins, 2);
+    assert.strictEqual(player.coins, 2);
   });
 
   it("should be connected by default", function () {
@@ -169,22 +169,22 @@ describe("player", function () {
 
   it("should be able to adjust coins up", function () {
     const player = new Player("alex", [Card.AMBASSADOR, Card.ASSASSIN]);
-    assert.equal(player.coins, 2);
+    assert.strictEqual(player.coins, 2);
     player.updateCoins(1);
-    assert.equal(player.coins, 3);
+    assert.strictEqual(player.coins, 3);
   });
 
   it("should be able to adjust coins down", function () {
     const player = new Player("alex", [Card.AMBASSADOR, Card.ASSASSIN]);
-    assert.equal(player.coins, 2);
+    assert.strictEqual(player.coins, 2);
     player.updateCoins(-1);
-    assert.equal(player.coins, 1);
+    assert.strictEqual(player.coins, 1);
   });
 
   it("should cap coin balance at 0 if adjustment down is too much", function () {
     const player = new Player("alex", [Card.AMBASSADOR, Card.ASSASSIN]);
-    assert.equal(player.coins, 2);
+    assert.strictEqual(player.coins, 2);
     player.updateCoins(-10);
-    assert.equal(player.coins, 0);
+    assert.strictEqual(player.coins, 0);
   });
 });
