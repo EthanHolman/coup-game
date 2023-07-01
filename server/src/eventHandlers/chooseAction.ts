@@ -2,23 +2,19 @@ import {
   ALL_PLAYABLE_GAME_ACTION_MOVES,
   GameActionMove,
   GameStatus,
+  TARGETED_ACTIONS,
 } from "../../../shared/enums";
 import { GameState } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 import { GameEvent } from "../../../shared/GameEvent";
 
-export function chooseAction(
-  state: GameState,
-  gameEvent: GameEvent,
-  messageAllFn: messageAllFn
-) {
+function validateChooseAction(state: GameState, gameEvent: GameEvent) {
   if (state.getStatus() !== GameStatus.AWAITING_ACTION)
     throw "chooseAction only valid when status = AWAITING_ACTION";
 
   if (gameEvent.user !== state.currentPlayer.name)
     throw `it is not currently ${gameEvent.user}'s turn`;
 
-  // validate action
   if (!ALL_PLAYABLE_GAME_ACTION_MOVES.includes(gameEvent.data?.action!))
     throw `'${gameEvent.data?.action}' is not a valid action`;
 
@@ -31,12 +27,8 @@ export function chooseAction(
   }
 
   // validate targetPlayer if action requires one
-  if (
-    gameEvent.data?.action === GameActionMove.COUP ||
-    gameEvent.data?.action === GameActionMove.ASSASSINATE ||
-    gameEvent.data?.action === GameActionMove.STEAL
-  ) {
-    if (!gameEvent.data.targetPlayer) throw "missing targetPlayer";
+  if (TARGETED_ACTIONS.includes(gameEvent.data?.action!)) {
+    if (!gameEvent.data?.targetPlayer) throw "missing targetPlayer";
 
     if (
       !state.players
@@ -71,6 +63,20 @@ export function chooseAction(
     if (state.currentPlayer.coins < 3)
       throw `player ${gameEvent.user} needs at least 3 coins for action ASSASSINATE`;
   }
+}
+
+export function chooseAction(
+  state: GameState,
+  gameEvent: GameEvent,
+  messageAllFn: messageAllFn
+) {
+  validateChooseAction(state, gameEvent);
+
+  if (gameEvent.data?.action === GameActionMove.COUP)
+    state.currentPlayer.updateCoins(-7);
+
+  if (gameEvent.data?.action === GameActionMove.ASSASSINATE)
+    state.currentPlayer.updateCoins(-3);
 
   state.currentAction = gameEvent.data;
   messageAllFn(gameEvent);

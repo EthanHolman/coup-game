@@ -329,4 +329,44 @@ describe("chooseAction event handler", function () {
       }, "is not a valid targetPlayer");
     });
   });
+
+  it("should charge currentPlayer 7 coins if they're going to coup", function () {
+    const state = new GameState();
+    const player1 = new Player("player1", [Card.AMBASSADOR, Card.ASSASSIN]);
+    player1.coins = 8;
+    state.addPlayer(player1);
+    const player2 = new Player("player2", [Card.AMBASSADOR, Card.ASSASSIN]);
+    state.addPlayer(player2);
+    state.start();
+
+    const event: GameEvent = {
+      event: GameEventType.CHOOSE_ACTION,
+      user: "player1",
+      data: { action: GameActionMove.COUP, targetPlayer: "player2" },
+    };
+    chooseAction(state, event, Sinon.stub());
+
+    assert.deepEqual(state.currentAction, event.data);
+    assert.equal(player1.coins, 1);
+  });
+
+  it("should charge currentPlayer 3 coins if they're going to assassinate", function () {
+    const state = new GameState();
+    const player1 = new Player("player1", [Card.AMBASSADOR, Card.ASSASSIN]);
+    player1.coins = 4;
+    state.addPlayer(player1);
+    const player2 = new Player("player2", [Card.AMBASSADOR, Card.ASSASSIN]);
+    state.addPlayer(player2);
+    state.start();
+
+    const event: GameEvent = {
+      event: GameEventType.CHOOSE_ACTION,
+      user: "player1",
+      data: { action: GameActionMove.ASSASSINATE, targetPlayer: "player2" },
+    };
+    chooseAction(state, event, Sinon.stub());
+
+    assert.deepEqual(state.currentAction, event.data);
+    assert.equal(player1.coins, 1);
+  });
 });
