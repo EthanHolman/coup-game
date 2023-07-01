@@ -27,10 +27,12 @@ describe("startGame", function () {
 
   it("should be able to start with 2 players", function () {
     const state = generateStateWithNPlayers(2);
+    const stub = Sinon.stub(state, "getStatus").returns(GameStatus.PRE_GAME);
     const messageAllFn = Sinon.stub();
 
     startGame(state, messageAllFn);
 
+    stub.restore();
     assert.isFalse(state.isPaused);
     assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
     assert.equal(state.currentPlayer.name, "tester-0");
@@ -38,10 +40,12 @@ describe("startGame", function () {
 
   it("should be able to start with more than 2 players", function () {
     const state = generateStateWithNPlayers(5);
+    const stub = Sinon.stub(state, "getStatus").returns(GameStatus.PRE_GAME);
     const messageAllFn = Sinon.stub();
 
     startGame(state, messageAllFn);
 
+    stub.restore();
     assert.isFalse(state.isPaused);
     assert.equal(state.getStatus(), GameStatus.AWAITING_ACTION);
     assert.equal(state.currentPlayer.name, "tester-0");
@@ -49,6 +53,7 @@ describe("startGame", function () {
 
   it("should send event to all users that game is starting", function () {
     const state = generateStateWithNPlayers(3);
+    Sinon.replace(state, "getStatus", () => GameStatus.PRE_GAME);
     const messageAllFn = Sinon.stub();
 
     startGame(state, messageAllFn);
@@ -58,6 +63,15 @@ describe("startGame", function () {
       event: GameEventType.START_GAME,
       data: {},
     });
+  });
+
+  it("should not allow starting the game if gameStatus is not pre-game", function () {
+    const state = generateStateWithNPlayers(3);
+    Sinon.replace(state, "getStatus", () => GameStatus.AWAITING_ACTION);
+
+    assert.throws(function () {
+      startGame(state, Sinon.stub());
+    }, "expecting gameStatus to be pregame");
   });
 
   // TODO: someday when we have hosts: make sure only host can start the game
