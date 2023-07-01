@@ -1,6 +1,7 @@
 import { GameEvent } from "../../../../shared/GameEvent";
 import { ClientState } from "../../ClientState";
 import { getAvailableActions } from "../../getAvailableActions";
+import { getTargetPlayers } from "../../getTargetPlayers";
 import ActionPickerView from "./ActionPickerView";
 
 /*  The goal of splitting ActionPicker and ActionPickerView is
@@ -17,9 +18,7 @@ const ActionPicker = ({ state, sendEvent }: ActionPickerProps): JSX.Element => {
   // TODO: memoize or something.. i can't remember how to do it right in react
   const availableActions = getAvailableActions(state);
 
-  const targetPlayers = state.players
-    .map((x) => x.name)
-    .filter((y) => y !== state.username);
+  const targetPlayers = getTargetPlayers(state);
 
   return (
     <ActionPickerView
