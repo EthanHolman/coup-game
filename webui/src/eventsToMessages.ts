@@ -72,6 +72,13 @@ export function eventToMessage({
       return { user, message: "The game is starting! Hope you're ready" };
     case GameEventType.PLAYER_OUT:
       return { user, message: `${data?.name} is out of the game.` };
+    case GameEventType.GAME_OVER:
+      return {
+        user,
+        message: `The game is over! ${data?.name} is the winner!`,
+      };
+    case GameEventType.NEXT_TURN:
+      return { user, message: `It's now ${data?.name}'s turn` };
 
     default:
       const message = `${event} doesn't have an eventToMessage handler`;

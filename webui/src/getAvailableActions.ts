@@ -16,7 +16,8 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
   if (
     state.isPaused ||
     state.status === GameStatus.PRE_GAME ||
-    state.status === GameStatus.PLAYER_LOSING_CARD
+    state.status === GameStatus.PLAYER_LOSING_CARD ||
+    state.status === GameStatus.GAME_OVER
   )
     return [];
 
