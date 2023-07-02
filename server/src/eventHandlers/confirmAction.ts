@@ -52,6 +52,7 @@ export function confirmAction(
       break;
 
     case GameActionMove.EXCHANGE:
+      state.exchangeCards = state.deck.drawCard(2);
       break;
 
     case GameActionMove.FOREIGN_AID:

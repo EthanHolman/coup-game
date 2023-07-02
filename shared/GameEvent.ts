@@ -6,6 +6,7 @@ export type GameEventData = {
   targetPlayer?: string;
   action?: GameActionMove;
   card?: Card;
+  exchangeKeeping?: Card[];
 
   // only used when sent by server
   reason?: string;

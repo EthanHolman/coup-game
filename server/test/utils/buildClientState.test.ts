@@ -137,4 +137,27 @@ describe("util buildClientState", function () {
       { card: Card.CAPTAIN, isRevealed: false },
     ]);
   });
+
+  it("should return exchangeCards if building state for currentPlayer", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
+    state.exchangeCards = [Card.DUKE, Card.CAPTAIN];
+    const clientState = buildClientState(state, "tester-0");
+    assert.sameMembers(clientState.exchangeCards!, [Card.DUKE, Card.CAPTAIN]);
+  });
+
+  it("should return empty/undefined exchangeCards if building state for currentPlayer when not exchanging", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
+    const clientState = buildClientState(state, "tester-0");
+    assert.isUndefined(clientState.exchangeCards);
+  });
+
+  it("should not include exchangeCards if not building state for currentPlayer", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.strictEqual(state.currentPlayer.name, "tester-0");
+    state.exchangeCards = [Card.DUKE, Card.CAPTAIN];
+    const clientState = buildClientState(state, "tester-1");
+    assert.isUndefined(clientState.exchangeCards);
+  });
 });

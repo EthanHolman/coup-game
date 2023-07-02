@@ -284,4 +284,17 @@ describe("confirmAction event handler", function () {
     };
     confirmAction(state, event, Sinon.stub(), true);
   });
+
+  it("should populate state.exchangeCards by drawing 2 cards from the deck", function () {
+    const state = generateStateWithNPlayers(2);
+    state.currentAction = { action: GameActionMove.EXCHANGE };
+    const event: GameEvent = {
+      event: GameEventType.CONFIRM_ACTION,
+      user: "tester-0",
+    };
+    const expectedCards = [state.deck.peekCard(0), state.deck.peekCard(1)];
+    confirmAction(state, event, Sinon.stub());
+    assert.isArray(state.exchangeCards);
+    assert.sameOrderedMembers(state.exchangeCards!, expectedCards);
+  });
 });

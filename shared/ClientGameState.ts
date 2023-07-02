@@ -1,3 +1,4 @@
+import { Card } from "./Card";
 import { GameEvent, GameEventData } from "./GameEvent";
 import { PlayerCard } from "./PlayerCard";
 import { GameStatus } from "./enums";
@@ -18,6 +19,7 @@ export type ClientGameState = {
   currentAction?: GameEventData;
   blockAction?: GameEvent;
   playerLosingCard?: PlayerLoseCardAction;
+  exchangeCards?: Card[];
   players: ClientPlayer[];
   deckCount: number;
 };

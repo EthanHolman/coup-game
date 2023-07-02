@@ -9,7 +9,7 @@ export function buildClientState(
   if (!state.players.find((x) => x.name === forPlayerName))
     throw `could not find player ${forPlayerName} in gamestate`;
 
-  return {
+  const clientGameState: ClientGameState = {
     currentPlayerName: state.currentPlayer.name,
     isPaused: state.isPaused,
     status: state.getStatus(),
@@ -29,4 +29,9 @@ export function buildClientState(
     })),
     deckCount: state.deck.count,
   };
+
+  if (forPlayerName === state.currentPlayer.name)
+    clientGameState.exchangeCards = state.exchangeCards;
+
+  return clientGameState;
 }

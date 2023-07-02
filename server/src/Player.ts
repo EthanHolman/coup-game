@@ -23,6 +23,10 @@ export class Player {
     return this._cards;
   }
 
+  get unrevealedCards(): ReadonlyArray<Card> {
+    return this._cards.filter((x) => !x.isRevealed).map((x) => x.card);
+  }
+
   get isOut() {
     return this._cards.every((x) => x.isRevealed === true);
   }

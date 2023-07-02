@@ -7,6 +7,7 @@ export enum GameStatus {
   ACTION_BLOCKED = "ACTION_BLOCKED",
   PLAYER_LOSING_CARD = "PLAYER_LOSING_CARD",
   GAME_OVER = "GAME_OVER",
+  AWAITING_EXCHANGE = "AWAITING_EXCHANGE",
 }
 
 export enum GameEventType {
@@ -27,6 +28,7 @@ export enum GameEventType {
   PLAYER_OUT = "PLAYER_OUT",
   NEXT_TURN = "NEXT_TURN",
   GAME_OVER = "GAME_OVER",
+  EXCHANGE_CARDS = "EXCHANGE_CARDS",
 }
 
 export enum GameActionMove {

@@ -3,6 +3,7 @@ import { Player } from "./Player";
 import { GameEvent, GameEventData } from "../../shared/GameEvent";
 import { GameStatus } from "../../shared/enums";
 import { PlayerLoseCardAction } from "../../shared/types";
+import { Card } from "../../shared/Card";
 
 export class GameState {
   private _players: Player[];
@@ -15,6 +16,7 @@ export class GameState {
   currentAction?: GameEventData;
   blockAction?: GameEvent;
   playerLosingCard?: PlayerLoseCardAction;
+  exchangeCards?: Card[];
 
   constructor() {
     this._players = [];
@@ -43,6 +45,8 @@ export class GameState {
       return GameStatus.GAME_OVER;
 
     if (this.playerLosingCard) return GameStatus.PLAYER_LOSING_CARD;
+
+    if (this.exchangeCards) return GameStatus.AWAITING_EXCHANGE;
 
     if (!this.currentAction && !this.blockAction && !this.playerLosingCard)
       return GameStatus.AWAITING_ACTION;

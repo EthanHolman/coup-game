@@ -53,5 +53,11 @@ describe("GameState", function () {
       };
       assert.strictEqual(state.getStatus(), GameStatus.ACTION_BLOCKED);
     });
+
+    it("AWAITING_EXCHANGE", function () {
+      const state = generateStateWithNPlayers(2);
+      state.exchangeCards = [Card.AMBASSADOR, Card.CAPTAIN];
+      assert.strictEqual(state.getStatus(), GameStatus.AWAITING_EXCHANGE);
+    });
   });
 });

@@ -14,6 +14,7 @@ import { sendCurrentState } from "./actions/sendCurrentState";
 import { blockAction } from "./eventHandlers/blockAction";
 import { challengeBlock } from "./eventHandlers/challengeBlock";
 import { nextTurn } from "./actions/nextTurn";
+import { exchangeCards } from "./eventHandlers/exchangeCards";
 
 export const ACTIONS_ALLOWED_WHILE_PAUSED = [
   GameEventType.PLAYER_DISCONNECT,
@@ -98,6 +99,10 @@ export class GameRunner {
 
       case GameEventType.PLAYER_DISCONNECT:
         playerDisconnect(this._gameState, gameEvent, this._messageAllFn);
+        break;
+
+      case GameEventType.EXCHANGE_CARDS:
+        exchangeCards(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       default:

@@ -187,4 +187,18 @@ describe("player", function () {
     player.updateCoins(-10);
     assert.strictEqual(player.coins, 0);
   });
+
+  it("should return unrevealedCards correctly", function () {
+    const player = new Player("hayley", [Card.CONTESSA, Card.ASSASSIN]);
+    assert.sameMembers(player.unrevealedCards as any, [
+      Card.ASSASSIN,
+      Card.CONTESSA,
+    ]);
+    player.revealCard(Card.CONTESSA);
+    assert.sameMembers(player.unrevealedCards as any, [Card.ASSASSIN]);
+    player.replaceCard(Card.ASSASSIN, Card.DUKE);
+    assert.sameMembers(player.unrevealedCards as any, [Card.DUKE]);
+    player.revealCard(Card.DUKE);
+    assert.isEmpty(player.unrevealedCards);
+  });
 });
