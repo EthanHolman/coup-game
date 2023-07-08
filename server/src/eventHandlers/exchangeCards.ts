@@ -1,5 +1,5 @@
 import { GameEvent } from "../../../shared/GameEvent";
-import { GameStatus } from "../../../shared/enums";
+import { GameEventType, GameStatus } from "../../../shared/enums";
 import { GameState } from "../GameState";
 import { nextTurn } from "../actions/nextTurn";
 import { messageAllFn } from "../messageFnTypes";
@@ -41,6 +41,8 @@ export function exchangeCards(
   poolOfCards.forEach((card) => state.deck.discardCard(card));
 
   state.exchangeCards = undefined;
+
+  messageAllFn({ event: GameEventType.EXCHANGE_CARDS, user: gameEvent.user });
 
   nextTurn(state, messageAllFn);
 }

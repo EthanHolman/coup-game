@@ -14,17 +14,17 @@ function getMsgChooseAction(data: Partial<GameEventData> | undefined): string {
     case GameActionMove.INCOME:
       return "I'm just taking income";
     case GameActionMove.COUP:
-      return `${data.targetPlayer}, you're dead to me. I'm coup'ing you!`;
+      return `${data.targetPlayer}, you're dead to me. I want to coup you!`;
     case GameActionMove.FOREIGN_AID:
-      return "I'm taking foreign aid";
+      return "I would like to take foreign aid";
     case GameActionMove.STEAL:
-      return `I'm stealing! Hand 'em over, ${data.targetPlayer}!`;
+      return `I would like to steal from ${data.targetPlayer}!`;
     case GameActionMove.ASSASSINATE:
-      return `${data.targetPlayer}, I'm assassinating you! Plz don't take it personally`;
+      return `${data.targetPlayer}, I want to assassinate you. Plz don't take it personally.`;
     case GameActionMove.TAX:
-      return "I'm totally the duke... gonna tax and take my 3...";
+      return "I would like to tax! (Totally the duke)";
     case GameActionMove.EXCHANGE:
-      return "I want new cards, so I'm going to exchange";
+      return "I want new cards, so I'd like to exchange.";
     default:
       return `${data.action}`;
   }
@@ -52,7 +52,7 @@ export function eventToMessage({
     case GameEventType.CHOOSE_ACTION:
       return { user, message: getMsgChooseAction(data) };
     case GameEventType.CONFIRM_ACTION:
-      return { user, message: "[CONFIRM ACTION]" };
+      return { user, message: "I'm confirming the action" };
     case GameEventType.PAUSE_GAME:
       return { user, message: `I've paused the game: ${data?.reason}` };
     case GameEventType.PLAYER_DISCONNECT:
@@ -79,6 +79,8 @@ export function eventToMessage({
       };
     case GameEventType.NEXT_TURN:
       return { user, message: `It's now ${data?.name}'s turn` };
+    case GameEventType.EXCHANGE_CARDS:
+      return { user, message: `My exchange is done!` };
 
     default:
       const message = `${event} doesn't have an eventToMessage handler`;

@@ -137,6 +137,7 @@ All events include {event, user, data}. Fields noted below are members of the da
 - CHALLENGE_BLOCK: {}
 - PLAYER_REVEAL_CARD: {card}
 - START_GAME: {}
+- EXCHANGE_CARDS: {exchangeKeeping: Card[]} -- rebroadcasted to clients without the cards
 
 ## Server Action Handling:
 
