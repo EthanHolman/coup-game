@@ -1,7 +1,7 @@
-import { Card } from "../../../shared/Card";
-import { ClientPlayer } from "../../../shared/ClientGameState";
-import { GameStatus } from "../../../shared/enums";
-import { ClientState } from "../ClientState";
+import { Card } from "../../shared/Card";
+import { ClientPlayer } from "../../shared/ClientGameState";
+import { GameStatus } from "../../shared/enums";
+import { ClientState } from "../src/ClientState";
 
 export function generateClientState(
   numPlayers = 2,

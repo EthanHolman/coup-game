@@ -16,11 +16,14 @@ const LoseCardView = ({
   reason,
   sendEvent,
 }: LoseCardViewProps): JSX.Element => {
-  const handleLoseCard = (card: Card) => {
+  const handleLoseCard = (cards: Card[]) => {
+    if (cards.length !== 1)
+      throw `expecting 1 card in handleLoseCard, got ${cards.length} instead`;
+
     sendEvent({
       event: GameEventType.PLAYER_REVEAL_CARD,
       user: username,
-      data: { card },
+      data: { card: cards[0] },
     });
   };
 
@@ -28,7 +31,11 @@ const LoseCardView = ({
     <>
       <h2>Choose a card to lose:</h2>
       {reason && <p>Reason: {reason}</p>}
-      <CardPicker cards={playerCards} onPickCard={handleLoseCard} />
+      <CardPicker
+        cards={playerCards}
+        onPickCards={handleLoseCard}
+        selectCount={1}
+      />
     </>
   );
 };

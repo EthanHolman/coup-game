@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "webpack serve --config webpack.dev.config.ts",
     "build": "webpack --config webpack.prod.config.ts",
-    "test": "mocha -r ts-node/register -r global-jsdom/register './src/**/*.test.tsx' './src/**/*.test.ts'"
+    "test": "mocha -r ts-node/register -r global-jsdom/register -r './test/mocha.setup.ts' './src/**/*.test.tsx' './src/**/*.test.ts'"
   },
   "dependencies": {
     "clsx": "^1.2.1",

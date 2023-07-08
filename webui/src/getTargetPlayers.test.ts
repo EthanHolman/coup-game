@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { getTargetPlayers } from "./getTargetPlayers";
-import { generateClientState } from "./test/stateGenerators";
+import { generateClientState } from "../test/stateGenerators";
 
 describe("getTargetPlayers", function () {
   it("should return empty list if no players", function () {

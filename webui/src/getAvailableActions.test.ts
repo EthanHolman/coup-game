@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { generateClientState } from "./test/stateGenerators";
+import { generateClientState } from "../test/stateGenerators";
 import { getAvailableActions } from "./getAvailableActions";
 import {
   ALL_PLAYABLE_GAME_ACTION_MOVES,
