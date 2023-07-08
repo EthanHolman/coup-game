@@ -1,11 +1,16 @@
 import { assert } from "chai";
 import { nextTurn } from "../../src/actions/nextTurn";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
-import { GameActionMove, GameEventType } from "../../../shared/enums";
+import {
+  GameActionMove,
+  GameEventType,
+  GameStatus,
+} from "../../../shared/enums";
 import { Card } from "../../../shared/Card";
 import { Player } from "../../src/Player";
 import Sinon from "sinon";
 import { SERVER_USERNAME } from "../../../shared/globals";
+import { GameState } from "../../src/GameState";
 
 describe("nextTurn action handler", function () {
   it("should update currentPlayerId from 0 to 1", function () {
@@ -54,6 +59,7 @@ describe("nextTurn action handler", function () {
 
   it("should clear blockAction", function () {
     const state = generateStateWithNPlayers(2);
+    state.currentAction = { action: GameActionMove.EXCHANGE };
     state.blockAction = {
       event: GameEventType.BLOCK_ACTION,
       user: "tester-0",
@@ -73,6 +79,30 @@ describe("nextTurn action handler", function () {
       event: GameEventType.NEXT_TURN,
       user: SERVER_USERNAME,
       data: { name: "tester-1" },
+    });
+  });
+
+  it("should send game_over message to all players if player losing card triggered end of game", function () {
+    const state = new GameState();
+    const player0 = new Player("player0", [Card.AMBASSADOR, Card.ASSASSIN]);
+    player0.revealCard(Card.ASSASSIN);
+    player0.revealCard(Card.AMBASSADOR);
+    state.addPlayer(player0);
+    const player1 = new Player("player1", [Card.CAPTAIN, Card.CONTESSA]);
+    player1.revealCard(Card.CAPTAIN);
+    state.addPlayer(player1);
+    state.start();
+    const mockMessageAllPlayerFn = Sinon.stub();
+
+    nextTurn(state, mockMessageAllPlayerFn);
+
+    assert.strictEqual(state.getStatus(), GameStatus.GAME_OVER);
+    Sinon.assert.calledOnce(mockMessageAllPlayerFn);
+    const calls = mockMessageAllPlayerFn.getCalls();
+    assert.deepStrictEqual(calls[0].args[0], {
+      event: GameEventType.GAME_OVER,
+      user: SERVER_USERNAME,
+      data: { name: "player1" },
     });
   });
 });

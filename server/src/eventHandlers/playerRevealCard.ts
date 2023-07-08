@@ -43,17 +43,5 @@ export function playerRevealCard(
       )
     )
       state.clearCurrentAction();
-
-    // check for game over state
-    if (state.getStatus() === GameStatus.GAME_OVER) {
-      const lastRemainingPlayer = state.players.find((x) => !x.isOut);
-      if (!lastRemainingPlayer)
-        throw "unable to find the last remaining player";
-      messageAllFn(
-        createServerEvent(GameEventType.GAME_OVER, {
-          name: lastRemainingPlayer.name,
-        })
-      );
-    }
   }
 }

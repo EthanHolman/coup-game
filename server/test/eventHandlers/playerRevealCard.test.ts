@@ -169,39 +169,4 @@ describe("playerRevealCard event handler", function () {
 
     assert.isUndefined(state.currentAction);
   });
-
-  it("should send game_over message to all players if player losing card triggered end of game", function () {
-    const state = new GameState();
-    const player0 = new Player("player0", [Card.AMBASSADOR, Card.ASSASSIN]);
-    player0.revealCard(Card.ASSASSIN);
-    state.addPlayer(player0);
-    const player1 = new Player("player1", [Card.CAPTAIN, Card.CONTESSA]);
-    player1.revealCard(Card.CAPTAIN);
-    state.addPlayer(player1);
-    const player2 = new Player("player2", [Card.CAPTAIN, Card.CONTESSA]);
-    player2.revealCard(Card.CAPTAIN);
-    player2.revealCard(Card.CONTESSA);
-    state.addPlayer(player2);
-    state.start();
-
-    state.playerLosingCard = { player: "player0", reason: "he sux" };
-    const mockMessageAllPlayerFn = Sinon.stub();
-
-    const event: GameEvent = {
-      event: GameEventType.PLAYER_REVEAL_CARD,
-      user: "player0",
-      data: { card: Card.AMBASSADOR },
-    };
-
-    playerRevealCard(state, event, mockMessageAllPlayerFn);
-
-    assert.strictEqual(state.getStatus(), GameStatus.GAME_OVER);
-    const calls = mockMessageAllPlayerFn.getCalls();
-    assert.lengthOf(calls, 3);
-    assert.deepStrictEqual(calls[2].args[0], {
-      event: GameEventType.GAME_OVER,
-      user: SERVER_USERNAME,
-      data: { name: "player1" },
-    });
-  });
 });
