@@ -14,10 +14,10 @@ interface Configuration extends WebpackConfiguration {
 
 const config: Configuration = {
   mode: "development",
+  entry: "./src/index.tsx",
   output: {
     publicPath: "/",
   },
-  entry: "./src/index.tsx",
   module: {
     rules: [
       {
@@ -33,6 +33,10 @@ const config: Configuration = {
             ],
           },
         },
+      },
+      {
+        test: /assets.*\.(png|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
       },
     ],
   },

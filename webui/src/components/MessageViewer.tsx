@@ -6,15 +6,15 @@ import { ClientState } from "../ClientState";
 const useStyles = createUseStyles({
   container: {
     flex: 1,
-    margin: "0.5rem 10rem",
+    padding: "1rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
   },
   messageBubble: {
-    margin: "0.5rem 0",
+    marginBottom: "1rem",
     padding: "0.5rem",
-    borderRadius: "50px",
+    borderRadius: "10px",
     backgroundColor: "#c4c4c4",
   },
   selfMessage: {

@@ -3,8 +3,6 @@ import { createUseStyles } from "react-jss";
 import { GameEvent } from "../../../shared/GameEvent";
 import { gameStateReducer, getInitialState } from "../ClientState";
 import JoinGame from "./JoinGame";
-import MessageViewer from "./MessageViewer";
-import TableTop from "./TableTop";
 import TableTopGame from "./TableTopGame";
 import { GameEventType } from "../../../shared/enums";
 import { eventToMessage, UIMessage } from "../eventsToMessages";
@@ -68,18 +66,16 @@ const Game = (): JSX.Element => {
   return (
     <div className={classes.container}>
       <h1 className={classes.header}>Coup ONLINE</h1>
-      <TableTop>
-        {state.thisPlayer ? (
-          <TableTopGame
-            state={state}
-            dispatch={dispatch}
-            sendEvent={sendEvent}
-          />
-        ) : (
-          <JoinGame onJoin={onUserJoinGame} />
-        )}
-      </TableTop>
-      <MessageViewer events={messages} state={state} />
+      {state.thisPlayer ? (
+        <TableTopGame
+          state={state}
+          dispatch={dispatch}
+          sendEvent={sendEvent}
+          messages={messages}
+        />
+      ) : (
+        <JoinGame onJoin={onUserJoinGame} />
+      )}
     </div>
   );
 };
