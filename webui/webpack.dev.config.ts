@@ -38,6 +38,10 @@ const config: Configuration = {
         test: /assets.*\.(png|jpg|jpeg|gif)$/i,
         type: "asset/resource",
       },
+      {
+        test: /\.(scss|css)$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
     ],
   },
   resolve: {
