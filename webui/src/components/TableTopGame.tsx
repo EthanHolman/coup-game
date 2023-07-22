@@ -3,7 +3,7 @@ import { GameEvent } from "../../../shared/GameEvent";
 import { ClientState, GameStateAction } from "../ClientState";
 import PlayerCard from "./PlayerCard";
 import StartGame from "./StartGame";
-import React, { useState } from "react";
+import React from "react";
 import ActionPicker from "./ActionPicker/ActionPicker";
 import { GameStatus } from "../../../shared/enums";
 import LoseCard from "./LoseCard/LoseCard";
@@ -19,35 +19,19 @@ type TableTopGameProps = {
 };
 
 const useStyles = createUseStyles({
-  playerRows: { flex: 1, overflowY: "auto" },
+  playerRows: { flex: 3, overflowY: "auto" },
   playerRow: {},
-  deckContainer: {
-    padding: "1rem",
-    borderTop: "1px solid #ddd",
-  },
   actionContainer: {
     padding: "1rem",
     backgroundColor: "#eee",
     borderTop: "1px solid #ddd",
   },
-  tabContainer: {
+  messageContainer: {
+    flex: 1,
+    overflowY: "auto",
     backgroundColor: "#ddd",
-    padding: "1rem",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "stretch",
-
-    "& > button": {
-      flex: 1,
-      margin: "0.25rem",
-    },
   },
 });
-
-enum ViewMode {
-  Players,
-  ChatLog,
-}
 
 const TableTopGame = ({
   state,
@@ -55,7 +39,6 @@ const TableTopGame = ({
   messages,
 }: TableTopGameProps): JSX.Element => {
   const classes = useStyles();
-  const [viewMode, setViewMode] = useState(ViewMode.Players);
 
   const isThisPlayerLosingCard =
     state.status === GameStatus.PLAYER_LOSING_CARD &&
@@ -66,47 +49,30 @@ const TableTopGame = ({
 
   return (
     <>
-      {viewMode === ViewMode.Players && (
-        <>
-          <div className={classes.playerRows}>
-            {state.players.map((player) => (
-              <PlayerCard
-                key={player.name}
-                player={player}
-                isYou={state.username === player.name}
-                isCurrentPlayer={state.currentPlayerName === player.name}
-              />
-            ))}
-          </div>
-          {state.status !== GameStatus.PRE_GAME && (
-            <div className={classes.deckContainer}>
-              <div>Deck: {state.deckCount} cards</div>
-            </div>
-          )}
-          <div className={classes.actionContainer}>
-            {state.status === GameStatus.PRE_GAME && (
-              <StartGame state={state} sendEvent={sendEvent} />
-            )}
-            {isThisPlayerExchangingCard && (
-              <ExchangeCard state={state} sendEvent={sendEvent} />
-            )}
-            {isThisPlayerLosingCard && (
-              <LoseCard state={state} sendEvent={sendEvent} />
-            )}
-            <ActionPicker state={state} sendEvent={sendEvent} />
-          </div>
-        </>
-      )}
-      {viewMode === ViewMode.ChatLog && (
+      <div className={classes.playerRows}>
+        {state.players.map((player) => (
+          <PlayerCard
+            key={player.name}
+            player={player}
+            isYou={state.username === player.name}
+            isCurrentPlayer={state.currentPlayerName === player.name}
+          />
+        ))}
+      </div>
+      <div className={classes.actionContainer}>
+        {state.status === GameStatus.PRE_GAME && (
+          <StartGame state={state} sendEvent={sendEvent} />
+        )}
+        {isThisPlayerExchangingCard && (
+          <ExchangeCard state={state} sendEvent={sendEvent} />
+        )}
+        {isThisPlayerLosingCard && (
+          <LoseCard state={state} sendEvent={sendEvent} />
+        )}
+        <ActionPicker state={state} sendEvent={sendEvent} />
+      </div>
+      <div className={classes.messageContainer}>
         <MessageViewer events={messages} state={state} />
-      )}
-      <div className={classes.tabContainer}>
-        <button type="button" onClick={() => setViewMode(ViewMode.Players)}>
-          Players
-        </button>
-        <button type="button" onClick={() => setViewMode(ViewMode.ChatLog)}>
-          Chat Log
-        </button>
       </div>
     </>
   );

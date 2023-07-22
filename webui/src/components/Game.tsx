@@ -6,6 +6,7 @@ import JoinGame from "./JoinGame";
 import TableTopGame from "./TableTopGame";
 import { GameEventType } from "../../../shared/enums";
 import { eventToMessage, UIMessage } from "../eventsToMessages";
+import Header from "./Header";
 
 const useStyles = createUseStyles({
   container: {
@@ -65,7 +66,7 @@ const Game = (): JSX.Element => {
 
   return (
     <div className={classes.container}>
-      <h1 className={classes.header}>Coup ONLINE</h1>
+      <Header state={state} />
       {state.thisPlayer ? (
         <TableTopGame
           state={state}
