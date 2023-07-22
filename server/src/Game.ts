@@ -15,6 +15,7 @@ import { blockAction } from "./eventHandlers/blockAction";
 import { challengeBlock } from "./eventHandlers/challengeBlock";
 import { nextTurn } from "./actions/nextTurn";
 import { exchangeCards } from "./eventHandlers/exchangeCards";
+import { newGame } from "./eventHandlers/newGame";
 
 export const ACTIONS_ALLOWED_WHILE_PAUSED = [
   GameEventType.PLAYER_DISCONNECT,
@@ -104,6 +105,9 @@ export class GameRunner {
       case GameEventType.EXCHANGE_CARDS:
         exchangeCards(this._gameState, gameEvent, this._messageAllFn);
         break;
+
+      case GameEventType.NEW_GAME:
+        this._gameState = newGame(this._gameState, this._messageAllFn);
 
       default:
         throw `cannot process unexpected action ${gameEvent.event}`;
