@@ -42,6 +42,8 @@ const Game = (): JSX.Element => {
           if (gameEvent.error) console.error(gameEvent.error);
           if (gameEvent.event === GameEventType.CURRENT_STATE) {
             dispatch({ type: "updateGameState", data: gameEvent.data!.state! });
+          } else if (gameEvent.event === GameEventType.NEW_GAME) {
+            setMessages([]);
           } else {
             setMessages((msgs) => [...msgs, eventToMessage(gameEvent)]);
           }

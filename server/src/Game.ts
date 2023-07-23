@@ -108,6 +108,7 @@ export class GameRunner {
 
       case GameEventType.NEW_GAME:
         this._gameState = newGame(this._gameState, this._messageAllFn);
+        break;
 
       default:
         throw `cannot process unexpected action ${gameEvent.event}`;

@@ -10,6 +10,7 @@ import LoseCard from "./LoseCard/LoseCard";
 import ExchangeCard from "./ExchangeCard/ExchangeCard";
 import MessageViewer from "./MessageViewer";
 import { UIMessage } from "../eventsToMessages";
+import GameOver from "./GameOver";
 
 type TableTopGameProps = {
   state: ClientState;
@@ -62,6 +63,9 @@ const TableTopGame = ({
       <div className={classes.actionContainer}>
         {state.status === GameStatus.PRE_GAME && (
           <StartGame state={state} sendEvent={sendEvent} />
+        )}
+        {state.status === GameStatus.GAME_OVER && (
+          <GameOver state={state} sendEvent={sendEvent} />
         )}
         {isThisPlayerExchangingCard && (
           <ExchangeCard state={state} sendEvent={sendEvent} />
