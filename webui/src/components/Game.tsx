@@ -7,6 +7,7 @@ import TableTopGame from "./TableTopGame";
 import { GameEventType } from "../../../shared/enums";
 import { eventToMessage, UIMessage } from "../eventsToMessages";
 import Header from "./Header";
+import settings from "../../settings";
 
 const useStyles = createUseStyles({
   container: {
@@ -34,7 +35,7 @@ const Game = (): JSX.Element => {
 
   const onUserJoinGame = (username: string) => {
     try {
-      const ws = new WebSocket(`ws://localhost:8080/${username}`);
+      const ws = new WebSocket(`${settings.apiBaseUrl}/${username}`);
       ws.addEventListener("message", (event) => {
         try {
           const gameEvent = JSON.parse(event.data) as GameEvent;
