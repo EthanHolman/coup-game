@@ -12,8 +12,7 @@ const Header = ({ state }: HeaderProps): JSX.Element => {
       <div className={styles.deckContainer}>
         {state.status !== GameStatus.PRE_GAME && (
           <>
-            <div>DECK SIZE</div>
-            <div>{state.deckCount}</div>
+            <div>Deck: {state.deckCount} Cards</div>
           </>
         )}
       </div>

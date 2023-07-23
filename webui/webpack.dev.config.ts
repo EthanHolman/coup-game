@@ -46,10 +46,14 @@ const config: Configuration = {
           "style-loader",
           {
             loader: "css-loader",
-            options: { importLoaders: 1, modules: true },
+            options: { importLoaders: 1 },
           },
           "sass-loader",
         ],
+      },
+      {
+        test: /assets.*\.(woff|woff2|eot|ttf|otf)$/i,
+        type: "asset/resource",
       },
     ],
   },
@@ -81,6 +85,7 @@ const config: Configuration = {
     client: {
       overlay: false,
     },
+    allowedHosts: "all",
   },
 };
 
