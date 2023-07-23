@@ -29,6 +29,7 @@ export enum GameEventType {
   NEXT_TURN = "NEXT_TURN",
   GAME_OVER = "GAME_OVER",
   EXCHANGE_CARDS = "EXCHANGE_CARDS",
+  NEW_GAME = "NEW_GAME",
 }
 
 export enum GameActionMove {

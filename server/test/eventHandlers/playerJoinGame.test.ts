@@ -1,62 +1,43 @@
 import { assert } from "chai";
 import Sinon from "sinon";
-import { GameEventType } from "../../../shared/enums";
+import { GameEventType, GameStatus } from "../../../shared/enums";
 import { Card } from "../../../shared/Card";
 import { playerJoinGame } from "../../src/eventHandlers/playerJoinGame";
 import { GameEvent } from "../../../shared/GameEvent";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
+import * as module_addNewPlayer from "../../src/actions/addNewPlayer";
 
 describe("playerJoinGame event handler", function () {
-  it("should add player to game state", function () {
-    const state = new GameState();
-    assert.strictEqual(state.players.length, 0);
+  let mock_addNewPlayer: Sinon.SinonStub;
 
-    const messageAllFn = Sinon.stub();
-    const event: GameEvent = {
-      event: GameEventType.PLAYER_JOIN_GAME,
-      user: "birdsarentreal",
-    };
-
-    playerJoinGame(state, event, messageAllFn);
-
-    assert.strictEqual(state.players.length, 1);
+  this.beforeEach(function () {
+    mock_addNewPlayer = Sinon.stub(
+      module_addNewPlayer,
+      "addNewPlayer"
+    ).returns();
   });
 
-  it("players cards should be removed from top of deck", function () {
-    const state = new GameState();
-
-    const originalDeck = [...state.deck._deck];
-
-    const messageAllFn = Sinon.stub();
-    const event: GameEvent = {
-      event: GameEventType.PLAYER_JOIN_GAME,
-      user: "birdsarentreal",
-    };
-
-    playerJoinGame(state, event, messageAllFn);
-
-    assert.deepEqual(state.deck._deck, originalDeck.slice(2));
-    assert.isTrue(state.players[0].hasCard(originalDeck[0]));
-    assert.isTrue(state.players[0].hasCard(originalDeck[1]));
+  this.afterEach(function () {
+    mock_addNewPlayer.restore();
   });
 
-  it("first player to join should be 'current' player", function () {
+  it("should call addNewPlayer with new username during pregame", function () {
     const state = new GameState();
+    Sinon.replace(state, "getStatus", () => GameStatus.PRE_GAME);
 
-    const messageAllFn = Sinon.stub();
-    const event1: GameEvent = {
+    const event: GameEvent = {
       event: GameEventType.PLAYER_JOIN_GAME,
-      user: "birdsarentreal",
+      user: "some-username",
     };
 
-    const event2: GameEvent = { ...event1, user: "hello" };
+    playerJoinGame(state, event, Sinon.stub());
 
-    playerJoinGame(state, event1, messageAllFn);
-    playerJoinGame(state, event2, messageAllFn);
-
-    assert.strictEqual(state.currentPlayer.name, "birdsarentreal");
-    assert.strictEqual(state.currentPlayerId, 0);
+    Sinon.assert.calledOnceWithExactly(
+      mock_addNewPlayer,
+      state,
+      "some-username"
+    );
   });
 
   it("everyone should receive player join event", function () {
@@ -89,22 +70,7 @@ describe("playerJoinGame event handler", function () {
     assert.throws(function () {
       playerJoinGame(state, event, messageAllFn);
     }, "game has already started");
-  });
-
-  it("shouldnt be able to join with a duplicate username", function () {
-    const state = new GameState();
-
-    const messageAllFn = Sinon.stub();
-    const event: GameEvent = {
-      event: GameEventType.PLAYER_JOIN_GAME,
-      user: "birdsarentreal",
-    };
-
-    playerJoinGame(state, event, messageAllFn);
-
-    assert.throws(function () {
-      playerJoinGame(state, event, messageAllFn);
-    }, "birdsarentreal has already been");
+    Sinon.assert.notCalled(mock_addNewPlayer);
   });
 
   it("should allow players to rejoin if disconnected", function () {
@@ -217,18 +183,5 @@ describe("playerJoinGame event handler", function () {
     assert.strictEqual(state.players.length, 2);
     assert.isTrue(state.players.find((x) => x.name === "lois")?.isConnected);
     assert.isTrue(state.players.find((x) => x.name === "peter")?.isConnected);
-  });
-
-  it("should make new player the host if they are first to join", function () {
-    const state = new GameState();
-
-    playerJoinGame(
-      state,
-      { event: GameEventType.PLAYER_JOIN_GAME, user: "ethan", data: {} },
-      Sinon.stub()
-    );
-
-    assert.strictEqual(state.players.length, 1);
-    assert.isTrue(state.players.find((x) => x.name === "ethan")?.isHost);
   });
 });

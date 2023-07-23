@@ -5,6 +5,8 @@ import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import Sinon from "sinon";
 import { GameEventType, GameStatus } from "../../../shared/enums";
 import { SERVER_USERNAME } from "../../../shared/globals";
+import { Player } from "../../src/Player";
+import { Card } from "../../../shared/Card";
 
 describe("startGame", function () {
   it("shouldn't be able to start without players", function () {
@@ -72,6 +74,17 @@ describe("startGame", function () {
     assert.throws(function () {
       startGame(state, Sinon.stub());
     }, "expecting gameStatus to be pregame");
+  });
+
+  it("should set the current player to first player", function () {
+    const state = new GameState();
+    state.addPlayer(new Player("tester0", [Card.AMBASSADOR, Card.AMBASSADOR]));
+    state.addPlayer(new Player("tester1", [Card.AMBASSADOR, Card.AMBASSADOR]));
+
+    startGame(state, Sinon.stub());
+
+    assert.equal(state.currentPlayerId, 0);
+    assert.equal(state.currentPlayer.name, "tester0");
   });
 
   // TODO: someday when we have hosts: make sure only host can start the game

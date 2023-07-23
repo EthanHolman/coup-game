@@ -63,7 +63,7 @@ const CardPicker = ({
         </button>
       ))}
       <button
-        type="submit" // TODO: try changing to submit
+        type="submit"
         onClick={onConfirm}
         disabled={selectedCards.length !== selectCount}
       >

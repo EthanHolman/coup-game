@@ -6,6 +6,8 @@ import JoinGame from "./JoinGame";
 import TableTopGame from "./TableTopGame";
 import { GameEventType } from "../../../shared/enums";
 import { eventToMessage, UIMessage } from "../eventsToMessages";
+import Header from "./Header";
+import settings from "../../settings";
 
 const useStyles = createUseStyles({
   container: {
@@ -33,7 +35,7 @@ const Game = (): JSX.Element => {
 
   const onUserJoinGame = (username: string) => {
     try {
-      const ws = new WebSocket(`ws://localhost:8080/${username}`);
+      const ws = new WebSocket(`${settings.apiBaseUrl}/${username}`);
       ws.addEventListener("message", (event) => {
         try {
           const gameEvent = JSON.parse(event.data) as GameEvent;
@@ -41,6 +43,8 @@ const Game = (): JSX.Element => {
           if (gameEvent.error) console.error(gameEvent.error);
           if (gameEvent.event === GameEventType.CURRENT_STATE) {
             dispatch({ type: "updateGameState", data: gameEvent.data!.state! });
+          } else if (gameEvent.event === GameEventType.NEW_GAME) {
+            setMessages([]);
           } else {
             setMessages((msgs) => [...msgs, eventToMessage(gameEvent)]);
           }
@@ -65,7 +69,7 @@ const Game = (): JSX.Element => {
 
   return (
     <div className={classes.container}>
-      <h1 className={classes.header}>Coup ONLINE</h1>
+      <Header state={state} />
       {state.thisPlayer ? (
         <TableTopGame
           state={state}

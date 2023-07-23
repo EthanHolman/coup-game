@@ -2,6 +2,7 @@ import { createServer } from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import { GameEventType } from "../../shared/enums";
 import { GameRunner } from "./Game";
+import { SERVER_PORT } from "../../shared/globals";
 
 const server = createServer();
 const wss = new WebSocketServer({ noServer: true });
@@ -106,7 +107,6 @@ server.on("upgrade", function upgrade(req, socket, head) {
   });
 });
 
-const serverPort = 8080;
-console.log(`Starting server on port ${serverPort}`);
+console.log(`Starting server on port ${SERVER_PORT}`);
 
-server.listen(serverPort);
+server.listen(SERVER_PORT);
