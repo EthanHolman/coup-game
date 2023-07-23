@@ -1,23 +1,15 @@
-import { createUseStyles } from "react-jss";
 import { ClientState } from "../ClientState";
 import { GameStatus } from "../../../shared/enums";
-
-const useStyles = createUseStyles({
-  header: { display: "flex", backgroundColor: "#ddd", padding: "1rem" },
-  title: { margin: 0 },
-  deckContainer: { flexGrow: 1 },
-});
+import styles from "./Header.module.scss";
 
 type HeaderProps = {
   state: ClientState;
 };
 
 const Header = ({ state }: HeaderProps): JSX.Element => {
-  const classes = useStyles();
-
   return (
-    <header className={classes.header}>
-      <div className={classes.deckContainer}>
+    <header className={styles.header}>
+      <div className={styles.deckContainer}>
         {state.status !== GameStatus.PRE_GAME && (
           <>
             <div>DECK SIZE</div>
@@ -25,7 +17,7 @@ const Header = ({ state }: HeaderProps): JSX.Element => {
           </>
         )}
       </div>
-      <h2 className={classes.title}>Coup Online</h2>
+      <h2 className={styles.title}>Coup Online</h2>
     </header>
   );
 };

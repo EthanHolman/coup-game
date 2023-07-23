@@ -1,0 +1,13 @@
+.header {
+  display: flex;
+  background-color: #ddd;
+  padding: 1rem;
+}
+
+.title {
+  margin: 0;
+}
+
+.deckContainer {
+  flex-grow: 1;
+}
