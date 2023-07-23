@@ -11,6 +11,7 @@ import ExchangeCard from "./ExchangeCard/ExchangeCard";
 import MessageViewer from "./MessageViewer";
 import { UIMessage } from "../eventsToMessages";
 import GameOver from "./GameOver";
+import Header from "./Header";
 
 type TableTopGameProps = {
   state: ClientState;
@@ -50,6 +51,7 @@ const TableTopGame = ({
 
   return (
     <>
+      <Header state={state} />
       <div className={classes.playerRows}>
         {state.players.map((player) => (
           <PlayerCard

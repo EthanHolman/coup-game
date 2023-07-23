@@ -1,32 +1,42 @@
 import { useState } from "react";
-import { createUseStyles } from "react-jss";
-
-const useStyles = createUseStyles({});
+import img_cover from "../../assets/cover.jpg";
+import styles from "./JoinGame.module.scss";
 
 export type JoinGameProps = {
   onJoin: (username: string) => void;
+  oldUsername: string;
 };
 
-const JoinGame = ({ onJoin }: JoinGameProps): JSX.Element => {
-  const classes = useStyles();
-
-  const [username, setUsername] = useState("");
+const JoinGame = ({ onJoin, oldUsername }: JoinGameProps): JSX.Element => {
+  const [username, setUsername] = useState(oldUsername ?? "");
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value.replace(/[^A-Za-z0-9]/, ""));
   };
 
-  const onSubmit = () => onJoin(username);
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onJoin(username);
+  };
 
   return (
-    <>
-      <p>Choose a username to begin</p>
-      <input type="text" value={username} onChange={onChange} />
-      <button type="button" onClick={onSubmit}>
-        Join the game!
-      </button>
-      <p>If you were disconnected, use the same username to re-join</p>
-    </>
+    <div className={styles.container}>
+      <h1 className={styles.mainTitle}>Coup Online</h1>
+      <form className={styles.joinForm} onSubmit={onSubmit}>
+        <input
+          type="text"
+          value={username}
+          onChange={onChange}
+          placeholder="Your Name"
+        />
+        <button type="submit">Join The Game!</button>
+      </form>
+      <img
+        src={img_cover}
+        alt="Coup Game Cover Art"
+        className={styles.coverArt}
+      />
+    </div>
   );
 };
 

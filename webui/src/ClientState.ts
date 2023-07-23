@@ -34,7 +34,7 @@ export const gameStateReducer = (
     case "joinGame":
       return { ...state, username: action.data.username };
     case "reset":
-      return getInitialState();
+      return { ...getInitialState(), username: state.username };
     case "updateGameState":
       const thisPlayer = action.data.players.find(
         (x) => x.name === state.username

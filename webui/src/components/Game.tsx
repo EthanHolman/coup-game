@@ -6,7 +6,6 @@ import JoinGame from "./JoinGame";
 import TableTopGame from "./TableTopGame";
 import { GameEventType } from "../../../shared/enums";
 import { eventToMessage, UIMessage } from "../eventsToMessages";
-import Header from "./Header";
 import settings from "../../settings";
 
 const useStyles = createUseStyles({
@@ -55,9 +54,7 @@ const Game = (): JSX.Element => {
       ws.addEventListener("close", (event) => {
         console.log(event);
         dispatch({ type: "reset" });
-        alert(
-          "connection reset. please re-join the game with the same username"
-        );
+        alert("Connection lost! Please try re-connecting with the same name.");
       });
       setWebsocket(ws);
       dispatch({ type: "joinGame", data: { username } });
@@ -69,7 +66,6 @@ const Game = (): JSX.Element => {
 
   return (
     <div className={classes.container}>
-      <Header state={state} />
       {state.thisPlayer ? (
         <TableTopGame
           state={state}
@@ -78,7 +74,7 @@ const Game = (): JSX.Element => {
           messages={messages}
         />
       ) : (
-        <JoinGame onJoin={onUserJoinGame} />
+        <JoinGame onJoin={onUserJoinGame} oldUsername={state.username} />
       )}
     </div>
   );
