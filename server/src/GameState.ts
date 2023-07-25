@@ -89,4 +89,8 @@ export class GameState {
   clearCurrentAction() {
     this.currentAction = undefined;
   }
+
+  clearBlockAction() {
+    this.blockAction = undefined;
+  }
 }

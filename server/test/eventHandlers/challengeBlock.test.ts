@@ -132,6 +132,19 @@ describe("challengeBlock event handler", function () {
 
       assert.isUndefined(state.currentAction);
     });
+
+    it("should clear blockAction upon success", function () {
+      const state = buildMockState();
+      const event: GameEvent = {
+        event: GameEventType.CHALLENGE_BLOCK,
+        user: "tester-0",
+      };
+      assert.isDefined(state.blockAction);
+
+      challengeBlock(state, event, Sinon.stub());
+
+      assert.isUndefined(state.blockAction);
+    });
   });
 
   describe("if blockEvent.user DOES NOT have required card", function () {
@@ -170,6 +183,19 @@ describe("challengeBlock event handler", function () {
         Sinon.match("You were caught bluffing"),
         Sinon.match.any
       );
+    });
+
+    it("should clear blockAction upon success", function () {
+      const state = buildMockState();
+      const event: GameEvent = {
+        event: GameEventType.CHALLENGE_BLOCK,
+        user: "tester-0",
+      };
+      assert.isDefined(state.blockAction);
+
+      challengeBlock(state, event, Sinon.stub());
+
+      assert.isUndefined(state.blockAction);
     });
   });
 });

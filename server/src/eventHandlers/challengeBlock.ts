@@ -25,13 +25,14 @@ export function challengeBlock(
   const card = state.blockAction!.data?.card;
   if (!card) throw "missing card";
 
+  const blockActionUser = state.blockAction?.user!;
+  state.clearBlockAction();
+
   if (blockingPlayer.hasCard(card)) {
     dispatchPlayerLoseCard(
       state,
       gameEvent.user,
-      `${
-        state.blockAction!.user
-      } has a ${card} card. You failed the challenge.`,
+      `${blockActionUser} has a ${card} card. You failed the challenge.`,
       messageAllFn
     );
 
@@ -43,7 +44,7 @@ export function challengeBlock(
   } else {
     dispatchPlayerLoseCard(
       state,
-      state.blockAction!.user,
+      blockActionUser,
       "You were caught bluffing!",
       messageAllFn
     );
