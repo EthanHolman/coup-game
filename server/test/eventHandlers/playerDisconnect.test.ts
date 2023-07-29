@@ -8,10 +8,12 @@ import { GameEvent } from "../../../shared/GameEvent";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
+import * as module_pauseGame from "../../src/actions/pauseGame";
 
 describe("playerDisconnect event handler", function () {
   it("should update the player as no longer connected, and pause game, if game is started", function () {
     const state = new GameState();
+    Sinon.replace(state, "getStatus", () => GameStatus.AWAITING_ACTION);
     state.start();
     const player = new Player("some dude", [Card.AMBASSADOR, Card.DUKE]);
     state.addPlayer(player);
@@ -25,6 +27,26 @@ describe("playerDisconnect event handler", function () {
 
     assert.isFalse(state.players[0].isConnected);
     assert.isTrue(state.isPaused);
+  });
+
+  it("should update player as not connected but not pause game, if game is over", function () {
+    const mock_pauseGame = Sinon.stub(module_pauseGame, "pauseGame").returns();
+    const state = new GameState();
+    const player = new Player("some dude", [Card.AMBASSADOR, Card.DUKE]);
+    assert.isTrue(player.isConnected);
+    state.addPlayer(player);
+    Sinon.replace(state, "getStatus", () => GameStatus.GAME_OVER);
+
+    const event: GameEvent = {
+      event: GameEventType.PLAYER_DISCONNECT,
+      user: "some dude",
+    };
+
+    playerDisconnect(state, event, Sinon.stub());
+
+    assert.isFalse(state.players[0].isConnected);
+    Sinon.assert.notCalled(mock_pauseGame);
+    mock_pauseGame.restore();
   });
 
   it("should remove player from state if player disconnects during pre-game", function () {

@@ -7,6 +7,7 @@ import { GameEvent } from "../../../shared/GameEvent";
 import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import * as module_addNewPlayer from "../../src/actions/addNewPlayer";
+import * as module_resumeGame from "../../src/actions/resumeGame";
 
 describe("playerJoinGame event handler", function () {
   let mock_addNewPlayer: Sinon.SinonStub;
@@ -75,6 +76,7 @@ describe("playerJoinGame event handler", function () {
 
   it("should allow players to rejoin if disconnected", function () {
     const state = new GameState();
+    Sinon.replace(state, "getStatus", () => GameStatus.AWAITING_ACTION);
     state.start();
     state.pause();
     const testPlayer = new Player("tommy tester", [Card.DUKE, Card.DUKE]);
@@ -183,5 +185,27 @@ describe("playerJoinGame event handler", function () {
     assert.strictEqual(state.players.length, 2);
     assert.isTrue(state.players.find((x) => x.name === "lois")?.isConnected);
     assert.isTrue(state.players.find((x) => x.name === "peter")?.isConnected);
+  });
+
+  it("should not trigger resume game if player reconnects and game is over", function () {
+    const mock_resumeGame = Sinon.stub(
+      module_resumeGame,
+      "resumeGame"
+    ).returns();
+    const state = new GameState();
+    Sinon.replace(state, "getStatus", () => GameStatus.GAME_OVER);
+    const player = new Player("tester", [Card.AMBASSADOR, Card.AMBASSADOR]);
+    player.isConnected = false;
+    state.addPlayer(player);
+
+    const event: GameEvent = {
+      event: GameEventType.PLAYER_JOIN_GAME,
+      user: "tester",
+    };
+
+    playerJoinGame(state, event, Sinon.stub());
+
+    Sinon.assert.notCalled(mock_resumeGame);
+    mock_resumeGame.restore();
   });
 });

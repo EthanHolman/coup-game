@@ -19,7 +19,10 @@ export function playerJoinGame(
       player.isConnected = true;
 
       // if everyone is re-connected, restart the game
-      if (!state.players.map((x) => x.isConnected).includes(false))
+      if (
+        !state.players.map((x) => x.isConnected).includes(false) &&
+        state.getStatus() !== GameStatus.GAME_OVER
+      )
         resumeGame(state, messageAllFn, "all players have reconnected!");
 
       return;

@@ -18,12 +18,16 @@ export function playerDisconnect(
     newHost.isHost = true;
   }
 
-  if (state.getStatus() === GameStatus.PRE_GAME) {
+  const gameStatus = state.getStatus();
+
+  if (gameStatus === GameStatus.PRE_GAME) {
     player.cards.forEach((x) => state.deck.discardCard(x.card));
     state.removePlayer(player.name);
     messageAllFn(gameEvent);
   } else {
     player.isConnected = false;
-    pauseGame(state, messageAllFn, `player ${gameEvent.user} disconnected`);
+    if (gameStatus !== GameStatus.GAME_OVER) {
+      pauseGame(state, messageAllFn, `player ${gameEvent.user} disconnected`);
+    }
   }
 }
