@@ -9,7 +9,9 @@ export function newGame(
   messageAllFn: messageAllFn
 ): GameState {
   const newGameState = new GameState();
-  state.players.forEach((player) => addNewPlayer(newGameState, player.name));
+  state.players
+    .filter((x) => x.isConnected)
+    .forEach((player) => addNewPlayer(newGameState, player.name));
 
   messageAllFn(createServerEvent(GameEventType.NEW_GAME));
 

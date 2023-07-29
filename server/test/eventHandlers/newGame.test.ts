@@ -69,6 +69,23 @@ describe("newGame event handler", function () {
     );
   });
 
+  it("should not add disconnected players to new gamestate", function () {
+    const oldState = new GameState();
+    oldState.addPlayer(new Player("roger", [Card.AMBASSADOR, Card.DUKE]));
+    const player_ethan = new Player("ethan", [Card.ASSASSIN, Card.AMBASSADOR]);
+    player_ethan.isConnected = false;
+    oldState.addPlayer(player_ethan);
+
+    newGame(oldState, Sinon.stub());
+
+    Sinon.assert.callCount(mock_addNewPlayer, 1);
+    Sinon.assert.calledWithExactly(
+      mock_addNewPlayer.getCall(0),
+      Sinon.match.any,
+      "roger"
+    );
+  });
+
   it("should send newgame event to all users", function () {
     const oldState = generateStateWithNPlayers(3);
     const stub_messageAllFn = Sinon.stub();
