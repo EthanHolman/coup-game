@@ -1,32 +1,8 @@
 import clsx from "clsx";
-import { createUseStyles } from "react-jss";
 import { UIMessage } from "../eventsToMessages";
 import { ClientState } from "../ClientState";
-
-const useStyles = createUseStyles({
-  container: {
-    flex: 1,
-    padding: "1rem",
-    display: "flex",
-    flexDirection: "column-reverse",
-    alignItems: "flex-start",
-  },
-  messageBubble: {
-    marginBottom: "0.25rem",
-    padding: "0.25rem",
-    borderRadius: "10px",
-    backgroundColor: "#c4c4c4",
-  },
-  selfMessage: {
-    backgroundColor: "#6464df",
-    color: "white",
-    alignSelf: "flex-end",
-  },
-  errorMessage: {
-    backgroundColor: "#d44",
-    color: "white",
-  },
-});
+import classes from "./MessageViewer.module.scss";
+import { useEffect, useMemo, useRef } from "react";
 
 type MessageViewerProps = {
   events: UIMessage[];
@@ -34,7 +10,13 @@ type MessageViewerProps = {
 };
 
 const MessageViewer = ({ events, state }: MessageViewerProps): JSX.Element => {
-  const classes = useStyles();
+  const bottomEl = useRef<HTMLDivElement>(null);
+
+  const eventsCount = useMemo(() => events.length, [events]);
+
+  useEffect(() => {
+    bottomEl.current?.scrollIntoView({ behavior: "smooth" });
+  }, [eventsCount]);
 
   return (
     <div className={classes.container}>
@@ -55,6 +37,7 @@ const MessageViewer = ({ events, state }: MessageViewerProps): JSX.Element => {
       {events.length === 0 && (
         <div className={classes.messageBubble}>Welcome to Coup Online!</div>
       )}
+      <div ref={bottomEl}></div>
     </div>
   );
 };

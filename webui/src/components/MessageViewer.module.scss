@@ -1,0 +1,25 @@
+.container {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .messageBubble {
+    margin-bottom: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 10px;
+    background-color: #c4c4c4;
+  }
+
+  .selfMessage {
+    background-color: #6464df;
+    color: white;
+    align-self: flex-end;
+  }
+
+  .errorMessage {
+    background-color: #d44;
+    color: white;
+  }
+}
