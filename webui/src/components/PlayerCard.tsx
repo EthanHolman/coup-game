@@ -1,13 +1,14 @@
 import clsx from "clsx";
-import { createUseStyles } from "react-jss";
 import { ClientPlayer } from "../../../shared/ClientGameState";
 import { Card } from "../../../shared/Card";
+import classes from "./PlayerCard.module.scss";
 import img_ambassador from "../../assets/ambassador.jpg";
 import img_assassin from "../../assets/assassin.jpg";
 import img_captain from "../../assets/captain.jpg";
 import img_contessa from "../../assets/contessa.jpg";
 import img_duke from "../../assets/duke.jpg";
 import img_hidden_card from "../../assets/hidden_card.jpg";
+import { PlayerCard as Type_PlayerCard } from "../../../shared/PlayerCard";
 
 function getCardImage(card: Card) {
   if (card === Card.AMBASSADOR) return img_ambassador;
@@ -18,34 +19,9 @@ function getCardImage(card: Card) {
   return img_hidden_card;
 }
 
-const useStyles = createUseStyles({
-  container: {
-    border: "1px solid #aaa",
-    borderRadius: "5px",
-    margin: "1rem",
-    padding: "1rem",
-    display: "flex",
-    flexDirection: "row",
-  },
-  thisPlayer: {},
-  isCurrentPlayer: {
-    border: "2px solid #0c6",
-  },
-  playerDetails: {
-    flex: 1,
-  },
-  card: {
-    height: "72px",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    marginLeft: "1rem",
-    overflow: "hidden",
-
-    "& > img": {
-      height: "100%",
-    },
-  },
-});
+function getCardTitle(card: Type_PlayerCard): string {
+  return `${card.card.toString()}${card.isRevealed ? " (Revealed)" : ""}`;
+}
 
 export type PlayerCardProps = {
   player: ClientPlayer;
@@ -58,8 +34,6 @@ const PlayerCard = ({
   isYou,
   isCurrentPlayer,
 }: PlayerCardProps): JSX.Element => {
-  const classes = useStyles();
-
   return (
     <div
       className={clsx([
@@ -76,8 +50,12 @@ const PlayerCard = ({
         Coins: {player.coins}
       </div>
       {player.cards.map((x, i) => (
-        <div key={i} title={x.card} className={clsx(classes.card, {})}>
-          <img src={getCardImage(x.card)} alt={x.card.toString()} />
+        <div
+          key={i}
+          title={getCardTitle(x)}
+          className={clsx(classes.card, { [classes.revealed]: x.isRevealed })}
+        >
+          <img src={getCardImage(x.card)} alt={getCardTitle(x)} />
         </div>
       ))}
     </div>
