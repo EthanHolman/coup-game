@@ -18,8 +18,8 @@ describe("LoseCardView component", function () {
       />
     );
 
-    screen.getByText(/choose a card to lose/gi);
-    screen.getByText(/sad day you lose a card/gi);
+    screen.getByText(/choose a card to lose/i);
+    screen.getByText(/sad day you lose a card/i);
   });
 
   it("should sendEvent when user chooses a card", async function () {
@@ -36,6 +36,7 @@ describe("LoseCardView component", function () {
     await userEvent.click(
       screen.getByRole("button", { name: Card.AMBASSADOR.toString() })
     );
+    await userEvent.click(screen.getByRole("button", { name: /confirm/i }));
 
     const expectedEvent: GameEvent = {
       event: GameEventType.PLAYER_REVEAL_CARD,

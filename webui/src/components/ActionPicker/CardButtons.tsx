@@ -1,6 +1,6 @@
 import { ALL_CARDS, Card } from "../../../../shared/Card";
 
-type CardButtonsProps = {
+export type CardButtonsProps = {
   onPickCard: (card: Card) => void;
 };
 

@@ -8,7 +8,17 @@ import {
 } from "../../shared/enums";
 import { ClientState } from "./ClientState";
 
-export type ClientGameAction = GameEventType | GameActionMove;
+export type GameEventOrAction = GameEventType | GameActionMove;
+
+export class ClientGameAction {
+  action: GameEventOrAction;
+  timeout?: boolean;
+
+  constructor(action: GameEventOrAction, timeout: boolean = false) {
+    this.action = action;
+    this.timeout = timeout;
+  }
+}
 
 export function getAvailableActions(state: ClientState): ClientGameAction[] {
   let actions: ClientGameAction[] = [];
@@ -23,17 +33,18 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
 
   if (state.isMyTurn && state.status === GameStatus.AWAITING_ACTION) {
     if (state.thisPlayer.coins >= 10) {
-      actions = [GameActionMove.COUP];
+      actions.push(new ClientGameAction(GameActionMove.COUP));
     } else {
-      actions = [
-        GameActionMove.EXCHANGE,
-        GameActionMove.FOREIGN_AID,
-        GameActionMove.INCOME,
-        GameActionMove.STEAL,
-        GameActionMove.TAX,
-      ];
-      if (state.thisPlayer.coins >= 3) actions.push(GameActionMove.ASSASSINATE);
-      if (state.thisPlayer.coins >= 7) actions.push(GameActionMove.COUP);
+      actions.push(new ClientGameAction(GameActionMove.EXCHANGE));
+      actions.push(new ClientGameAction(GameActionMove.FOREIGN_AID));
+      actions.push(new ClientGameAction(GameActionMove.INCOME));
+      actions.push(new ClientGameAction(GameActionMove.STEAL));
+      actions.push(new ClientGameAction(GameActionMove.TAX));
+
+      if (state.thisPlayer.coins >= 3)
+        actions.push(new ClientGameAction(GameActionMove.ASSASSINATE));
+      if (state.thisPlayer.coins >= 7)
+        actions.push(new ClientGameAction(GameActionMove.COUP));
     }
   }
 
@@ -42,28 +53,28 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
     state.status === GameStatus.ACTION_SELECTED &&
     NON_TARGETED_ACTIONS.includes(state.currentAction?.action!)
   )
-    actions.push(GameEventType.CONFIRM_ACTION);
+    actions.push(new ClientGameAction(GameEventType.CONFIRM_ACTION, true));
 
   if (!state.isMyTurn && state.status === GameStatus.ACTION_SELECTED) {
     if (BLOCKABLE_ACTIONS.includes(state.currentAction?.action!))
-      actions.push(GameEventType.BLOCK_ACTION);
+      actions.push(new ClientGameAction(GameEventType.BLOCK_ACTION));
 
     if (CHALLENGEABLE_ACTIONS.includes(state.currentAction?.action!))
-      actions.push(GameEventType.CHALLENGE_ACTION);
+      actions.push(new ClientGameAction(GameEventType.CHALLENGE_ACTION));
 
     if (state.currentAction?.targetPlayer === state.thisPlayer.name)
-      actions.push(GameEventType.CONFIRM_ACTION);
+      actions.push(new ClientGameAction(GameEventType.CONFIRM_ACTION));
   }
 
   if (state.status === GameStatus.ACTION_BLOCKED) {
     // current player can accept a block
     if (state.isMyTurn) {
-      actions.push(GameEventType.ACCEPT_BLOCK);
+      actions.push(new ClientGameAction(GameEventType.ACCEPT_BLOCK));
     }
 
     // everyone except blocker can challenge a block
     if (state.blockAction?.user !== state.thisPlayer.name)
-      actions.push(GameEventType.CHALLENGE_BLOCK);
+      actions.push(new ClientGameAction(GameEventType.CHALLENGE_BLOCK));
   }
 
   return actions;

@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { generateClientState } from "../test/stateGenerators";
-import { getAvailableActions } from "./getAvailableActions";
+import { ClientGameAction, getAvailableActions } from "./getAvailableActions";
 import {
   ALL_PLAYABLE_GAME_ACTION_MOVES,
   BLOCKABLE_ACTIONS,
@@ -29,61 +29,88 @@ describe("getAvailableActions", function () {
     it("should allow free actions regardless of coin balance", function () {
       const state = generateClientState(2, 0, 0);
       const result = getAvailableActions(state);
-      assert.sameMembers(result, [
-        GameActionMove.EXCHANGE,
-        GameActionMove.FOREIGN_AID,
-        GameActionMove.INCOME,
-        GameActionMove.STEAL,
-        GameActionMove.TAX,
-      ]);
+      assert.sameMembers(
+        result.map((x) => x.action),
+        [
+          GameActionMove.EXCHANGE,
+          GameActionMove.FOREIGN_AID,
+          GameActionMove.INCOME,
+          GameActionMove.STEAL,
+          GameActionMove.TAX,
+        ]
+      );
     });
 
     it("should allow assassinate if they have 3 or more coins", function () {
       const state = generateClientState(2, 0, 0);
       assert.isTrue(state.thisPlayer.coins < 3);
-      assert.notInclude(getAvailableActions(state), GameActionMove.ASSASSINATE);
+      assert.notInclude(
+        getAvailableActions(state).map((x) => x.action),
+        GameActionMove.ASSASSINATE
+      );
       state.thisPlayer.coins = 3;
-      assert.include(getAvailableActions(state), GameActionMove.ASSASSINATE);
+      assert.include(
+        getAvailableActions(state).map((x) => x.action),
+        GameActionMove.ASSASSINATE
+      );
       state.thisPlayer.coins = 7;
-      assert.include(getAvailableActions(state), GameActionMove.ASSASSINATE);
+      assert.include(
+        getAvailableActions(state).map((x) => x.action),
+        GameActionMove.ASSASSINATE
+      );
     });
 
     it("should allow coup if they have 7 or more coins", function () {
       const state = generateClientState(2, 0, 0);
       assert.isTrue(state.thisPlayer.coins < 7);
-      assert.notInclude(getAvailableActions(state), GameActionMove.COUP);
+      assert.notInclude(
+        getAvailableActions(state).map((x) => x.action),
+        GameActionMove.COUP
+      );
       state.thisPlayer.coins = 7;
-      assert.include(getAvailableActions(state), GameActionMove.COUP);
+      assert.include(
+        getAvailableActions(state).map((x) => x.action),
+        GameActionMove.COUP
+      );
       state.thisPlayer.coins = 8;
-      assert.include(getAvailableActions(state), GameActionMove.COUP);
+      assert.include(
+        getAvailableActions(state).map((x) => x.action),
+        GameActionMove.COUP
+      );
     });
 
     it("should not allow any actions besides coup if they have 10 or more coins", function () {
       const state = generateClientState(2, 0, 0);
       state.thisPlayer.coins = 10;
-      assert.sameMembers(getAvailableActions(state), [GameActionMove.COUP]);
+      assert.sameMembers(
+        getAvailableActions(state).map((x) => x.action),
+        [GameActionMove.COUP]
+      );
     });
 
     it("should allow accept or challenge block", function () {
       const state = generateClientState(2, 0, 0, GameStatus.ACTION_BLOCKED);
-      assert.sameMembers(getAvailableActions(state), [
-        GameEventType.ACCEPT_BLOCK,
-        GameEventType.CHALLENGE_BLOCK,
-      ]);
+      assert.sameMembers(
+        getAvailableActions(state).map((x) => x.action),
+        [GameEventType.ACCEPT_BLOCK, GameEventType.CHALLENGE_BLOCK]
+      );
     });
 
     it("should not allow blocking own action", function () {
       const state = generateClientState(2, 0, 0, GameStatus.ACTION_SELECTED);
-      assert.notInclude(getAvailableActions(state), GameEventType.BLOCK_ACTION);
+      assert.notInclude(
+        getAvailableActions(state).map((x) => x.action),
+        GameEventType.BLOCK_ACTION
+      );
     });
 
     it("should allow confirming action if currentAction is non-targeted", function () {
       NON_TARGETED_ACTIONS.forEach((action) => {
         const state = generateClientState(2, 0, 0, GameStatus.ACTION_SELECTED);
         state.currentAction = { action };
-        assert.include(
+        assert.deepInclude(
           getAvailableActions(state),
-          GameEventType.CONFIRM_ACTION
+          new ClientGameAction(GameEventType.CONFIRM_ACTION, true)
         );
       });
     });
@@ -97,9 +124,10 @@ describe("getAvailableActions", function () {
 
     it("should only allow challenging block if status is ACTION_BLOCKED", function () {
       const state = generateClientState(3, 0, 2, GameStatus.ACTION_BLOCKED);
-      assert.sameMembers(getAvailableActions(state), [
-        GameEventType.CHALLENGE_BLOCK,
-      ]);
+      assert.sameMembers(
+        getAvailableActions(state).map((x) => x.action),
+        [GameEventType.CHALLENGE_BLOCK]
+      );
     });
 
     it("should allow blocking blockable actions", function () {
@@ -110,7 +138,10 @@ describe("getAvailableActions", function () {
           action,
           targetPlayer: "player-1",
         };
-        assert.include(getAvailableActions(state), GameEventType.BLOCK_ACTION);
+        assert.include(
+          getAvailableActions(state).map((x) => x.action),
+          GameEventType.BLOCK_ACTION
+        );
       });
     });
 
@@ -124,7 +155,7 @@ describe("getAvailableActions", function () {
           targetPlayer: "player-1",
         };
         assert.notInclude(
-          getAvailableActions(state),
+          getAvailableActions(state).map((x) => x.action),
           GameEventType.BLOCK_ACTION
         );
       });
@@ -139,7 +170,7 @@ describe("getAvailableActions", function () {
           targetPlayer: "player-1",
         };
         assert.include(
-          getAvailableActions(state),
+          getAvailableActions(state).map((x) => x.action),
           GameEventType.CHALLENGE_ACTION
         );
       });
@@ -155,7 +186,7 @@ describe("getAvailableActions", function () {
           targetPlayer: "player-1",
         };
         assert.notInclude(
-          getAvailableActions(state),
+          getAvailableActions(state).map((x) => x.action),
           GameEventType.CHALLENGE_ACTION
         );
       });
@@ -167,7 +198,10 @@ describe("getAvailableActions", function () {
         action: GameActionMove.ASSASSINATE,
         targetPlayer: "player-0",
       };
-      assert.include(getAvailableActions(state), GameEventType.CONFIRM_ACTION);
+      assert.include(
+        getAvailableActions(state).map((x) => x.action),
+        GameEventType.CONFIRM_ACTION
+      );
     });
 
     it("should NOT allow confirming currentAction by other players", function () {
@@ -177,7 +211,7 @@ describe("getAvailableActions", function () {
         targetPlayer: "player-0",
       };
       assert.notInclude(
-        getAvailableActions(state),
+        getAvailableActions(state).map((x) => x.action),
         GameEventType.CONFIRM_ACTION
       );
     });
@@ -191,7 +225,10 @@ describe("getAvailableActions", function () {
         user: "player-0",
         data: { card: Card.CAPTAIN },
       };
-      assert.include(getAvailableActions(state), GameEventType.CHALLENGE_BLOCK);
+      assert.include(
+        getAvailableActions(state).map((x) => x.action),
+        GameEventType.CHALLENGE_BLOCK
+      );
     }
   });
 
@@ -203,7 +240,7 @@ describe("getAvailableActions", function () {
       data: { card: Card.CAPTAIN },
     };
     assert.notInclude(
-      getAvailableActions(state),
+      getAvailableActions(state).map((x) => x.action),
       GameEventType.CHALLENGE_BLOCK
     );
   });
@@ -232,11 +269,11 @@ describe("getAvailableActions", function () {
       data: { card: Card.CONTESSA },
     };
     assert.notInclude(
-      getAvailableActions(player2State),
+      getAvailableActions(player2State).map((x) => x.action),
       GameEventType.ACCEPT_BLOCK
     );
     assert.notInclude(
-      getAvailableActions(player1State),
+      getAvailableActions(player1State).map((x) => x.action),
       GameEventType.ACCEPT_BLOCK
     );
   });

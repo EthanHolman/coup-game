@@ -1,4 +1,4 @@
-type PlayerTargetButtonsProps = {
+export type PlayerTargetButtonsProps = {
   players: string[];
   onPickPlayer: (username: string) => void;
 };

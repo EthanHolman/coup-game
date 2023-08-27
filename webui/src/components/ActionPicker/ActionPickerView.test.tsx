@@ -6,58 +6,86 @@ import { assert } from "chai";
 import userEvent from "@testing-library/user-event";
 import { GameEvent } from "../../../../shared/GameEvent";
 import { Card } from "../../../../shared/Card";
+import { ClientGameAction } from "../../getAvailableActions";
+import * as module_actionbuttons from "./ActionButtons";
+import * as module_targetplayerbuttons from "./PlayerTargetButtons";
+import * as module_cardbuttons from "./CardButtons";
+import { ActionButtonsProps } from "./ActionButtons";
+import { PlayerTargetButtonsProps } from "./PlayerTargetButtons";
 
 describe("ActionPickerView component", function () {
-  it("should list available actions as buttons", async function () {
-    render(
-      <ActionPickerView
-        availableActions={[
-          GameActionMove.ASSASSINATE,
-          GameEventType.BLOCK_ACTION,
-        ]}
-        targetPlayers={[]}
-        username="test1"
-        sendEvent={Sinon.stub()}
-      />
+  let mock_actionbuttons: Sinon.SinonStub;
+  let mock_playerbtns: Sinon.SinonStub;
+  let mock_cardbuttons: Sinon.SinonStub;
+
+  this.beforeEach(function () {
+    mock_actionbuttons = Sinon.stub(module_actionbuttons, "default").callsFake(
+      (props: ActionButtonsProps) => (
+        <button
+          onClick={() => props.onPickAction(props.availableActions[0].action)}
+        >
+          ActionBtn
+        </button>
+      )
     );
-    screen.getByRole("button", {
-      name: GameActionMove.ASSASSINATE.toString(),
-    });
-    screen.getByRole("button", {
-      name: GameEventType.BLOCK_ACTION.toString(),
-    });
+    mock_playerbtns = Sinon.stub(
+      module_targetplayerbuttons,
+      "default"
+    ).callsFake((props: PlayerTargetButtonsProps) => (
+      <button onClick={() => props.onPickPlayer("test-user")}>PlayerBtn</button>
+    ));
+    mock_cardbuttons = Sinon.stub(module_cardbuttons, "default").callsFake(
+      (props: module_cardbuttons.CardButtonsProps) => (
+        <button onClick={() => props.onPickCard(Card.AMBASSADOR)}>card</button>
+      )
+    );
   });
 
-  it("should render nothing if no available actions", async function () {
+  this.afterEach(function () {
+    mock_actionbuttons.restore();
+    mock_playerbtns.restore();
+    mock_cardbuttons.restore();
+  });
+
+  it("should render action buttons by default", function () {
     render(
       <ActionPickerView
-        availableActions={[]}
+        availableActions={[new ClientGameAction(GameEventType.CONFIRM_ACTION)]}
         targetPlayers={[]}
         username="test1"
         sendEvent={Sinon.stub()}
       />
     );
-    const picker = screen.getByRole("toolbar");
-    assert.lengthOf(picker.innerHTML, 0);
+
+    screen.getByText("ActionBtn");
+  });
+
+  it("should render player target buttons if targeted action selected", async function () {
+    render(
+      <ActionPickerView
+        availableActions={[new ClientGameAction(GameActionMove.ASSASSINATE)]}
+        targetPlayers={[]}
+        username="test1"
+        sendEvent={Sinon.stub()}
+      />
+    );
+
+    await userEvent.click(screen.getByText("ActionBtn"));
+
+    screen.getByText("PlayerBtn");
   });
 
   it("should trigger sendEvent callback when user selects a non-targeted GameActionMove", async function () {
     const mockSendEvent = Sinon.stub();
     render(
       <ActionPickerView
-        availableActions={[
-          GameActionMove.ASSASSINATE,
-          GameEventType.BLOCK_ACTION,
-          GameActionMove.INCOME,
-        ]}
+        availableActions={[new ClientGameAction(GameActionMove.INCOME)]}
         targetPlayers={[]}
         username="test1"
         sendEvent={mockSendEvent}
       />
     );
-    await userEvent.click(
-      screen.getByRole("button", { name: GameActionMove.INCOME.toString() })
-    );
+    await userEvent.click(screen.getByText("ActionBtn"));
 
     const expectedEvent: GameEvent = {
       event: GameEventType.CHOOSE_ACTION,
@@ -72,17 +100,13 @@ describe("ActionPickerView component", function () {
     const mockSendEvent = Sinon.stub();
     render(
       <ActionPickerView
-        availableActions={[GameEventType.CONFIRM_ACTION]}
+        availableActions={[new ClientGameAction(GameEventType.CONFIRM_ACTION)]}
         targetPlayers={[]}
         username="test1"
         sendEvent={mockSendEvent}
       />
     );
-    await userEvent.click(
-      screen.getByRole("button", {
-        name: GameEventType.CONFIRM_ACTION.toString(),
-      })
-    );
+    await userEvent.click(screen.getByText("ActionBtn"));
 
     const expectedEvent: GameEvent = {
       event: GameEventType.CONFIRM_ACTION,
@@ -97,23 +121,19 @@ describe("ActionPickerView component", function () {
     const mockSendEvent = Sinon.stub();
     render(
       <ActionPickerView
-        availableActions={[GameActionMove.ASSASSINATE]}
-        targetPlayers={["test2"]}
+        availableActions={[new ClientGameAction(GameActionMove.ASSASSINATE)]}
+        targetPlayers={[]}
         username="test1"
         sendEvent={mockSendEvent}
       />
     );
-    await userEvent.click(
-      screen.getByRole("button", {
-        name: GameActionMove.ASSASSINATE.toString(),
-      })
-    );
-    await userEvent.click(screen.getByRole("button", { name: "test2" }));
+    await userEvent.click(screen.getByText("ActionBtn"));
+    await userEvent.click(screen.getByText("PlayerBtn"));
 
     const expectedEvent: GameEvent = {
       event: GameEventType.CHOOSE_ACTION,
       user: "test1",
-      data: { action: GameActionMove.ASSASSINATE, targetPlayer: "test2" },
+      data: { action: GameActionMove.ASSASSINATE, targetPlayer: "test-user" },
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
     assert.strictEqual(call, JSON.stringify(expectedEvent));
@@ -123,25 +143,19 @@ describe("ActionPickerView component", function () {
     const mockSendEvent = Sinon.stub();
     render(
       <ActionPickerView
-        availableActions={[GameEventType.BLOCK_ACTION]}
+        availableActions={[new ClientGameAction(GameEventType.BLOCK_ACTION)]}
         targetPlayers={[]}
         username="test1"
         sendEvent={mockSendEvent}
       />
     );
-    await userEvent.click(
-      screen.getByRole("button", {
-        name: GameEventType.BLOCK_ACTION.toString(),
-      })
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: Card.CAPTAIN.toString() })
-    );
+    await userEvent.click(screen.getByText("ActionBtn"));
+    await userEvent.click(screen.getByText("card"));
 
     const expectedEvent: GameEvent = {
       event: GameEventType.BLOCK_ACTION,
       user: "test1",
-      data: { card: Card.CAPTAIN },
+      data: { card: Card.AMBASSADOR },
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
     assert.strictEqual(call, JSON.stringify(expectedEvent));
