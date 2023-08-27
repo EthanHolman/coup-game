@@ -160,4 +160,23 @@ describe("util buildClientState", function () {
     const clientState = buildClientState(state, "tester-1");
     assert.isUndefined(clientState.exchangeCards);
   });
+
+  it("should not send back HIDDEN_CARDs if the game is over", function () {
+    const state = new GameState();
+    state.addPlayer(new Player("tester1", [Card.AMBASSADOR, Card.ASSASSIN]));
+    state.addPlayer(new Player("tester2", [Card.CAPTAIN, Card.CONTESSA]));
+    Sinon.stub(state, "getStatus").returns(GameStatus.GAME_OVER);
+    const clientStateFor1 = buildClientState(state, "tester1");
+    const player2 = clientStateFor1.players.find((x) => x.name === "tester2");
+    player2?.cards.forEach((card) => {
+      assert.isFalse(card.isRevealed);
+      assert.notStrictEqual(card.card, Card.HIDDEN_CARD);
+    });
+    const clientStateFor2 = buildClientState(state, "tester2");
+    const player1 = clientStateFor1.players.find((x) => x.name === "tester1");
+    player1?.cards.forEach((card) => {
+      assert.isFalse(card.isRevealed);
+      assert.notStrictEqual(card.card, Card.HIDDEN_CARD);
+    });
+  });
 });

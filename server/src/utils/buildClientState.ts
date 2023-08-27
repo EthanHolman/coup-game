@@ -1,5 +1,6 @@
 import { Card } from "../../../shared/Card";
 import { ClientGameState } from "../../../shared/ClientGameState";
+import { GameStatus } from "../../../shared/enums";
 import { GameState } from "../GameState";
 
 export function buildClientState(
@@ -22,7 +23,9 @@ export function buildClientState(
       isHost: player.isHost,
       isOut: player.isOut,
       cards: player.cards.map((card) =>
-        card.isRevealed || player.name === forPlayerName
+        card.isRevealed ||
+        player.name === forPlayerName ||
+        state.getStatus() === GameStatus.GAME_OVER
           ? card
           : { ...card, card: Card.HIDDEN_CARD }
       ),
