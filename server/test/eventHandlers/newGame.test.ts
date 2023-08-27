@@ -38,7 +38,12 @@ describe("newGame event handler", function () {
     oldState.exchangeCards = [Card.ASSASSIN];
     oldState.playerLosingCard = { player: "tester-1", reason: "idk just cuz" };
 
-    const result = newGame(oldState, Sinon.stub());
+    const event = {
+      user: "tester-0",
+      event: GameEventType.NEW_GAME,
+    };
+
+    const result = newGame(oldState, event, Sinon.stub());
 
     assert.strictEqual(result.currentPlayerId, 0);
     assert.isFalse(result.isPaused);
@@ -51,10 +56,15 @@ describe("newGame event handler", function () {
 
   it("should add all existing connected players to new gamestate", function () {
     const oldState = new GameState();
-    oldState.addPlayer(new Player("roger", [Card.AMBASSADOR, Card.DUKE]));
+    oldState.addPlayer(new Player("roger", [Card.AMBASSADOR, Card.DUKE], true));
     oldState.addPlayer(new Player("kody", [Card.AMBASSADOR, Card.DUKE]));
 
-    newGame(oldState, Sinon.stub());
+    const event = {
+      user: "roger",
+      event: GameEventType.NEW_GAME,
+    };
+
+    newGame(oldState, event, Sinon.stub());
 
     Sinon.assert.callCount(mock_addNewPlayer, 2);
     Sinon.assert.calledWithExactly(
@@ -71,12 +81,17 @@ describe("newGame event handler", function () {
 
   it("should not add disconnected players to new gamestate", function () {
     const oldState = new GameState();
-    oldState.addPlayer(new Player("roger", [Card.AMBASSADOR, Card.DUKE]));
+    oldState.addPlayer(new Player("roger", [Card.AMBASSADOR, Card.DUKE], true));
     const player_ethan = new Player("ethan", [Card.ASSASSIN, Card.AMBASSADOR]);
     player_ethan.isConnected = false;
     oldState.addPlayer(player_ethan);
 
-    newGame(oldState, Sinon.stub());
+    const event = {
+      user: "roger",
+      event: GameEventType.NEW_GAME,
+    };
+
+    newGame(oldState, event, Sinon.stub());
 
     Sinon.assert.callCount(mock_addNewPlayer, 1);
     Sinon.assert.calledWithExactly(
@@ -90,12 +105,32 @@ describe("newGame event handler", function () {
     const oldState = generateStateWithNPlayers(3);
     const stub_messageAllFn = Sinon.stub();
 
-    newGame(oldState, stub_messageAllFn);
+    const event = {
+      user: "tester-0",
+      event: GameEventType.NEW_GAME,
+    };
+
+    newGame(oldState, event, stub_messageAllFn);
 
     Sinon.assert.calledOnceWithExactly(stub_messageAllFn, {
       event: GameEventType.NEW_GAME,
       user: SERVER_USERNAME,
       data: {},
     });
+  });
+
+  it("should not allow non-hosts to start new game", function () {
+    const state = generateStateWithNPlayers(2);
+    assert.isTrue(state.players.find((x) => x.name === "tester-0")!.isHost);
+    assert.isFalse(state.players.find((x) => x.name === "tester-1")!.isHost);
+
+    const event = {
+      user: "tester-1",
+      event: GameEventType.NEW_GAME,
+    };
+
+    assert.throws(function () {
+      newGame(state, event, Sinon.stub());
+    }, "Only the host can start a new game");
   });
 });

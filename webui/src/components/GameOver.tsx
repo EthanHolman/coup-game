@@ -15,9 +15,11 @@ const GameOver = ({ state, sendEvent }: GameOverProps): JSX.Element => {
   return (
     <>
       <h2>The Game is Over!</h2>
-      <button type="button" onClick={handleNewGame}>
-        Create New Game
-      </button>
+      {state.thisPlayer.isHost && (
+        <button type="button" onClick={handleNewGame}>
+          Create New Game
+        </button>
+      )}
     </>
   );
 };

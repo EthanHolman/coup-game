@@ -1,3 +1,4 @@
+import { GameEvent } from "../../../shared/GameEvent";
 import { GameEventType } from "../../../shared/enums";
 import { GameState } from "../GameState";
 import { addNewPlayer } from "../actions/addNewPlayer";
@@ -6,8 +7,12 @@ import { createServerEvent } from "../utils/createServerEvent";
 
 export function newGame(
   state: GameState,
+  gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ): GameState {
+  const thisPlayer = state.players.find((x) => x.name === gameEvent.user);
+  if (!thisPlayer?.isHost) throw "Only the host can start a new game";
+
   const newGameState = new GameState();
   state.players
     .filter((x) => x.isConnected)

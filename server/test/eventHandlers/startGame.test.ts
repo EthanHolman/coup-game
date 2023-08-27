@@ -13,8 +13,10 @@ describe("startGame", function () {
     const state = new GameState();
     const messageAllFn = Sinon.stub();
 
+    const event = { user: "tester-0", event: GameEventType.START_GAME };
+
     assert.throws(function () {
-      startGame(state, messageAllFn);
+      startGame(state, event, messageAllFn);
     });
   });
 
@@ -22,17 +24,20 @@ describe("startGame", function () {
     const state = generateStateWithNPlayers(1);
     const messageAllFn = Sinon.stub();
 
+    const event = { user: "tester-0", event: GameEventType.START_GAME };
+
     assert.throws(function () {
-      startGame(state, messageAllFn);
-    });
+      startGame(state, event, messageAllFn);
+    }, "at least 2 players");
   });
 
   it("should be able to start with 2 players", function () {
     const state = generateStateWithNPlayers(2);
     const stub = Sinon.stub(state, "getStatus").returns(GameStatus.PRE_GAME);
-    const messageAllFn = Sinon.stub();
 
-    startGame(state, messageAllFn);
+    const event = { user: "tester-0", event: GameEventType.START_GAME };
+
+    startGame(state, event, Sinon.stub());
 
     stub.restore();
     assert.isFalse(state.isPaused);
@@ -43,9 +48,10 @@ describe("startGame", function () {
   it("should be able to start with more than 2 players", function () {
     const state = generateStateWithNPlayers(5);
     const stub = Sinon.stub(state, "getStatus").returns(GameStatus.PRE_GAME);
-    const messageAllFn = Sinon.stub();
 
-    startGame(state, messageAllFn);
+    const event = { user: "tester-0", event: GameEventType.START_GAME };
+
+    startGame(state, event, Sinon.stub());
 
     stub.restore();
     assert.isFalse(state.isPaused);
@@ -58,7 +64,9 @@ describe("startGame", function () {
     Sinon.replace(state, "getStatus", () => GameStatus.PRE_GAME);
     const messageAllFn = Sinon.stub();
 
-    startGame(state, messageAllFn);
+    const event = { user: "tester-0", event: GameEventType.START_GAME };
+
+    startGame(state, event, messageAllFn);
 
     Sinon.assert.calledOnceWithExactly(messageAllFn, {
       user: SERVER_USERNAME,
@@ -71,21 +79,38 @@ describe("startGame", function () {
     const state = generateStateWithNPlayers(3);
     Sinon.replace(state, "getStatus", () => GameStatus.AWAITING_ACTION);
 
+    const event = { user: "tester-0", event: GameEventType.START_GAME };
+
     assert.throws(function () {
-      startGame(state, Sinon.stub());
+      startGame(state, event, Sinon.stub());
     }, "expecting gameStatus to be pregame");
   });
 
   it("should set the current player to first player", function () {
     const state = new GameState();
-    state.addPlayer(new Player("tester0", [Card.AMBASSADOR, Card.AMBASSADOR]));
+    state.addPlayer(
+      new Player("tester0", [Card.AMBASSADOR, Card.AMBASSADOR], true)
+    );
     state.addPlayer(new Player("tester1", [Card.AMBASSADOR, Card.AMBASSADOR]));
 
-    startGame(state, Sinon.stub());
+    const event = { user: "tester0", event: GameEventType.START_GAME };
+
+    startGame(state, event, Sinon.stub());
 
     assert.equal(state.currentPlayerId, 0);
     assert.equal(state.currentPlayer.name, "tester0");
   });
 
-  // TODO: someday when we have hosts: make sure only host can start the game
+  it("should not allow non-hosts to start the game", function () {
+    const state = generateStateWithNPlayers(2);
+    const stub = Sinon.stub(state, "getStatus").returns(GameStatus.PRE_GAME);
+
+    const event = { user: "tester-1", event: GameEventType.START_GAME };
+
+    assert.throws(function () {
+      startGame(state, event, Sinon.stub());
+    }, "Only the host can start the game");
+
+    stub.restore();
+  });
 });

@@ -52,7 +52,7 @@ export class GameRunner {
 
     switch (gameEvent.event) {
       case GameEventType.START_GAME:
-        startGame(this._gameState, this._messageAllFn);
+        startGame(this._gameState, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.PLAYER_JOIN_GAME:
@@ -107,7 +107,11 @@ export class GameRunner {
         break;
 
       case GameEventType.NEW_GAME:
-        this._gameState = newGame(this._gameState, this._messageAllFn);
+        this._gameState = newGame(
+          this._gameState,
+          gameEvent,
+          this._messageAllFn
+        );
         break;
 
       default:
