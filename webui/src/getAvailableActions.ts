@@ -3,14 +3,13 @@ import {
   BLOCKABLE_ACTIONS,
   CHALLENGEABLE_ACTIONS,
   GameActionMove,
+  GameEventOrAction,
   GameEventType,
   GameStatus,
   NON_TARGETED_ACTIONS,
 } from "../../shared/enums";
 import { getBlockActionAsCards } from "../../shared/getBlockActionAsCards";
 import { ClientState } from "./ClientState";
-
-export type GameEventOrAction = GameEventType | GameActionMove;
 
 export class ClientGameAction {
   action: GameEventOrAction;

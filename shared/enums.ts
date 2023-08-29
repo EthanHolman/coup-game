@@ -44,6 +44,8 @@ export enum GameActionMove {
   LOSE_CARD = "Lose Card",
 }
 
+export type GameEventOrAction = GameEventType | GameActionMove;
+
 export const ALL_GAME_ACTION_MOVES = [
   GameActionMove.NONE,
   GameActionMove.INCOME,

@@ -6,6 +6,7 @@ import ActionButtons from "./ActionButtons";
 import { ClientGameAction } from "../../getAvailableActions";
 import { assert } from "chai";
 import * as module_timeoutconfirmactionbtn from "./TimeoutConfirmActionButton";
+import { Card } from "../../../../shared/Card";
 
 describe("ActionButtons component", function () {
   let stub_timeoutconfirmactionbtn: Sinon.SinonStub;
@@ -25,12 +26,29 @@ describe("ActionButtons component", function () {
     const actions = [
       new ClientGameAction(GameActionMove.ASSASSINATE),
       new ClientGameAction(GameEventType.CHALLENGE_ACTION),
+      new ClientGameAction(GameEventType.BLOCK_ACTION, undefined, [
+        Card.AMBASSADOR,
+        Card.CAPTAIN,
+      ]),
     ];
     render(
       <ActionButtons availableActions={actions} onPickAction={Sinon.stub()} />
     );
     screen.getByText(GameActionMove.ASSASSINATE.toString());
     screen.getByText(GameEventType.CHALLENGE_ACTION.toString());
+    screen.getByText(GameEventType.BLOCK_ACTION.toString());
+  });
+
+  it("should render name of card after 'block action' if only 1 block card", function () {
+    const actions = [
+      new ClientGameAction(GameEventType.BLOCK_ACTION, undefined, [
+        Card.CONTESSA,
+      ]),
+    ];
+    render(
+      <ActionButtons availableActions={actions} onPickAction={Sinon.stub()} />
+    );
+    screen.getByText(GameEventType.BLOCK_ACTION.toString() + " with Contessa");
   });
 
   it("should render nothing if no actions provided", async function () {

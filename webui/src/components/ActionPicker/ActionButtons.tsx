@@ -26,7 +26,9 @@ const ActionButtons = ({
             key={cga.action}
             onClick={() => onPickAction(cga)}
           >
-            {cga.action}
+            {cga.blockAsCards?.length === 1
+              ? cga.action + " with " + cga.blockAsCards[0]
+              : cga.action}
           </button>
         )
       )}
