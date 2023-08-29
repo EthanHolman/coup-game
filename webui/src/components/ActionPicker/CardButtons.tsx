@@ -1,14 +1,15 @@
-import { ALL_CARDS, Card } from "../../../../shared/Card";
+import { Card } from "../../../../shared/Card";
 
 export type CardButtonsProps = {
+  cards: Card[];
   onPickCard: (card: Card) => void;
 };
 
-const CardButtons = ({ onPickCard }: CardButtonsProps): JSX.Element => {
+const CardButtons = ({ cards, onPickCard }: CardButtonsProps): JSX.Element => {
   return (
     <>
       <h2>Choose a card to block with:</h2>
-      {ALL_CARDS.map((card) => (
+      {cards.map((card) => (
         <button
           type="button"
           key={card.toString()}

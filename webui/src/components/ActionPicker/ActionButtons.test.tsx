@@ -49,7 +49,15 @@ describe("ActionButtons component", function () {
     await userEvent.click(
       screen.getByText(GameActionMove.ASSASSINATE.toString())
     );
-    Sinon.assert.calledWithExactly(mockPickAction, GameActionMove.ASSASSINATE);
+    Sinon.assert.calledOnce(mockPickAction);
+    assert.strictEqual(
+      JSON.stringify(mockPickAction.getCall(0).args[0]),
+      JSON.stringify({
+        action: GameActionMove.ASSASSINATE,
+        timeout: false,
+        blockAsCards: undefined,
+      })
+    );
   });
 
   it("should render regular confirm button when no timeout is set", function () {

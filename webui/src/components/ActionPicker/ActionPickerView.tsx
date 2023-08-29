@@ -10,7 +10,7 @@ import { ClientGameAction } from "../../getAvailableActions";
 import ActionButtons from "./ActionButtons";
 import PlayerTargetButtons from "./PlayerTargetButtons";
 import CardButtons from "./CardButtons";
-import { Card } from "../../../../shared/Card";
+import { ALL_CARDS, Card } from "../../../../shared/Card";
 
 type ActionPickerViewProps = {
   availableActions: ClientGameAction[];
@@ -35,14 +35,23 @@ const ActionPickerView = ({
   const [action, setAction] = useState<any>();
   const [targetPlayer, setTargetPlayer] = useState<string>();
   const [blockAsCard, setBlockAsCard] = useState<Card>();
+  const [blockAsCardOptions, setBlockAsCardOptions] = useState<Card[]>([]);
 
-  const handleChooseAction = (action: any) => {
-    setAction(action);
-    if (TARGETED_ACTIONS.includes(action)) {
+  const handleChooseAction = (cga: ClientGameAction) => {
+    setAction(cga.action);
+    if (TARGETED_ACTIONS.includes(cga.action as any))
       setViewMode(ViewMode.Player);
-    }
-    if (action === GameEventType.BLOCK_ACTION) {
-      setViewMode(ViewMode.Card);
+    else if (cga.action === GameEventType.BLOCK_ACTION) {
+      let tempCards = cga.blockAsCards;
+      if (!tempCards) {
+        tempCards = ALL_CARDS;
+        console.error(`missing blockAsCards on ClientGameAction ${action}`);
+      }
+
+      if (tempCards.length > 1) {
+        setBlockAsCardOptions(tempCards);
+        setViewMode(ViewMode.Card);
+      } else setBlockAsCard(tempCards[0]);
     }
   };
 
@@ -83,6 +92,7 @@ const ActionPickerView = ({
     setViewMode(ViewMode.Action);
     setTargetPlayer(undefined);
     setBlockAsCard(undefined);
+    setBlockAsCardOptions(ALL_CARDS);
   }, [action, targetPlayer, blockAsCard]);
 
   return (
@@ -99,7 +109,9 @@ const ActionPickerView = ({
           onPickPlayer={onPickPlayer}
         />
       )}
-      {viewMode === ViewMode.Card && <CardButtons onPickCard={onPickCard} />}
+      {viewMode === ViewMode.Card && (
+        <CardButtons cards={blockAsCardOptions} onPickCard={onPickCard} />
+      )}
     </div>
   );
 };

@@ -21,9 +21,7 @@ describe("ActionPickerView component", function () {
   this.beforeEach(function () {
     mock_actionbuttons = Sinon.stub(module_actionbuttons, "default").callsFake(
       (props: ActionButtonsProps) => (
-        <button
-          onClick={() => props.onPickAction(props.availableActions[0].action)}
-        >
+        <button onClick={() => props.onPickAction(props.availableActions[0])}>
           ActionBtn
         </button>
       )
@@ -36,7 +34,9 @@ describe("ActionPickerView component", function () {
     ));
     mock_cardbuttons = Sinon.stub(module_cardbuttons, "default").callsFake(
       (props: module_cardbuttons.CardButtonsProps) => (
-        <button onClick={() => props.onPickCard(Card.AMBASSADOR)}>card</button>
+        <button onClick={() => props.onPickCard(Card.AMBASSADOR)}>
+          CardBtn
+        </button>
       )
     );
   });
@@ -75,6 +75,55 @@ describe("ActionPickerView component", function () {
     screen.getByText("PlayerBtn");
   });
 
+  it("should trigger sendEvent callback immediately when blocking with 1 blockAs card", async function () {
+    const mockSendEvent = Sinon.stub();
+    render(
+      <ActionPickerView
+        availableActions={[
+          new ClientGameAction(GameEventType.BLOCK_ACTION, undefined, [
+            Card.DUKE,
+          ]),
+        ]}
+        targetPlayers={[]}
+        username="test1"
+        sendEvent={mockSendEvent}
+      />
+    );
+
+    await userEvent.click(screen.getByText("ActionBtn"));
+
+    assert.isNull(screen.queryByText("CardBtn"));
+
+    const expectedEvent: GameEvent = {
+      event: GameEventType.BLOCK_ACTION,
+      user: "test1",
+      data: { card: Card.DUKE },
+    };
+    const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
+    assert.strictEqual(call, JSON.stringify(expectedEvent));
+    Sinon.assert.calledOnce(mockSendEvent);
+  });
+
+  it("should render card buttons if blocking with >1 blockAs cards", async function () {
+    render(
+      <ActionPickerView
+        availableActions={[
+          new ClientGameAction(GameEventType.BLOCK_ACTION, undefined, [
+            Card.CAPTAIN,
+            Card.AMBASSADOR,
+          ]),
+        ]}
+        targetPlayers={[]}
+        username="test1"
+        sendEvent={Sinon.stub()}
+      />
+    );
+
+    await userEvent.click(screen.getByText("ActionBtn"));
+
+    screen.getByText("CardBtn");
+  });
+
   it("should trigger sendEvent callback when user selects a non-targeted GameActionMove", async function () {
     const mockSendEvent = Sinon.stub();
     render(
@@ -94,6 +143,7 @@ describe("ActionPickerView component", function () {
     };
     const call = JSON.stringify(mockSendEvent.getCall(0).args[0]);
     assert.strictEqual(call, JSON.stringify(expectedEvent));
+    Sinon.assert.calledOnce(mockSendEvent);
   });
 
   it("should trigger sendEvent callback when user selects a GameEventType", async function () {
@@ -150,7 +200,7 @@ describe("ActionPickerView component", function () {
       />
     );
     await userEvent.click(screen.getByText("ActionBtn"));
-    await userEvent.click(screen.getByText("card"));
+    await userEvent.click(screen.getByText("CardBtn"));
 
     const expectedEvent: GameEvent = {
       event: GameEventType.BLOCK_ACTION,

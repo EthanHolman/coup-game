@@ -1,10 +1,10 @@
-import { ClientGameAction, GameEventOrAction } from "../../getAvailableActions";
+import { ClientGameAction } from "../../getAvailableActions";
 import { GameEventType } from "../../../../shared/enums";
 import TimeoutConfirmActionButton from "./TimeoutConfirmActionButton";
 
 export type ActionButtonsProps = {
   availableActions: ClientGameAction[];
-  onPickAction: (action: GameEventOrAction) => void;
+  onPickAction: (action: ClientGameAction) => void;
 };
 
 const ActionButtons = ({
@@ -14,19 +14,19 @@ const ActionButtons = ({
   return (
     <>
       {availableActions.length > 0 && <h2>Choose an action:</h2>}
-      {availableActions.map(({ action, timeout }) =>
-        action === GameEventType.CONFIRM_ACTION && timeout ? (
+      {availableActions.map((cga) =>
+        cga.action === GameEventType.CONFIRM_ACTION && cga.timeout ? (
           <TimeoutConfirmActionButton
-            key={action}
-            onClick={() => onPickAction(action)}
+            key={cga.action}
+            onClick={() => onPickAction(cga)}
           />
         ) : (
           <button
             type="button"
-            key={action}
-            onClick={() => onPickAction(action)}
+            key={cga.action}
+            onClick={() => onPickAction(cga)}
           >
-            {action}
+            {cga.action}
           </button>
         )
       )}

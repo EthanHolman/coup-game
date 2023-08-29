@@ -1,3 +1,4 @@
+import { Card } from "../../shared/Card";
 import {
   BLOCKABLE_ACTIONS,
   CHALLENGEABLE_ACTIONS,
@@ -6,6 +7,7 @@ import {
   GameStatus,
   NON_TARGETED_ACTIONS,
 } from "../../shared/enums";
+import { getBlockActionAsCards } from "../../shared/getBlockActionAsCards";
 import { ClientState } from "./ClientState";
 
 export type GameEventOrAction = GameEventType | GameActionMove;
@@ -13,10 +15,16 @@ export type GameEventOrAction = GameEventType | GameActionMove;
 export class ClientGameAction {
   action: GameEventOrAction;
   timeout?: boolean;
+  blockAsCards?: Card[];
 
-  constructor(action: GameEventOrAction, timeout: boolean = false) {
+  constructor(
+    action: GameEventOrAction,
+    timeout: boolean = false,
+    blockAsCards: Card[] | undefined = undefined
+  ) {
     this.action = action;
     this.timeout = timeout;
+    this.blockAsCards = blockAsCards;
   }
 }
 
@@ -57,7 +65,13 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
 
   if (!state.isMyTurn && state.status === GameStatus.ACTION_SELECTED) {
     if (BLOCKABLE_ACTIONS.includes(state.currentAction?.action!))
-      actions.push(new ClientGameAction(GameEventType.BLOCK_ACTION));
+      actions.push(
+        new ClientGameAction(
+          GameEventType.BLOCK_ACTION,
+          false,
+          getBlockActionAsCards(state.currentAction!.action!)
+        )
+      );
 
     if (CHALLENGEABLE_ACTIONS.includes(state.currentAction?.action!))
       actions.push(new ClientGameAction(GameEventType.CHALLENGE_ACTION));

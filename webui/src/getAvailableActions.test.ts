@@ -11,6 +11,8 @@ import {
 } from "../../shared/enums";
 import { GameEventType } from "../../shared/enums";
 import { Card } from "../../shared/Card";
+import * as module_getBlockActionAsCards from "../../shared/getBlockActionAsCards";
+import Sinon from "sinon";
 
 describe("getAvailableActions", function () {
   it("shouldn't allow any actions if the game is paused", function () {
@@ -131,6 +133,11 @@ describe("getAvailableActions", function () {
     });
 
     it("should allow blocking blockable actions", function () {
+      const stub = Sinon.stub(
+        module_getBlockActionAsCards,
+        "getBlockActionAsCards"
+      ).returns([Card.CAPTAIN]);
+
       assert.isNotEmpty(BLOCKABLE_ACTIONS);
       BLOCKABLE_ACTIONS.forEach((action) => {
         const state = generateClientState(3, 0, 2, GameStatus.ACTION_SELECTED);
@@ -138,11 +145,20 @@ describe("getAvailableActions", function () {
           action,
           targetPlayer: "player-1",
         };
-        assert.include(
-          getAvailableActions(state).map((x) => x.action),
+
+        const results = getAvailableActions(state);
+
+        const blockActionResult = results.find(
+          (x) => x.action === GameEventType.BLOCK_ACTION
+        );
+        assert.strictEqual(
+          blockActionResult?.action,
           GameEventType.BLOCK_ACTION
         );
+        assert.sameMembers(blockActionResult?.blockAsCards!, [Card.CAPTAIN]);
       });
+
+      stub.restore();
     });
 
     it("should not allow blocking non-blockable actions", function () {
