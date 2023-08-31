@@ -4,6 +4,7 @@ import { GameState } from "../GameState";
 import { messageAllFn } from "../messageFnTypes";
 import { GameStatus } from "../../../shared/enums";
 import { addNewPlayer } from "../actions/addNewPlayer";
+import { SERVER_USERNAME, USERNAME_REGEX } from "../../../shared/globals";
 
 export function playerJoinGame(
   state: GameState,
@@ -30,6 +31,12 @@ export function playerJoinGame(
 
     throw `game has already started.`;
   }
+
+  if (
+    gameEvent.user === SERVER_USERNAME ||
+    !USERNAME_REGEX.test(gameEvent.user)
+  )
+    throw "invalid username";
 
   addNewPlayer(state, gameEvent.user);
 

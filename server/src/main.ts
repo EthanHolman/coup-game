@@ -52,7 +52,6 @@ wss.on("connection", function connection(ws, req) {
     return;
   }
 
-  // TODO: sanitize this username & make sure its not server_username
   const user = req.url.split("/")[1];
 
   if (clients.has(user)) {

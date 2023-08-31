@@ -8,6 +8,7 @@ import { GameState } from "../../src/GameState";
 import { Player } from "../../src/Player";
 import * as module_addNewPlayer from "../../src/actions/addNewPlayer";
 import * as module_resumeGame from "../../src/actions/resumeGame";
+import { SERVER_USERNAME } from "../../../shared/globals";
 
 describe("playerJoinGame event handler", function () {
   let mock_addNewPlayer: Sinon.SinonStub;
@@ -23,22 +24,33 @@ describe("playerJoinGame event handler", function () {
     mock_addNewPlayer.restore();
   });
 
-  it("should call addNewPlayer with new username during pregame", function () {
-    const state = new GameState();
-    Sinon.replace(state, "getStatus", () => GameStatus.PRE_GAME);
+  it("should call addNewPlayer with valid username during pregame", function () {
+    [
+      "some dude",
+      "somedude",
+      "22 ehtan",
+      "25ethan",
+      "_VALID_",
+      "valid s",
+      "valid_name",
+    ].forEach((user) => {
+      const state = new GameState();
+      Sinon.replace(state, "getStatus", () => GameStatus.PRE_GAME);
 
-    const event: GameEvent = {
-      event: GameEventType.PLAYER_JOIN_GAME,
-      user: "some-username",
-    };
+      const event: GameEvent = {
+        event: GameEventType.PLAYER_JOIN_GAME,
+        user: "some-username",
+      };
 
-    playerJoinGame(state, event, Sinon.stub());
+      playerJoinGame(state, event, Sinon.stub());
 
-    Sinon.assert.calledOnceWithExactly(
-      mock_addNewPlayer,
-      state,
-      "some-username"
-    );
+      Sinon.assert.calledOnceWithExactly(
+        mock_addNewPlayer,
+        state,
+        "some-username"
+      );
+      mock_addNewPlayer.reset();
+    });
   });
 
   it("everyone should receive player join event", function () {
@@ -207,5 +219,40 @@ describe("playerJoinGame event handler", function () {
 
     Sinon.assert.notCalled(mock_resumeGame);
     mock_resumeGame.restore();
+  });
+
+  it("should not allow joining as the server username", function () {
+    const state = new GameState();
+    Sinon.replace(state, "getStatus", () => GameStatus.PRE_GAME);
+
+    const event: GameEvent = {
+      event: GameEventType.PLAYER_JOIN_GAME,
+      user: SERVER_USERNAME,
+    };
+
+    assert.throws(function () {
+      playerJoinGame(state, event, Sinon.stub());
+    }, "invalid username");
+
+    Sinon.assert.notCalled(mock_addNewPlayer);
+  });
+
+  it("should not allow joining with invalid usernames", function () {
+    ["invali'd", 'kools "asdf"', "<INVALID>", "inval id  "].forEach((user) => {
+      const state = new GameState();
+
+      Sinon.replace(state, "getStatus", () => GameStatus.PRE_GAME);
+
+      const event: GameEvent = {
+        event: GameEventType.PLAYER_JOIN_GAME,
+        user,
+      };
+
+      assert.throws(function () {
+        playerJoinGame(state, event, Sinon.stub());
+      }, "invalid username");
+
+      Sinon.assert.notCalled(mock_addNewPlayer);
+    });
   });
 });
