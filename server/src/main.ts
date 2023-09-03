@@ -8,16 +8,15 @@ const server = createServer();
 const wss = new WebSocketServer({ noServer: true });
 const clients = new Map<string, WebSocket.WebSocket>();
 
-function getUserByWebsocket(websocket: WebSocket.WebSocket): string {
+function getUserByWebsocket(
+  websocket: WebSocket.WebSocket
+): string | undefined {
   if (!websocket) throw "websocket cannot be null";
   let username: string | undefined;
 
-  // TODO: this can probably be cleaned up
   clients.forEach((value, key) => {
     if (value === websocket) username = key;
   });
-
-  if (!username) throw `user ${username} not found`;
 
   return username;
 }
@@ -67,8 +66,8 @@ wss.on("connection", function connection(ws, req) {
       user: user,
     });
   } catch (e: any) {
+    console.warn(`user '${user}' was unable to join game: `, e);
     ws.close(4004, e);
-    console.warn(`user ${user} was unable to join game`, e);
     clients.delete(user);
   }
 
@@ -94,9 +93,15 @@ wss.on("connection", function connection(ws, req) {
 
   ws.on("close", function (code, reason) {
     const user = getUserByWebsocket(ws);
-    console.log(`[CONN] closed clientId=${user} code=${code} reason=${reason}`);
-    gameRunner.onEvent({ event: GameEventType.PLAYER_DISCONNECT, user });
-    clients.delete(user);
+    if (user) {
+      console.info(`[CONN] closed user=${user} code=${code} reason=${reason}`);
+      try {
+        gameRunner.onEvent({ event: GameEventType.PLAYER_DISCONNECT, user });
+      } catch (e) {
+        console.error(e);
+      }
+      clients.delete(user);
+    }
   });
 });
 
