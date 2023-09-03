@@ -1,22 +1,29 @@
 import { useState } from "react";
 import img_cover from "../../assets/cover.jpg";
 import styles from "./JoinGame.module.scss";
+import { USERNAME_NOT_ALLOWED_CHARS_REGEX } from "../../../shared/globals";
 
 export type JoinGameProps = {
   onJoin: (username: string) => void;
-  oldUsername: string;
+  existingUsername: string;
 };
 
-const JoinGame = ({ onJoin, oldUsername }: JoinGameProps): JSX.Element => {
-  const [username, setUsername] = useState(oldUsername ?? "");
+const JoinGame = ({ onJoin, existingUsername }: JoinGameProps): JSX.Element => {
+  const [username, setUsername] = useState(existingUsername ?? "");
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value.replace(/[^A-Za-z0-9]/, ""));
+    setUsername(
+      event.target.value.replace(USERNAME_NOT_ALLOWED_CHARS_REGEX, "")
+    );
   };
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onJoin(username);
+
+    const trimmedUsername = username.trim();
+    if (trimmedUsername.length === 0) return;
+    setUsername(trimmedUsername);
+    onJoin(trimmedUsername);
   };
 
   return (
@@ -29,7 +36,9 @@ const JoinGame = ({ onJoin, oldUsername }: JoinGameProps): JSX.Element => {
           onChange={onChange}
           placeholder="Your Name"
         />
-        <button type="submit">Join The Game!</button>
+        <button type="submit" disabled={username.trim().length === 0}>
+          Join The Game!
+        </button>
       </form>
       <img
         src={img_cover}

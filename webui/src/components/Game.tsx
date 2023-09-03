@@ -52,9 +52,12 @@ const Game = (): JSX.Element => {
         }
       });
       ws.addEventListener("close", (event) => {
-        console.log(event);
+        console.warn(event);
         dispatch({ type: "reset" });
-        alert("Connection lost! Please try re-connecting with the same name.");
+        const msg = event.reason
+          ? event.reason
+          : "Connection lost! Please try re-connecting with the same name.";
+        alert(msg);
       });
       setWebsocket(ws);
       dispatch({ type: "joinGame", data: { username } });
@@ -74,7 +77,7 @@ const Game = (): JSX.Element => {
           messages={messages}
         />
       ) : (
-        <JoinGame onJoin={onUserJoinGame} oldUsername={state.username} />
+        <JoinGame onJoin={onUserJoinGame} existingUsername={state.username} />
       )}
     </div>
   );
