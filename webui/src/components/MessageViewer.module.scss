@@ -5,21 +5,31 @@
   flex-direction: column;
   align-items: flex-start;
 
-  .messageBubble {
+  .message {
     margin-bottom: 0.25rem;
     padding: 0.25rem;
+    font-size: 0.85rem;
+  }
+
+  .messageBubble {
+    padding: 0.45rem;
     border-radius: 10px;
     background-color: #c4c4c4;
+
+    &.selfMessage {
+      background-color: #6464df;
+      color: white;
+      align-self: flex-end;
+    }
   }
 
-  .selfMessage {
-    background-color: #6464df;
-    color: white;
-    align-self: flex-end;
-  }
+  .alert {
+    align-self: center;
+    text-align: center;
+    color: #666;
 
-  .errorMessage {
-    background-color: #d44;
-    color: white;
+    &.alertError {
+      color: red;
+    }
   }
 }

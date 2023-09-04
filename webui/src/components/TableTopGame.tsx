@@ -9,7 +9,7 @@ import { GameStatus } from "../../../shared/enums";
 import LoseCard from "./LoseCard/LoseCard";
 import ExchangeCard from "./ExchangeCard/ExchangeCard";
 import MessageViewer from "./MessageViewer";
-import { UIMessage } from "../eventsToMessages";
+import { UIMessage } from "../UIMessage";
 import GameOver from "./GameOver";
 import Header from "./Header";
 

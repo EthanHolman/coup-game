@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { UIMessage } from "../eventsToMessages";
+import { UIMessage, UIMessageType } from "../UIMessage";
 import { ClientState } from "../ClientState";
 import classes from "./MessageViewer.module.scss";
 import { useEffect, useMemo, useRef } from "react";
@@ -20,20 +20,32 @@ const MessageViewer = ({ events, state }: MessageViewerProps): JSX.Element => {
 
   return (
     <div className={classes.container}>
-      {!!state.thisPlayer &&
-        events.map((event, index) => (
+      {events.map((event, index) =>
+        event.type === UIMessageType.User ? (
           <div
             className={clsx([
+              classes.message,
               classes.messageBubble,
               { [classes.selfMessage]: event.user === state.thisPlayer.name },
-              { [classes.errorMessage]: event.isError },
             ])}
             key={index}
           >
-            {event.user !== state.thisPlayer.name && <>{event.user}: </>}
+            {<span>{event.user}: </span>}
             {event.message}
           </div>
-        ))}
+        ) : (
+          <div
+            className={clsx([
+              classes.message,
+              classes.alert,
+              { [classes.alertError]: event.type === UIMessageType.Error },
+            ])}
+            key={index}
+          >
+            {event.message}
+          </div>
+        )
+      )}
       {events.length === 0 && (
         <div className={classes.messageBubble}>Welcome to Coup Online!</div>
       )}

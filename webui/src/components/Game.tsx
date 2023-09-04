@@ -5,7 +5,7 @@ import { gameStateReducer, getInitialState } from "../ClientState";
 import JoinGame from "./JoinGame";
 import TableTopGame from "./TableTopGame";
 import { GameEventType } from "../../../shared/enums";
-import { eventToMessage, UIMessage } from "../eventsToMessages";
+import { UIMessage } from "../UIMessage";
 import settings from "../../settings";
 
 const useStyles = createUseStyles({
@@ -45,7 +45,7 @@ const Game = (): JSX.Element => {
           } else if (gameEvent.event === GameEventType.NEW_GAME) {
             setMessages([]);
           } else {
-            setMessages((msgs) => [...msgs, eventToMessage(gameEvent)]);
+            setMessages((msgs) => [...msgs, new UIMessage(gameEvent)]);
           }
         } catch (e) {
           console.error(e);
