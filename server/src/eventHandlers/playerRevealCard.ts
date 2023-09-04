@@ -34,13 +34,15 @@ export function playerRevealCard(
       createServerEvent(GameEventType.PLAYER_OUT, { name: player.name })
     );
 
-    // clear current action if it will force this player to reveal another card
+    // clear current action if it will force this player
+    //  to reveal another card -- or if the game is over
     if (
-      state.currentAction &&
-      state.currentAction?.targetPlayer === player.name &&
-      [GameActionMove.COUP, GameActionMove.ASSASSINATE].includes(
-        state.currentAction?.action!
-      )
+      (state.currentAction &&
+        state.currentAction?.targetPlayer === player.name &&
+        [GameActionMove.COUP, GameActionMove.ASSASSINATE].includes(
+          state.currentAction?.action!
+        )) ||
+      state.getStatus() === GameStatus.GAME_OVER
     )
       state.clearCurrentAction();
   }

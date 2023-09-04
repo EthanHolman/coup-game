@@ -86,7 +86,7 @@ wss.on("connection", function connection(ws, req) {
       data["user"] = user;
       gameRunner.onEvent(data);
     } catch (error) {
-      console.warn("[WARN] exception in main runner:", error);
+      console.error(error);
       ws.send(JSON.stringify({ error, receivedData }));
     }
   });
