@@ -1,9 +1,6 @@
-import { createUseStyles } from "react-jss";
 import { GameEventType } from "../../../shared/enums";
 import { GameEvent } from "../../../shared/GameEvent";
 import { ClientState } from "../ClientState";
-
-const useStyles = createUseStyles({});
 
 export type StartGameProps = {
   state: ClientState;
@@ -11,8 +8,6 @@ export type StartGameProps = {
 };
 
 const StartGame = ({ state, sendEvent }: StartGameProps): JSX.Element => {
-  const classes = useStyles();
-
   const onStartGame = () => {
     sendEvent({ event: GameEventType.START_GAME, user: state.username });
   };

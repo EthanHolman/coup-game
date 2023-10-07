@@ -1,0 +1,16 @@
+.playerRows {
+  flex: 3;
+  overflow-y: auto;
+}
+
+.actionContainer {
+  padding: 1rem;
+  background-color: #eee;
+  border-top: 1px solid #ddd;
+}
+
+.messageContainer {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #ddd;
+}

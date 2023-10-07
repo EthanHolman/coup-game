@@ -1,11 +1,7 @@
 import { useMemo, useState } from "react";
 import { Card } from "../../../shared/Card";
-import { createUseStyles } from "react-jss";
 import clsx from "clsx";
-
-const useStyles = createUseStyles({
-  selected: { outline: "3px solid #0c6", borderRadius: "3px" },
-});
+import styles from "./CardPicker.module.scss";
 
 type IndexedCard = {
   card: Card;
@@ -24,7 +20,6 @@ const CardPicker = ({
   selectCount,
 }: CardPickerProps): JSX.Element => {
   const [selectedCards, setSelectedCards] = useState<IndexedCard[]>([]);
-  const classes = useStyles();
 
   const indexedCards = useMemo(() => {
     return cards.map((card, index) => ({ card, index }));
@@ -54,7 +49,7 @@ const CardPicker = ({
           type="button"
           key={card.index}
           onClick={() => onSelectCard(card)}
-          className={clsx({ [classes.selected]: selectedCards.includes(card) })}
+          className={clsx({ [styles.selected]: selectedCards.includes(card) })}
           disabled={
             selectedCards.length >= selectCount && !selectedCards.includes(card)
           }

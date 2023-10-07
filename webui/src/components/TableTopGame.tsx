@@ -1,4 +1,3 @@
-import { createUseStyles } from "react-jss";
 import { GameEvent } from "../../../shared/GameEvent";
 import { ClientState, GameStateAction } from "../ClientState";
 import PlayerCard from "./PlayerCard";
@@ -12,6 +11,7 @@ import MessageViewer from "./MessageViewer";
 import { UIMessage } from "../UIMessage";
 import GameOver from "./GameOver";
 import Header from "./Header";
+import styles from "./TableTopGame.module.scss";
 
 type TableTopGameProps = {
   state: ClientState;
@@ -20,28 +20,11 @@ type TableTopGameProps = {
   messages: UIMessage[];
 };
 
-const useStyles = createUseStyles({
-  playerRows: { flex: 3, overflowY: "auto" },
-  playerRow: {},
-  actionContainer: {
-    padding: "1rem",
-    backgroundColor: "#eee",
-    borderTop: "1px solid #ddd",
-  },
-  messageContainer: {
-    flex: 1,
-    overflowY: "auto",
-    backgroundColor: "#ddd",
-  },
-});
-
 const TableTopGame = ({
   state,
   sendEvent,
   messages,
 }: TableTopGameProps): JSX.Element => {
-  const classes = useStyles();
-
   const isThisPlayerLosingCard =
     state.status === GameStatus.PLAYER_LOSING_CARD &&
     state.playerLosingCard?.player === state.username;
@@ -52,7 +35,7 @@ const TableTopGame = ({
   return (
     <>
       <Header state={state} />
-      <div className={classes.playerRows}>
+      <div className={styles.playerRows}>
         {state.players.map((player) => (
           <PlayerCard
             key={player.name}
@@ -62,7 +45,7 @@ const TableTopGame = ({
           />
         ))}
       </div>
-      <div className={classes.actionContainer}>
+      <div className={styles.actionContainer}>
         {state.status === GameStatus.PRE_GAME && (
           <StartGame state={state} sendEvent={sendEvent} />
         )}
@@ -77,7 +60,7 @@ const TableTopGame = ({
         )}
         <ActionPicker state={state} sendEvent={sendEvent} />
       </div>
-      <div className={classes.messageContainer}>
+      <div className={styles.messageContainer}>
         <MessageViewer events={messages} state={state} />
       </div>
     </>

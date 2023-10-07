@@ -18,7 +18,7 @@ export class ClientGameAction {
 
   constructor(
     action: GameEventOrAction,
-    timeout: boolean = false,
+    timeout = false,
     blockAsCards: Card[] | undefined = undefined
   ) {
     this.action = action;
@@ -28,7 +28,7 @@ export class ClientGameAction {
 }
 
 export function getAvailableActions(state: ClientState): ClientGameAction[] {
-  let actions: ClientGameAction[] = [];
+  const actions: ClientGameAction[] = [];
 
   if (
     state.isPaused ||
@@ -58,21 +58,26 @@ export function getAvailableActions(state: ClientState): ClientGameAction[] {
   if (
     state.isMyTurn &&
     state.status === GameStatus.ACTION_SELECTED &&
-    NON_TARGETED_ACTIONS.includes(state.currentAction?.action!)
+    state.currentAction?.action &&
+    NON_TARGETED_ACTIONS.includes(state.currentAction.action)
   )
     actions.push(new ClientGameAction(GameEventType.CONFIRM_ACTION, true));
 
-  if (!state.isMyTurn && state.status === GameStatus.ACTION_SELECTED) {
-    if (BLOCKABLE_ACTIONS.includes(state.currentAction?.action!))
+  if (
+    !state.isMyTurn &&
+    state.status === GameStatus.ACTION_SELECTED &&
+    state.currentAction?.action
+  ) {
+    if (BLOCKABLE_ACTIONS.includes(state.currentAction.action))
       actions.push(
         new ClientGameAction(
           GameEventType.BLOCK_ACTION,
           false,
-          getBlockActionAsCards(state.currentAction!.action!)
+          getBlockActionAsCards(state.currentAction.action)
         )
       );
 
-    if (CHALLENGEABLE_ACTIONS.includes(state.currentAction?.action!))
+    if (CHALLENGEABLE_ACTIONS.includes(state.currentAction.action))
       actions.push(new ClientGameAction(GameEventType.CHALLENGE_ACTION));
 
     if (state.currentAction?.targetPlayer === state.thisPlayer.name)

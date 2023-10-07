@@ -1,5 +1,4 @@
 import { useReducer, useState } from "react";
-import { createUseStyles } from "react-jss";
 import { GameEvent } from "../../../shared/GameEvent";
 import { gameStateReducer, getInitialState } from "../ClientState";
 import JoinGame from "./JoinGame";
@@ -7,24 +6,12 @@ import TableTopGame from "./TableTopGame";
 import { GameEventType } from "../../../shared/enums";
 import { UIMessage } from "../UIMessage";
 import settings from "../../settings";
-
-const useStyles = createUseStyles({
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-  },
-  header: {
-    textAlign: "center",
-  },
-});
+import styles from "./Game.module.scss";
 
 const Game = (): JSX.Element => {
   const [state, dispatch] = useReducer(gameStateReducer, getInitialState());
   const [websocket, setWebsocket] = useState<WebSocket>();
   const [messages, setMessages] = useState<UIMessage[]>([]);
-
-  const classes = useStyles();
 
   const sendEvent = (event: GameEvent) => {
     const toSend = JSON.stringify(event);
@@ -68,7 +55,7 @@ const Game = (): JSX.Element => {
   };
 
   return (
-    <div className={classes.container}>
+    <div className={styles.container}>
       {state.thisPlayer ? (
         <TableTopGame
           state={state}
