@@ -50,6 +50,7 @@ const CardPicker = ({
           key={card.index}
           onClick={() => onSelectCard(card)}
           className={clsx({ [styles.selected]: selectedCards.includes(card) })}
+          aria-selected={selectedCards.includes(card)}
           disabled={
             selectedCards.length >= selectCount && !selectedCards.includes(card)
           }

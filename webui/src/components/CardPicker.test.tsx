@@ -4,7 +4,7 @@ import CardPicker from "./CardPicker";
 import Sinon from "sinon";
 import { Card } from "../../../shared/Card";
 import { assert, expect } from "chai";
-import { doesElementHaveClassname } from "../../test/doesElementHaveClassname";
+import { isAriaSelected } from "../../test/helpers";
 
 const getConfirmButton = () =>
   screen.getByRole("button", { name: "[Confirm]" });
@@ -91,12 +91,12 @@ describe("CardPicker component", function () {
     );
     const ambassadorButton = getCardButton(Card.AMBASSADOR);
     const assassinButton = getCardButton(Card.ASSASSIN);
-    assert.isFalse(doesElementHaveClassname(ambassadorButton, "selected"));
+    assert.isFalse(isAriaSelected(ambassadorButton));
     await userEvent.click(ambassadorButton);
-    assert.isTrue(doesElementHaveClassname(ambassadorButton, "selected"));
-    assert.isFalse(doesElementHaveClassname(assassinButton, "selected"));
+    assert.isTrue(isAriaSelected(ambassadorButton));
+    assert.isFalse(isAriaSelected(assassinButton));
     await userEvent.click(ambassadorButton);
-    assert.isFalse(doesElementHaveClassname(ambassadorButton, "selected"));
+    assert.isFalse(isAriaSelected(ambassadorButton));
   });
 
   it("should disable only unselected options when selectCount count is reached", async function () {
@@ -115,15 +115,15 @@ describe("CardPicker component", function () {
 
     await userEvent.click(ambassadorButton);
 
-    assert.isTrue(doesElementHaveClassname(ambassadorButton, "selected"));
-    assert.isFalse(doesElementHaveClassname(assassinButton, "selected"));
+    assert.isTrue(isAriaSelected(ambassadorButton));
+    assert.isFalse(isAriaSelected(assassinButton));
     expect(ambassadorButton).not.to.have.attr("disabled");
     expect(assassinButton).to.have.attr("disabled");
     expect(captainButton).to.have.attr("disabled");
 
     await userEvent.click(ambassadorButton);
 
-    assert.isFalse(doesElementHaveClassname(ambassadorButton, "selected"));
+    assert.isFalse(isAriaSelected(ambassadorButton));
     expect(assassinButton).not.to.have.attr("disabled");
     expect(captainButton).not.to.have.attr("disabled");
   });

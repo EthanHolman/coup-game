@@ -1,0 +1,25 @@
+.helpCard {
+  border: 1px solid #ddd;
+  background-color: #efefef;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+
+  img {
+    height: 120px;
+  }
+
+  .details {
+    margin-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    p {
+      margin: 0;
+      margin-bottom: 0.25rem;
+    }
+  }
+}

@@ -1,23 +1,8 @@
 import clsx from "clsx";
 import { ClientPlayer } from "../../../shared/ClientGameState";
-import { Card } from "../../../shared/Card";
 import classes from "./PlayerCard.module.scss";
-import img_ambassador from "../../assets/ambassador.jpg";
-import img_assassin from "../../assets/assassin.jpg";
-import img_captain from "../../assets/captain.jpg";
-import img_contessa from "../../assets/contessa.jpg";
-import img_duke from "../../assets/duke.jpg";
-import img_hidden_card from "../../assets/hidden_card.jpg";
 import { PlayerCard as Type_PlayerCard } from "../../../shared/PlayerCard";
-
-function getCardImage(card: Card) {
-  if (card === Card.AMBASSADOR) return img_ambassador;
-  if (card === Card.ASSASSIN) return img_assassin;
-  if (card === Card.CAPTAIN) return img_captain;
-  if (card === Card.CONTESSA) return img_contessa;
-  if (card === Card.DUKE) return img_duke;
-  return img_hidden_card;
-}
+import { getCardImage } from "../getCardImage";
 
 function getCardTitle(card: Type_PlayerCard): string {
   return `${card.card.toString()}${card.isRevealed ? " (Revealed)" : ""}`;
