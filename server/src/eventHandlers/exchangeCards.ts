@@ -42,7 +42,10 @@ export function exchangeCards(
 
   state.exchangeCards = undefined;
 
-  messageAllFn({ event: GameEventType.EXCHANGE_CARDS, user: gameEvent.user });
+  messageAllFn(state.gameCode, {
+    event: GameEventType.EXCHANGE_CARDS,
+    user: gameEvent.user,
+  });
 
   nextTurn(state, messageAllFn);
 }

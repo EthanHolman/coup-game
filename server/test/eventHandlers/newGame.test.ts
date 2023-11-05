@@ -112,7 +112,7 @@ describe("newGame event handler", function () {
 
     newGame(oldState, event, stub_messageAllFn);
 
-    Sinon.assert.calledOnceWithExactly(stub_messageAllFn, {
+    Sinon.assert.calledOnceWithExactly(stub_messageAllFn, Sinon.match.any, {
       event: GameEventType.NEW_GAME,
       user: SERVER_USERNAME,
       data: {},

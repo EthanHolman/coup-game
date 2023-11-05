@@ -15,6 +15,6 @@ export function sendCurrentState(
       const serverEvent = createServerEvent(GameEventType.CURRENT_STATE, {
         state: playerClientState,
       });
-      messagePlayerFn(player.name, serverEvent);
+      messagePlayerFn(state.gameCode, player.name, serverEvent);
     });
 }

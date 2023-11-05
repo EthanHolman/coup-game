@@ -11,34 +11,35 @@ export function playerJoinGame(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ) {
-  if (state.getStatus() !== GameStatus.PRE_GAME) {
-    // allow disconnected players to reconnect
-    const player = state.players.find(
-      (x) => x.name === gameEvent.user && !x.isConnected
-    );
-    if (player) {
-      player.isConnected = true;
+  if (state.getStatus() === GameStatus.PRE_GAME) {
+    if (
+      gameEvent.user === SERVER_USERNAME ||
+      !USERNAME_REGEX.test(gameEvent.user)
+    )
+      throw "invalid username";
 
-      // if everyone is re-connected, restart the game
-      if (
-        !state.players.map((x) => x.isConnected).includes(false) &&
-        state.getStatus() !== GameStatus.GAME_OVER
-      )
-        resumeGame(state, messageAllFn, "all players have reconnected!");
+    addNewPlayer(state, gameEvent.user);
 
-      return;
-    }
-
-    throw `game has already started.`;
+    messageAllFn(state.gameCode, gameEvent);
+    return;
   }
 
-  if (
-    gameEvent.user === SERVER_USERNAME ||
-    !USERNAME_REGEX.test(gameEvent.user)
-  )
-    throw "invalid username";
+  // allow disconnected players to reconnect
+  const player = state.players.find(
+    (x) => x.name === gameEvent.user && !x.isConnected
+  );
+  if (player) {
+    player.isConnected = true;
 
-  addNewPlayer(state, gameEvent.user);
+    // if everyone is re-connected, restart the game
+    if (
+      !state.players.map((x) => x.isConnected).includes(false) &&
+      state.getStatus() !== GameStatus.GAME_OVER
+    )
+      resumeGame(state, messageAllFn, "all players have reconnected!");
 
-  messageAllFn(gameEvent);
+    return;
+  }
+
+  throw `game has already started.`;
 }

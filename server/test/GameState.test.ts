@@ -4,8 +4,22 @@ import { GameActionMove, GameEventType, GameStatus } from "../../shared/enums";
 import { Player } from "../src/Player";
 import { Card } from "../../shared/Card";
 import { generateStateWithNPlayers } from "./testHelpers/stateGenerators";
+import * as module_generateGameCode from "../src/utils/generateGameCode";
+import Sinon from "sinon";
 
 describe("GameState", function () {
+  it("should generate and set gameCode ", function () {
+    const mock = Sinon.stub(
+      module_generateGameCode,
+      "generateGameCode"
+    ).returns("my-special-id");
+
+    const gameState = new GameState();
+    assert.strictEqual(gameState.gameCode, "my-special-id");
+
+    mock.restore();
+  });
+
   describe("getStatus", function () {
     it("PRE_GAME", function () {
       const state = new GameState();

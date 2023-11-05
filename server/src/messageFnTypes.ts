@@ -1,5 +1,9 @@
 import { GameEvent } from "../../shared/GameEvent";
 
-export type messagePlayerFn = (playerName: string, data: GameEvent) => void;
+export type messagePlayerFn = (
+  gameCode: string,
+  user: string,
+  data: GameEvent
+) => void;
 
-export type messageAllFn = (data: GameEvent) => void;
+export type messageAllFn = (gameCode: string, data: GameEvent) => void;

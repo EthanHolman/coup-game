@@ -217,6 +217,10 @@ describe("blockAction event handler", function () {
       data: { card: Card.CONTESSA },
     };
     blockAction(state, event, mockMessageAllFn);
-    Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
+    Sinon.assert.calledOnceWithExactly(
+      mockMessageAllFn,
+      Sinon.match.any,
+      event
+    );
   });
 });

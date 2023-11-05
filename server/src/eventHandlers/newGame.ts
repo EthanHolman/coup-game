@@ -18,7 +18,7 @@ export function newGame(
     .filter((x) => x.isConnected)
     .forEach((player) => addNewPlayer(newGameState, player.name));
 
-  messageAllFn(createServerEvent(GameEventType.NEW_GAME));
+  messageAllFn(state.gameCode, createServerEvent(GameEventType.NEW_GAME));
 
   return newGameState;
 }

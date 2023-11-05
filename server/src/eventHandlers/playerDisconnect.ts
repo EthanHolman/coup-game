@@ -23,7 +23,7 @@ export function playerDisconnect(
   if (gameStatus === GameStatus.PRE_GAME) {
     player.cards.forEach((x) => state.deck.discardCard(x.card));
     state.removePlayer(player.name);
-    messageAllFn(gameEvent);
+    messageAllFn(state.gameCode, gameEvent);
   } else {
     player.isConnected = false;
     if (gameStatus !== GameStatus.GAME_OVER) {

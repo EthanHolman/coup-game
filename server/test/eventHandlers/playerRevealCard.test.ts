@@ -11,7 +11,6 @@ import {
 } from "../../../shared/enums";
 import { assert } from "chai";
 import { SERVER_USERNAME } from "../../../shared/globals";
-import { GameState } from "../../src/GameState";
 
 describe("playerRevealCard event handler", function () {
   it("should throw error when GameStatus is not PLAYER_LOSING_CARD", function () {
@@ -110,7 +109,11 @@ describe("playerRevealCard event handler", function () {
 
     playerRevealCard(state, event, mockMessageAllPlayerFn);
 
-    Sinon.assert.calledOnceWithMatch(mockMessageAllPlayerFn, event);
+    Sinon.assert.calledOnceWithMatch(
+      mockMessageAllPlayerFn,
+      Sinon.match.any,
+      event
+    );
   });
 
   it("should alert all players if the player is now out of the game", function () {
@@ -135,8 +138,9 @@ describe("playerRevealCard event handler", function () {
     assert.isTrue(unluckyPlayer.isOut);
     const calls = mockMessageAllPlayerFn.getCalls();
     assert.lengthOf(calls, 2);
-    assert.deepStrictEqual(calls[0].args[0], event);
-    assert.deepStrictEqual(calls[1].args[0], {
+    assert.isDefined(calls[0].args[0]);
+    assert.deepStrictEqual(calls[0].args[1], event);
+    assert.deepStrictEqual(calls[1].args[1], {
       event: GameEventType.PLAYER_OUT,
       user: SERVER_USERNAME,
       data: { name: "unlucky" },

@@ -27,10 +27,11 @@ export function playerRevealCard(
 
   state.playerLosingCard = undefined;
 
-  messageAllFn(gameEvent);
+  messageAllFn(state.gameCode, gameEvent);
 
   if (player.isOut) {
     messageAllFn(
+      state.gameCode,
       createServerEvent(GameEventType.PLAYER_OUT, { name: player.name })
     );
 

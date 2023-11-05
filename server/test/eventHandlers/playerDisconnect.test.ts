@@ -109,7 +109,9 @@ describe("playerDisconnect event handler", function () {
 
     playerDisconnect(state, event, messageAllFn);
 
-    Sinon.assert.calledOnceWithExactly(messageAllFn, { ...event });
+    Sinon.assert.calledOnceWithExactly(messageAllFn, Sinon.match.any, {
+      ...event,
+    });
   });
 
   it("should make someone else host if host disconnects", function () {

@@ -38,7 +38,7 @@ export function blockAction(
   } else
     throw `Missing block validator for action ${state.currentAction!.action}`;
 
-  messageAllFn(gameEvent);
+  messageAllFn(state.gameCode, gameEvent);
 
   state.blockAction = gameEvent;
 }

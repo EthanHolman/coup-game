@@ -27,7 +27,11 @@ describe("pauseGame", function () {
       reason: "game paused",
     });
 
-    Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
+    Sinon.assert.calledOnceWithExactly(
+      messageAllFn,
+      Sinon.match.any,
+      expectedEvent
+    );
     assert.isTrue(state.isPaused);
   });
 
@@ -42,7 +46,11 @@ describe("pauseGame", function () {
       reason: "because i wanna pause it",
     });
 
-    Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
+    Sinon.assert.calledOnceWithExactly(
+      messageAllFn,
+      Sinon.match.any,
+      expectedEvent
+    );
     assert.isTrue(state.isPaused);
   });
 

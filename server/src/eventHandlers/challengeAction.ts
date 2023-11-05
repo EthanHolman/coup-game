@@ -17,7 +17,7 @@ export function challengeAction(
   if (gameEvent.user === state.currentPlayer.name)
     throw "cannot challenge your own action";
 
-  messageAllFn(gameEvent);
+  messageAllFn(state.gameCode, gameEvent);
 
   const requiredCard = getRequiredCardForAction(state.currentAction!.action!);
   const hasRequiredCard = state.currentPlayer.hasCard(requiredCard);

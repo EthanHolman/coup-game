@@ -68,7 +68,7 @@ describe("startGame", function () {
 
     startGame(state, event, messageAllFn);
 
-    Sinon.assert.calledOnceWithExactly(messageAllFn, {
+    Sinon.assert.calledOnceWithExactly(messageAllFn, Sinon.match.any, {
       user: SERVER_USERNAME,
       event: GameEventType.START_GAME,
       data: {},

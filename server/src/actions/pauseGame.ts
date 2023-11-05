@@ -14,5 +14,5 @@ export function pauseGame(
   const event = createServerEvent(GameEventType.PAUSE_GAME, { reason });
 
   state.pause();
-  messageAllFn(event);
+  messageAllFn(state.gameCode, event);
 }

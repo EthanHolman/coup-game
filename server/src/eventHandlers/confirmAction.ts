@@ -20,7 +20,7 @@ export function confirmAction(
     throw "confirmAction only valid when status = ACTION_SELECTED";
 
   if (!autoConfirm) {
-    messageAllFn(gameEvent);
+    messageAllFn(state.gameCode, gameEvent);
 
     if (
       TARGETED_ACTIONS.includes(state.currentAction?.action!) &&

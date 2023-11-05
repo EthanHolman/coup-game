@@ -27,7 +27,11 @@ describe("resumeGame event handler", function () {
       reason: "game resumed",
     });
 
-    Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
+    Sinon.assert.calledOnceWithExactly(
+      messageAllFn,
+      Sinon.match.any,
+      expectedEvent
+    );
     assert.isFalse(state.isPaused);
   });
 
@@ -42,7 +46,11 @@ describe("resumeGame event handler", function () {
       reason: "resume just for fun",
     });
 
-    Sinon.assert.calledOnceWithExactly(messageAllFn, expectedEvent);
+    Sinon.assert.calledOnceWithExactly(
+      messageAllFn,
+      Sinon.match.any,
+      expectedEvent
+    );
     assert.isFalse(state.isPaused);
   });
 

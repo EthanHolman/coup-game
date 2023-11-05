@@ -35,7 +35,7 @@ describe("chooseAction event handler", function () {
     };
     const messageAllFn = Sinon.fake();
     chooseAction(state, event, messageAllFn);
-    Sinon.assert.calledOnceWithExactly(messageAllFn, event);
+    Sinon.assert.calledOnceWithExactly(messageAllFn, Sinon.match.any, event);
   });
 
   it("shouldn't allow choosing an action if GameStatus is not AWAITING_ACTION", function () {

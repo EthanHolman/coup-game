@@ -79,5 +79,5 @@ export function chooseAction(
     state.currentPlayer.updateCoins(-3);
 
   state.currentAction = gameEvent.data;
-  messageAllFn(gameEvent);
+  messageAllFn(state.gameCode, gameEvent);
 }

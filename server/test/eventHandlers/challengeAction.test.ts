@@ -202,6 +202,10 @@ describe("challengeAction event handler", function () {
 
     challengeAction(state, event, mockMessageAllFn);
 
-    Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
+    Sinon.assert.calledOnceWithExactly(
+      mockMessageAllFn,
+      Sinon.match.any,
+      event
+    );
   });
 });

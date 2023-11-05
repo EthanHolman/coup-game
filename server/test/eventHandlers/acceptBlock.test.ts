@@ -39,7 +39,11 @@ describe("acceptBlock event handler", function () {
       user: "tester-0",
     };
     acceptBlock(state, event, mockMessageAllFn);
-    Sinon.assert.calledOnceWithExactly(mockMessageAllFn, event);
+    Sinon.assert.calledOnceWithExactly(
+      mockMessageAllFn,
+      Sinon.match.any,
+      event
+    );
   });
 
   it("should trigger next turn", function () {

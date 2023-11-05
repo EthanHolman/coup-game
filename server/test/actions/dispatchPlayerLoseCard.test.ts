@@ -64,7 +64,7 @@ describe("dispatchPlayerLoseCard action", function () {
     );
 
     Sinon.assert.calledOnce(mockMessageAllPlayerFn);
-    const call = mockMessageAllPlayerFn.getCall(0).args[0];
+    const call = mockMessageAllPlayerFn.getCall(0).args[1];
     const expectedEvent = {
       data: {
         reason: "here lose a card dude",

@@ -22,6 +22,7 @@ export function dispatchPlayerLoseCard(
   state.playerLosingCard = { player, reason };
 
   messageAllFn(
+    state.gameCode,
     createServerEvent(GameEventType.PLAYER_LOSE_CARD, {
       targetPlayer: player,
       reason,

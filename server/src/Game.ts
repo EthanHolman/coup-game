@@ -5,7 +5,6 @@ import { playerJoinGame } from "./eventHandlers/playerJoinGame";
 import { playerRevealCard } from "./eventHandlers/playerRevealCard";
 import { chooseAction } from "./eventHandlers/chooseAction";
 import { startGame } from "./eventHandlers/startGame";
-import { GameState } from "./GameState";
 import { messagePlayerFn, messageAllFn } from "./messageFnTypes";
 import { playerDisconnect } from "./eventHandlers/playerDisconnect";
 import { acceptBlock } from "./eventHandlers/acceptBlock";
@@ -16,6 +15,7 @@ import { challengeBlock } from "./eventHandlers/challengeBlock";
 import { nextTurn } from "./actions/nextTurn";
 import { exchangeCards } from "./eventHandlers/exchangeCards";
 import { newGame } from "./eventHandlers/newGame";
+import { IGameStateStore } from "./IGameStateStore";
 
 export const ACTIONS_ALLOWED_WHILE_PAUSED = [
   GameEventType.PLAYER_DISCONNECT,
@@ -25,24 +25,27 @@ export const ACTIONS_ALLOWED_WHILE_PAUSED = [
 export class GameRunner {
   _messagePlayer: messagePlayerFn;
   _messageAllFn: messageAllFn;
-  _gameState: GameState;
+  _gameStateStore: IGameStateStore;
 
   constructor({
     messagePlayer,
     messageAll,
+    gameStateStore,
   }: {
     messagePlayer: messagePlayerFn;
     messageAll: messageAllFn;
+    gameStateStore: IGameStateStore;
   }) {
     this._messagePlayer = messagePlayer;
     this._messageAllFn = messageAll;
-
-    this._gameState = new GameState();
+    this._gameStateStore = gameStateStore;
   }
 
-  onEvent(gameEvent: GameEvent) {
+  onEvent(gameCode: string, gameEvent: GameEvent) {
+    const state = this._gameStateStore.getState(gameCode);
+
     if (
-      this._gameState.isPaused &&
+      state.isPaused &&
       !ACTIONS_ALLOWED_WHILE_PAUSED.includes(gameEvent.event)
     ) {
       throw "no actions are allowed until the game is unpaused!";
@@ -52,67 +55,63 @@ export class GameRunner {
 
     switch (gameEvent.event) {
       case GameEventType.START_GAME:
-        startGame(this._gameState, gameEvent, this._messageAllFn);
+        startGame(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.PLAYER_JOIN_GAME:
-        playerJoinGame(this._gameState, gameEvent, this._messageAllFn);
+        playerJoinGame(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.CHOOSE_ACTION:
-        chooseAction(this._gameState, gameEvent, this._messageAllFn);
+        chooseAction(state, gameEvent, this._messageAllFn);
 
         // Income action is auto-confirmed
-        if (this._gameState.currentAction?.action === GameActionMove.INCOME) {
-          confirmAction(this._gameState, gameEvent, this._messageAllFn, true);
+        if (state.currentAction?.action === GameActionMove.INCOME) {
+          confirmAction(state, gameEvent, this._messageAllFn, true);
         }
         break;
 
       case GameEventType.CONFIRM_ACTION:
-        confirmAction(this._gameState, gameEvent, this._messageAllFn);
+        confirmAction(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.CHALLENGE_ACTION:
-        challengeAction(this._gameState, gameEvent, this._messageAllFn);
+        challengeAction(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.BLOCK_ACTION:
-        blockAction(this._gameState, gameEvent, this._messageAllFn);
+        blockAction(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.ACCEPT_BLOCK:
-        acceptBlock(this._gameState, gameEvent, this._messageAllFn);
+        acceptBlock(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.CHALLENGE_BLOCK:
-        challengeBlock(this._gameState, gameEvent, this._messageAllFn);
+        challengeBlock(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.PLAYER_REVEAL_CARD:
-        playerRevealCard(this._gameState, gameEvent, this._messageAllFn);
+        playerRevealCard(state, gameEvent, this._messageAllFn);
 
         // In case of 'challenge' card losses, still want to
         //  process currentAction if it's set
-        if (this._gameState.currentAction) {
-          confirmAction(this._gameState, gameEvent, this._messageAllFn, true);
-        } else nextTurn(this._gameState, this._messageAllFn);
+        if (state.currentAction) {
+          confirmAction(state, gameEvent, this._messageAllFn, true);
+        } else nextTurn(state, this._messageAllFn);
         break;
 
       case GameEventType.PLAYER_DISCONNECT:
-        playerDisconnect(this._gameState, gameEvent, this._messageAllFn);
+        playerDisconnect(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.EXCHANGE_CARDS:
-        exchangeCards(this._gameState, gameEvent, this._messageAllFn);
+        exchangeCards(state, gameEvent, this._messageAllFn);
         break;
 
       case GameEventType.NEW_GAME:
-        this._gameState = newGame(
-          this._gameState,
-          gameEvent,
-          this._messageAllFn
-        );
-        break;
+        const newGameState = newGame(state, gameEvent, this._messageAllFn);
+        this._gameStateStore.setState(gameCode, newGameState);
 
       default:
         throw `cannot process unexpected action ${gameEvent.event}`;
@@ -120,7 +119,6 @@ export class GameRunner {
 
     // provide clients with updated state after each turn. note that
     //  state updates may occur more frequently as needed
-    if (this._gameState.players.length > 0)
-      sendCurrentState(this._gameState, this._messagePlayer);
+    if (state.players.length > 0) sendCurrentState(state, this._messagePlayer);
   }
 }

@@ -75,7 +75,7 @@ describe("nextTurn action handler", function () {
     const mockMessageAllFn = Sinon.stub();
     nextTurn(state, mockMessageAllFn);
     Sinon.assert.calledOnce(mockMessageAllFn);
-    assert.deepEqual(mockMessageAllFn.getCall(0).args[0], {
+    assert.deepEqual(mockMessageAllFn.getCall(0).args[1], {
       event: GameEventType.NEXT_TURN,
       user: SERVER_USERNAME,
       data: { name: "tester-1" },
@@ -99,7 +99,7 @@ describe("nextTurn action handler", function () {
     assert.strictEqual(state.getStatus(), GameStatus.GAME_OVER);
     Sinon.assert.calledOnce(mockMessageAllPlayerFn);
     const calls = mockMessageAllPlayerFn.getCalls();
-    assert.deepStrictEqual(calls[0].args[0], {
+    assert.deepStrictEqual(calls[0].args[1], {
       event: GameEventType.GAME_OVER,
       user: SERVER_USERNAME,
       data: { name: "player1" },

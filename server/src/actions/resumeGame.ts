@@ -14,5 +14,5 @@ export function resumeGame(
   const event = createServerEvent(GameEventType.RESUME_GAME, { reason });
 
   state.resume();
-  messageAllFn(event);
+  messageAllFn(state.gameCode, event);
 }

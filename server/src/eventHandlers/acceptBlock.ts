@@ -15,7 +15,7 @@ export function acceptBlock(
   if (gameEvent.user !== state.currentPlayer.name)
     throw "Only current player can accept the block";
 
-  messageAllFn(gameEvent);
+  messageAllFn(state.gameCode, gameEvent);
 
   nextTurn(state, messageAllFn);
 }

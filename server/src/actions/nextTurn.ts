@@ -8,6 +8,7 @@ export function nextTurn(state: GameState, messageAllFn: messageAllFn) {
     const lastRemainingPlayer = state.players.find((x) => !x.isOut);
     if (!lastRemainingPlayer) throw "unable to find the last remaining player";
     messageAllFn(
+      state.gameCode,
       createServerEvent(GameEventType.GAME_OVER, {
         name: lastRemainingPlayer.name,
       })
@@ -26,6 +27,7 @@ export function nextTurn(state: GameState, messageAllFn: messageAllFn) {
   state.blockAction = undefined;
 
   messageAllFn(
+    state.gameCode,
     createServerEvent(GameEventType.NEXT_TURN, {
       name: state.currentPlayer.name,
     })

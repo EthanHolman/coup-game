@@ -4,11 +4,13 @@ import { GameEvent, GameEventData } from "../../shared/GameEvent";
 import { GameStatus } from "../../shared/enums";
 import { PlayerLoseCardAction } from "../../shared/types";
 import { Card } from "../../shared/Card";
+import { generateGameCode } from "./utils/generateGameCode";
 
 export class GameState {
   private _players: Player[];
   private _isStarted: boolean;
 
+  gameCode: string;
   currentPlayerId: number;
   deck: Deck;
   isPaused: boolean;
@@ -19,6 +21,7 @@ export class GameState {
   exchangeCards?: Card[];
 
   constructor() {
+    this.gameCode = generateGameCode();
     this._players = [];
     this._isStarted = false;
 

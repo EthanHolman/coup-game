@@ -64,7 +64,7 @@ describe("playerJoinGame event handler", function () {
 
     playerJoinGame(state, event, messageAllFn);
 
-    Sinon.assert.calledOnceWithExactly(messageAllFn, {
+    Sinon.assert.calledOnceWithExactly(messageAllFn, Sinon.match.any, {
       event: GameEventType.PLAYER_JOIN_GAME,
       user: "birdsarentreal",
     });

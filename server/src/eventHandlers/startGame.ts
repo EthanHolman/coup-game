@@ -24,5 +24,5 @@ export function startGame(
 
   const event = createServerEvent(GameEventType.START_GAME);
 
-  messageAllFn(event);
+  messageAllFn(state.gameCode, event);
 }
