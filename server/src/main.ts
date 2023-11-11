@@ -103,6 +103,7 @@ wss.on("connection", function connection(ws, req) {
   });
 });
 
+// TODO: i think this can be removed now
 // server.on("upgrade", function upgrade(req, socket, head) {
 //   const { pathname, ...x } = parse(req.url ?? "");
 
@@ -121,8 +122,8 @@ expressApp.get("/games", (req, res) => {
 });
 
 expressApp.post("/game", (req, res) => {
-  const newGameId = gameStateStore.createNewGame();
-  res.send({ newGameId });
+  const { gameCode } = gameStateStore.createNewGame();
+  res.send({ gameCode });
 });
 
 console.log(`Starting server on port ${SERVER_PORT}`);

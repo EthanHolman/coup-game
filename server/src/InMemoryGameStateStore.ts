@@ -1,6 +1,6 @@
 import { GameState } from "./GameState";
 import { IGameStateStore } from "./IGameStateStore";
-import { GameStateNotFoundError } from "./errors";
+import { GameStateNotFoundError, WrongGameCodeError } from "./errors";
 
 export class InMemoryGameStateStore implements IGameStateStore {
   stateMap = new Map<string, GameState>();
@@ -21,14 +21,15 @@ export class InMemoryGameStateStore implements IGameStateStore {
   setState(gameCode: string, updatedState: GameState): GameState {
     if (!this.stateMap.has(gameCode))
       throw new GameStateNotFoundError(gameCode);
+    if (updatedState.gameCode !== gameCode) throw new WrongGameCodeError();
+
     this.stateMap.set(gameCode, updatedState);
     return updatedState;
   }
 
-  createNewGame(): string {
-    const newGameState = new GameState();
-    const { gameCode } = newGameState;
-    this.stateMap.set(gameCode, newGameState);
-    return gameCode;
+  createNewGame(): GameState {
+    const newState = new GameState();
+    this.stateMap.set(newState.gameCode, newState);
+    return newState;
   }
 }

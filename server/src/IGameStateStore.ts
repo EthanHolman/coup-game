@@ -7,5 +7,5 @@ export interface IGameStateStore {
 
   setState(gameCode: string, updatedState: GameState): GameState;
 
-  createNewGame(): string;
+  createNewGame(): GameState;
 }

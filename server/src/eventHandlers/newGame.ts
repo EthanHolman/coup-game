@@ -10,10 +10,12 @@ export function newGame(
   gameEvent: GameEvent,
   messageAllFn: messageAllFn
 ): GameState {
+  // TODO: might make more sense to have this logic in a 'reset'
+  //  function on GameState?
   const thisPlayer = state.players.find((x) => x.name === gameEvent.user);
   if (!thisPlayer?.isHost) throw "Only the host can start a new game";
 
-  const newGameState = new GameState();
+  const newGameState = new GameState(state.gameCode);
   state.players
     .filter((x) => x.isConnected)
     .forEach((player) => addNewPlayer(newGameState, player.name));

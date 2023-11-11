@@ -105,10 +105,7 @@ describe("newGame event handler", function () {
     const oldState = generateStateWithNPlayers(3);
     const stub_messageAllFn = Sinon.stub();
 
-    const event = {
-      user: "tester-0",
-      event: GameEventType.NEW_GAME,
-    };
+    const event = { user: "tester-0", event: GameEventType.NEW_GAME };
 
     newGame(oldState, event, stub_messageAllFn);
 
@@ -124,13 +121,19 @@ describe("newGame event handler", function () {
     assert.isTrue(state.players.find((x) => x.name === "tester-0")!.isHost);
     assert.isFalse(state.players.find((x) => x.name === "tester-1")!.isHost);
 
-    const event = {
-      user: "tester-1",
-      event: GameEventType.NEW_GAME,
-    };
+    const event = { user: "tester-1", event: GameEventType.NEW_GAME };
 
     assert.throws(function () {
       newGame(state, event, Sinon.stub());
     }, "Only the host can start a new game");
+  });
+
+  it("should preserve gameCode when making new game", function () {
+    const state = generateStateWithNPlayers(2);
+
+    const event = { user: "tester-0", event: GameEventType.NEW_GAME };
+    const result = newGame(state, event, Sinon.stub());
+
+    assert.strictEqual(result.gameCode, state.gameCode);
   });
 });

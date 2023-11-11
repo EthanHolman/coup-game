@@ -36,3 +36,11 @@ export class GameStateNotFoundError extends Error {
     Object.setPrototypeOf(this, GameStateNotFoundError.prototype);
   }
 }
+
+export class WrongGameCodeError extends Error {
+  constructor(message = "") {
+    super(message);
+    this.name = "WrongGameCodeError";
+    Object.setPrototypeOf(this, WrongGameCodeError.prototype);
+  }
+}

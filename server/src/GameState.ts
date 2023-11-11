@@ -20,8 +20,8 @@ export class GameState {
   playerLosingCard?: PlayerLoseCardAction;
   exchangeCards?: Card[];
 
-  constructor() {
-    this.gameCode = generateGameCode();
+  constructor(gameCode?: string) {
+    this.gameCode = gameCode ?? generateGameCode();
     this._players = [];
     this._isStarted = false;
 
