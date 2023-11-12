@@ -44,3 +44,11 @@ export class WrongGameCodeError extends Error {
     Object.setPrototypeOf(this, WrongGameCodeError.prototype);
   }
 }
+
+export class InvalidParameterError extends Error {
+  constructor(message = "") {
+    super(message);
+    this.name = "InvalidParameterError";
+    Object.setPrototypeOf(this, InvalidParameterError.prototype);
+  }
+}

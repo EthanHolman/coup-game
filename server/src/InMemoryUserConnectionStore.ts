@@ -1,5 +1,6 @@
 import { WebSocket } from "ws";
 import {
+  InvalidParameterError,
   PlayerAlreadyExistsError,
   PlayerNotExistsError,
   WebsocketAlreadyExistsError,
@@ -16,6 +17,9 @@ export class InMemoryUserConnectionStore {
   map_playerToWs = new Map<string, WebSocket>();
 
   addUser(ws: WebSocket, user: string, gameCode: string): void {
+    if (!user) throw new InvalidParameterError("user must be provided");
+    if (!gameCode) throw new InvalidParameterError("gameCode must be provided");
+
     const playerStr = this.formatPlayerStr({ user, gameCode });
 
     if (this.map_playerToWs.has(playerStr))

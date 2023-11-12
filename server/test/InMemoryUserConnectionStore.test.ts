@@ -2,6 +2,7 @@ import Sinon from "sinon";
 import { InMemoryUserConnectionStore } from "../src/InMemoryUserConnectionStore";
 import { assert } from "chai";
 import {
+  InvalidParameterError,
   PlayerAlreadyExistsError,
   PlayerNotExistsError,
   WebsocketAlreadyExistsError,
@@ -17,6 +18,20 @@ describe("InUserMemoryConnectionStore", function () {
     const dummyWs = getDummyWs();
     const store = new InMemoryUserConnectionStore();
     store.addUser(dummyWs, "tim horton", "sts9");
+  });
+
+  it("shouldn't allow adding user without user or gamecode", function () {
+    const dummyWs = getDummyWs();
+    const store = new InMemoryUserConnectionStore();
+
+    assert.throws(
+      () => store.addUser(dummyWs, "", "some-code"),
+      InvalidParameterError
+    );
+    assert.throws(
+      () => store.addUser(dummyWs, "user", ""),
+      InvalidParameterError
+    );
   });
 
   it("should throw exception when trying to add duplicate user or websocket", function () {

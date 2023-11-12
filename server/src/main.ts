@@ -8,6 +8,8 @@ import express from "express";
 import { InMemoryUserConnectionStore } from "./InMemoryUserConnectionStore";
 import { InMemoryGameStateStore } from "./InMemoryGameStateStore";
 import { GameEvent } from "../../shared/GameEvent";
+import cors from "cors";
+import { WebsocketNotExistsError } from "./errors";
 
 const expressApp = express();
 const server = createServer(expressApp);
@@ -42,79 +44,77 @@ const gameRunner = new GameRunner({
 
 wss.on("connection", function connection(ws, req) {
   console.log(`[CONN] new client url="${req.url}"`);
-  let user = "";
+  let username = "";
   let gameCode = "";
   try {
     const { query } = parse(req.url ?? "", true);
-    user = `${query["username"]}`;
+    username = `${query["username"]}`;
+    if (!username) {
+      ws.close(4002, "missing username");
+      return;
+    }
     gameCode = `${query["gameCode"]}`;
+    if (!gameCode) {
+      ws.close(4002, "missing gameCode");
+      return;
+    }
   } catch (e) {
-    console.log("[CONN] client disconnected -- missing username");
-    ws.close(4002, "missing username in path");
+    console.error(e);
+    ws.close(4002, "error while joining");
     return;
   }
 
   try {
-    userStore.addUser(ws, user, gameCode);
+    userStore.addUser(ws, username, gameCode);
     gameRunner.onEvent(gameCode, {
       event: GameEventType.PLAYER_JOIN_GAME,
-      user: user,
+      user: username,
     });
   } catch (e: any) {
-    console.warn(`user '${user}' was unable to join game: `, e);
-    ws.close(4004, e);
-    userStore.handleWebsocketClose(ws);
+    console.warn(`user '${username}' was unable to join game: `, e);
+    ws.close(4004, "user was unable to join game");
   }
 
   ws.on("message", function (receivedData) {
-    const userMetadata = userStore.getByWebsocket(ws);
-
-    if (!user) {
-      console.warn("received event from connection not associated with user");
-      ws.close(4000, "this connection is not associated with a user");
-      return;
-    }
-
     try {
+      const { user, gameCode } = userStore.getByWebsocket(ws);
+
       const data = JSON.parse(receivedData.toString());
-      console.debug(`[DEBUG] ${user} sent:`, data);
-      data["user"] = user;
-      gameRunner.onEvent(userMetadata.gameCode, data);
+      console.debug(`[${gameCode}] ${username} sent:`, data);
+
+      gameRunner.onEvent(gameCode, { ...data, user });
     } catch (error) {
-      console.error(error);
-      ws.send(JSON.stringify({ error, receivedData }));
+      if (error instanceof WebsocketNotExistsError) {
+        console.warn("received event from connection not associated with user");
+        ws.close(4000, "this connection is not associated with a user");
+      } else {
+        console.error(error);
+        ws.send(JSON.stringify({ error, receivedData }));
+      }
     }
   });
 
   ws.on("close", function (code, reason) {
-    const { user, gameCode } = userStore.getByWebsocket(ws);
-    if (user) {
-      console.info(`[CONN] closed user=${user} code=${code} reason=${reason}`);
-      try {
-        gameRunner.onEvent(gameCode, {
-          event: GameEventType.PLAYER_DISCONNECT,
-          user,
-        });
-      } catch (e) {
-        console.error(e);
-      }
+    try {
+      const { user, gameCode } = userStore.getByWebsocket(ws);
+      console.info(
+        `[CONN] closed user=${user} gamecode=${gameCode} code=${code} reason=${reason}`
+      );
+      gameRunner.onEvent(gameCode, {
+        event: GameEventType.PLAYER_DISCONNECT,
+        user,
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      console.info(`[CONN] closed user=UNKNOWN code=${code} reason=${reason}`);
       userStore.handleWebsocketClose(ws);
     }
   });
 });
 
-// TODO: i think this can be removed now
-// server.on("upgrade", function upgrade(req, socket, head) {
-//   const { pathname, ...x } = parse(req.url ?? "");
-
-//   if (pathname?.startsWith("/ws/")) {
-//     wss.handleUpgrade(req, socket, head, function done(ws) {
-//       wss.emit("connection", ws, req);
-//     });
-//   }
-// });
-
 // setup rest api
+expressApp.use(cors());
 
 expressApp.get("/games", (req, res) => {
   const games = gameStateStore.listGameCodes();

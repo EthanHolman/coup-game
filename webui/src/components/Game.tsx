@@ -19,9 +19,11 @@ const Game = (): JSX.Element => {
     websocket?.send(toSend);
   };
 
-  const onUserJoinGame = (username: string) => {
+  const onUserJoinGame = (username: string, gameCode: string) => {
     try {
-      const ws = new WebSocket(`${settings.apiBaseUrl}/ws/?user=${username}`);
+      const ws = new WebSocket(
+        `${settings.apiWsUrl}/ws?username=${username}&gameCode=${gameCode}`
+      );
       ws.addEventListener("message", (event) => {
         try {
           const gameEvent = JSON.parse(event.data) as GameEvent;
