@@ -9,7 +9,11 @@ import { InMemoryUserConnectionStore } from "./InMemoryUserConnectionStore";
 import { InMemoryGameStateStore } from "./InMemoryGameStateStore";
 import { GameEvent } from "../../shared/GameEvent";
 import cors from "cors";
-import { WebsocketNotExistsError } from "./errors";
+import {
+  GameStateNotFoundError,
+  PlayerAlreadyExistsError,
+  WebsocketNotExistsError,
+} from "./errors";
 
 const expressApp = express();
 const server = createServer(expressApp);
@@ -70,9 +74,16 @@ wss.on("connection", function connection(ws, req) {
       event: GameEventType.PLAYER_JOIN_GAME,
       user: username,
     });
-  } catch (e: any) {
-    console.warn(`user '${username}' was unable to join game: `, e);
-    ws.close(4004, "user was unable to join game");
+  } catch (e) {
+    let message = `user ${username} was unable to join gameCode ${gameCode}`;
+
+    if (e instanceof GameStateNotFoundError)
+      message = `Gamecode '${gameCode}' was not found! Try starting a new game instead?`;
+    if (e instanceof PlayerAlreadyExistsError)
+      message = `Username '${username}' is already taken in game code ${gameCode}`;
+
+    console.warn(`${message}: `, e);
+    ws.close(4004, message);
   }
 
   ws.on("message", function (receivedData) {

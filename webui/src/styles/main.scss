@@ -39,3 +39,57 @@ button,
 input {
   font-family: "Tektur", sans-serif;
 }
+
+button {
+  font-size: 1rem;
+
+  &.primary {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #20d06a;
+    background-color: #0c6;
+    color: white;
+
+    &:hover:not(:disabled) {
+      outline: 5px solid #45e695;
+    }
+
+    &:disabled {
+      background-color: #9ab5a7;
+      border: 1px solid #b7d6c6;
+      cursor: not-allowed;
+    }
+  }
+
+  &.text {
+    text-decoration: underline;
+    padding: 0.25rem;
+    outline: none;
+    border: none;
+    background: none;
+    font-size: 1rem;
+    color: blue;
+    border-radius: 5px;
+
+    &:hover {
+      text-decoration: none;
+      background: white;
+    }
+  }
+}
+
+input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #999;
+  outline: none;
+  text-align: center;
+  margin-bottom: 1rem;
+  width: 100%;
+  display: block;
+}
+
+.text-center {
+  text-align: center;
+}

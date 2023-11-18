@@ -3,7 +3,8 @@ import img_cover from "../../assets/cover.jpg";
 import styles from "./JoinGame.module.scss";
 import { USERNAME_NOT_ALLOWED_CHARS_REGEX } from "../../../shared/globals";
 import Help from "./Help/Help";
-import settings from "../../settings";
+import clsx from "clsx";
+import { createNewGame } from "../api";
 
 export type JoinGameProps = {
   onJoin: (username: string, gameCode: string) => void;
@@ -31,26 +32,28 @@ const JoinGame = ({ onJoin, existingUsername }: JoinGameProps): JSX.Element => {
     setGameCode(event.target.value);
 
   const onClickCreateNewGame = () => {
-    try {
-      fetch(`${settings.apiBaseUrl}/game`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      }).then((res) =>
-        res.json().then((data) => {
-          const gameCode = data["gameCode"];
-          if (gameCode) {
-            setGameCode(data["gameCode"]);
-            setViewMode(ViewMode.NewGame);
-          } else throw "Game code missing from API response";
-        })
-      );
-    } catch (err) {
-      console.error(err);
-      alert("Error creating game");
-    }
+    createNewGame()
+      .then((data) => {
+        const gameCode = data["gameCode"];
+        if (gameCode) {
+          setGameCode(data["gameCode"]);
+          setViewMode(ViewMode.NewGame);
+        } else throw "Game code missing from API response";
+      })
+      .catch((e) => {
+        console.error(e);
+        alert("Error creating game");
+      });
   };
 
-  const onClickJoinGame = () => setViewMode(ViewMode.JoinGame);
+  const onClickJoinGame = () => {
+    setViewMode(ViewMode.JoinGame);
+  };
+
+  const backToDefault = () => {
+    setViewMode(ViewMode.Default);
+    setGameCode("");
+  };
 
   const onSubmit = () => {
     const trimmedUsername = username.trim();
@@ -58,6 +61,8 @@ const JoinGame = ({ onJoin, existingUsername }: JoinGameProps): JSX.Element => {
     setUsername(trimmedUsername);
     onJoin(trimmedUsername, gameCode);
   };
+
+  const disableJoinHostBtns = username.trim().length === 0;
 
   return (
     <>
@@ -69,49 +74,71 @@ const JoinGame = ({ onJoin, existingUsername }: JoinGameProps): JSX.Element => {
           className={styles.coverArt}
         />
         {viewMode === ViewMode.Default && (
-          <div className={styles.hostOrJoin}>
+          <div className={clsx(styles.content, styles.hostOrJoin)}>
             <input
               type="text"
               value={username}
               onChange={onChangeUsernameInput}
               placeholder="Your Name"
             />
-            <button type="button" onClick={onClickJoinGame}>
+            <button
+              type="button"
+              className="primary"
+              disabled={disableJoinHostBtns}
+              onClick={onClickJoinGame}
+            >
               Join Game
             </button>
-            <button type="button" onClick={onClickCreateNewGame}>
+            <button
+              type="button"
+              className="primary"
+              disabled={disableJoinHostBtns}
+              onClick={onClickCreateNewGame}
+            >
               Host New Game
             </button>
           </div>
         )}
         {viewMode === ViewMode.NewGame && (
-          <div>
-            <h3>{gameCode}</h3>
+          <div className={clsx(styles.content, styles.hostGame)}>
+            <h2 className="text-center">{gameCode}</h2>
             <p>
               This is your new game code. Share it with your friends so they can
               join you!
             </p>
-            <button type="button" onClick={onSubmit}>
+            <button type="button" className="primary" onClick={onSubmit}>
               Got it!
             </button>
           </div>
         )}
         {viewMode === ViewMode.JoinGame && (
-          <div>
+          <div className={clsx(styles.content, styles.hostOrJoin)}>
             <input
               type="text"
               value={gameCode}
               onChange={onChangeGameCodeInput}
               placeholder="Game Code"
             />
-            <button type="button" onClick={onSubmit}>
+            <button type="button" className="text" onClick={backToDefault}>
+              Back
+            </button>
+            <button
+              type="button"
+              className="primary"
+              disabled={gameCode.trim().length === 0}
+              onClick={onSubmit}
+            >
               Join Game
             </button>
           </div>
         )}
         <p>
           First time playing?&nbsp;
-          <button type="button" onClick={() => setShowHelp(true)}>
+          <button
+            type="button"
+            className="text"
+            onClick={() => setShowHelp(true)}
+          >
             See the Rules
           </button>
         </p>
