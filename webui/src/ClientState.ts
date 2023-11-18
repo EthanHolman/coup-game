@@ -3,6 +3,7 @@ import { GameStatus } from "../../shared/enums";
 
 export type ClientState = ClientGameState & {
   username: string;
+  gameCode: string;
   thisPlayer: ClientPlayer;
   isMyTurn: boolean;
 };
@@ -10,15 +11,19 @@ export type ClientState = ClientGameState & {
 export type GameStateAction =
   | {
       type: "joinGame";
-      data: { username: string };
+      data: { username: string; gameCode: string };
     }
   | { type: "reset" }
   | { type: "updateGameState"; data: ClientGameState };
 
 export const getInitialState = (): ClientState => ({
+  // local state
   username: "",
+  gameCode: "",
   thisPlayer: undefined as any,
   isMyTurn: false,
+
+  // from server
   currentPlayerName: "",
   isPaused: false,
   status: GameStatus.PRE_GAME,
@@ -32,7 +37,11 @@ export const gameStateReducer = (
 ): ClientState => {
   switch (action.type) {
     case "joinGame":
-      return { ...state, username: action.data.username };
+      return {
+        ...state,
+        username: action.data.username,
+        gameCode: action.data.gameCode,
+      };
     case "reset":
       return { ...getInitialState(), username: state.username };
     case "updateGameState":
@@ -42,7 +51,7 @@ export const gameStateReducer = (
       if (!thisPlayer)
         throw `could not find username ${state.username} in returned player list`;
       return {
-        username: state.username,
+        ...state,
         thisPlayer,
         isMyTurn: action.data.currentPlayerName === state.username,
         ...action.data,

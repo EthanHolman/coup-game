@@ -29,6 +29,7 @@ export function generateClientState(
 
   return {
     username: players[perspective].name,
+    gameCode: "some-code",
     thisPlayer: players[perspective],
     isMyTurn: players[currentPlayer].name === players[perspective].name,
     currentPlayerName: players[currentPlayer].name,

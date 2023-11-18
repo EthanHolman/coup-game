@@ -22,7 +22,12 @@ const Header = ({ state }: HeaderProps): JSX.Element => {
             </>
           )}
         </div>
-        <h2 className={styles.title}>Coup Online</h2>
+        <h2
+          className={styles.title}
+          title={state.gameCode ? `Game Code: ${state.gameCode}` : ""}
+        >
+          Coup Online
+        </h2>
         <button type="button" onClick={() => setShowHelp(true)}>
           ?
         </button>

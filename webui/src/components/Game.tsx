@@ -49,7 +49,7 @@ const Game = (): JSX.Element => {
         alert(msg);
       });
       setWebsocket(ws);
-      dispatch({ type: "joinGame", data: { username } });
+      dispatch({ type: "joinGame", data: { username, gameCode } });
     } catch (e) {
       alert("unable to connect!");
       console.error(e);
