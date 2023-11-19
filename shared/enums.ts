@@ -88,5 +88,10 @@ export const NON_TARGETED_ACTIONS = [
   GameActionMove.EXCHANGE,
 ];
 
+export const AUTO_CONFIRMING_ACTIONS = [
+  GameActionMove.INCOME,
+  GameActionMove.COUP,
+];
+
 export const ALL_GAME_EVENT_TYPES =
   getStrEnumVals<GameEventType>(GameEventType);
