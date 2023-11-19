@@ -14,6 +14,7 @@ import {
   PlayerAlreadyExistsError,
   WebsocketNotExistsError,
 } from "./errors";
+import { sendCurrentState } from "./actions/sendCurrentState";
 
 const expressApp = express();
 const server = createServer(expressApp);
@@ -44,6 +45,7 @@ const gameRunner = new GameRunner({
   messagePlayer,
   messageAll,
   gameStateStore,
+  sendCurrentStateFn: sendCurrentState,
 });
 
 wss.on("connection", function connection(ws, req) {

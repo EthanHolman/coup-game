@@ -9,7 +9,7 @@ import { messagePlayerFn, messageAllFn } from "./messageFnTypes";
 import { playerDisconnect } from "./eventHandlers/playerDisconnect";
 import { acceptBlock } from "./eventHandlers/acceptBlock";
 import { GameEvent } from "../../shared/GameEvent";
-import { sendCurrentState } from "./actions/sendCurrentState";
+import { sendCurrentStateFn } from "./actions/sendCurrentState";
 import { blockAction } from "./eventHandlers/blockAction";
 import { challengeBlock } from "./eventHandlers/challengeBlock";
 import { nextTurn } from "./actions/nextTurn";
@@ -26,19 +26,23 @@ export class GameRunner {
   _messagePlayer: messagePlayerFn;
   _messageAllFn: messageAllFn;
   _gameStateStore: IGameStateStore;
+  _sendCurrentStateFn: sendCurrentStateFn;
 
   constructor({
     messagePlayer,
     messageAll,
     gameStateStore,
+    sendCurrentStateFn,
   }: {
     messagePlayer: messagePlayerFn;
     messageAll: messageAllFn;
     gameStateStore: IGameStateStore;
+    sendCurrentStateFn: sendCurrentStateFn;
   }) {
     this._messagePlayer = messagePlayer;
     this._messageAllFn = messageAll;
     this._gameStateStore = gameStateStore;
+    this._sendCurrentStateFn = sendCurrentStateFn;
   }
 
   onEvent(gameCode: string, gameEvent: GameEvent) {
@@ -119,6 +123,6 @@ export class GameRunner {
 
     // provide clients with updated state after each turn. note that
     //  state updates may occur more frequently as needed
-    if (state.players.length > 0) sendCurrentState(state, this._messagePlayer);
+    this._sendCurrentStateFn(state, this._messagePlayer);
   }
 }

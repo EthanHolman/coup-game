@@ -4,6 +4,11 @@ import { messagePlayerFn } from "../messageFnTypes";
 import { buildClientState } from "../utils/buildClientState";
 import { createServerEvent } from "../utils/createServerEvent";
 
+export type sendCurrentStateFn = (
+  state: GameState,
+  messagePlayerFn: messagePlayerFn
+) => void;
+
 export function sendCurrentState(
   state: GameState,
   messagePlayerFn: messagePlayerFn
