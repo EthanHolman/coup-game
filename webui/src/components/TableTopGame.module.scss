@@ -1,6 +1,17 @@
+@import "../styles/breakpoints.scss";
+
 .playerRows {
   flex: 3;
   overflow-y: auto;
+
+  @include md {
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+    max-width: 1000px;
+    align-content: flex-start;
+    align-items: flex-start;
+  }
 }
 
 .actionContainer {
