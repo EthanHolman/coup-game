@@ -9,7 +9,7 @@ const TimeoutConfirmActionButton = (
   props: TimeoutConfirmActionButtonProps
 ): JSX.Element => {
   const [timer, setTimer] = useState(CONFIRM_TIMER_SEC);
-  const intervalId = useRef<NodeJS.Timer | undefined>();
+  const intervalId = useRef<number | undefined>();
 
   const endTimer = () => {
     clearInterval(intervalId.current);
@@ -17,7 +17,7 @@ const TimeoutConfirmActionButton = (
   };
 
   useEffect(() => {
-    intervalId.current = setInterval(() => {
+    intervalId.current = window.setInterval(() => {
       setTimer((cur) => cur - 1);
     }, 1000);
 
