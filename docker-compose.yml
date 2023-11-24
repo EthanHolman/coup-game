@@ -1,0 +1,7 @@
+services:
+  app:
+    image: coup-game
+    build:
+      context: .
+    ports:
+      - 20600:20600

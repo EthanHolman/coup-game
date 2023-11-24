@@ -9,7 +9,6 @@ COPY ./webui/ ./webui/
 # build server 
 RUN mkdir /dist
 WORKDIR /code/server
-RUN rm -rf ./node_modules ./dist
 RUN npm install
 RUN npm run build
 RUN mv ./dist/* /dist
@@ -18,7 +17,6 @@ RUN mv ./node_modules /dist/
 # # build UI
 RUN mkdir /dist/webui
 WORKDIR /code/webui
-RUN rm -rf ./node_modules ./dist
 RUN npm install
 RUN npm run build
 RUN mv ./dist/* /dist/webui
@@ -27,5 +25,7 @@ RUN mv ./dist/* /dist/webui
 RUN rm -rf /code
 
 EXPOSE 20600
+
+WORKDIR /
 
 CMD ["node", "/dist/server/src/main"]

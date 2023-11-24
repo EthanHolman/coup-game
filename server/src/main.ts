@@ -139,6 +139,8 @@ expressApp.post("/game", (req, res) => {
   res.send({ gameCode });
 });
 
+expressApp.use("/", express.static("dist/webui"));
+
 console.log(`Starting server on port ${SERVER_PORT}`);
 
 server.listen(SERVER_PORT);
