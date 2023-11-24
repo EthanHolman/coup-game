@@ -116,6 +116,7 @@ export class GameRunner {
       case GameEventType.NEW_GAME:
         const newGameState = newGame(state, gameEvent, this._messageAllFn);
         this._gameStateStore.setState(gameCode, newGameState);
+        break;
 
       default:
         throw `cannot process unexpected action ${gameEvent.event}`;
