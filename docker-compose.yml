@@ -3,5 +3,6 @@ services:
     image: coup-game
     build:
       context: .
+    restart: always
     ports:
       - 20600:20600
