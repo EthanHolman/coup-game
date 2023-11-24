@@ -29,9 +29,9 @@ const Help = (props: HelpProps) =>
             and what actions you may block.
             <br />
             <br />
-            However, you can lie about which cards you actually have! Just don't
+            {`However, you can lie about which cards you actually have! Just don't
             get caught bluffing — if another player challenges your bluff,
-            you'll be forced to reveal (lose) one of your cards!
+            you'll be forced to reveal (lose) one of your cards!`}
             <br />
             <br />
             The game is over when only one player is left with an unrevealed

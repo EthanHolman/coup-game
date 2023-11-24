@@ -2,8 +2,8 @@
   "name": "my-app",
   "version": "0.0.1",
   "scripts": {
-    "dev": "webpack serve --config webpack.dev.config.ts",
-    "build": "webpack --config webpack.prod.config.ts",
+    "dev": "webpack serve --config webpack.dev.ts",
+    "build": "NODE_ENV=production webpack --config webpack.prod.ts",
     "test": "mocha -r ts-node/register -r global-jsdom/register -r ignore-styles -r './test/mocha.setup.ts' './src/**/*.test.{ts,tsx}'"
   },
   "dependencies": {
@@ -53,6 +53,7 @@
     "typescript": "^5.3.2",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.10.0"
   }
 }

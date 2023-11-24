@@ -19,13 +19,13 @@ const StartGame = ({ state, sendEvent }: StartGameProps): JSX.Element => {
       </p>
       {state.thisPlayer.isHost ? (
         <>
-          Once everyone's ready, you can
+          {`Once everyone's ready, you can`}
           <button type="button" className="text" onClick={onStartGame}>
             Start the Game
           </button>
         </>
       ) : (
-        <>Once everyone's ready, the host can start the game!</>
+        <>{`Once everyone's ready, the host can start the game!`}</>
       )}
     </div>
   );

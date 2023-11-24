@@ -32,6 +32,7 @@ const ActionPickerView = ({
   sendEvent,
 }: ActionPickerViewProps): JSX.Element => {
   const [viewMode, setViewMode] = useState(ViewMode.Action);
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   const [action, setAction] = useState<any>();
   const [targetPlayer, setTargetPlayer] = useState<string>();
   const [blockAsCard, setBlockAsCard] = useState<Card>();
@@ -39,6 +40,7 @@ const ActionPickerView = ({
 
   const handleChooseAction = (cga: ClientGameAction) => {
     setAction(cga.action);
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     if (TARGETED_ACTIONS.includes(cga.action as any))
       setViewMode(ViewMode.Player);
     else if (cga.action === GameEventType.BLOCK_ACTION) {

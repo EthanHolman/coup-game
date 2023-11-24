@@ -20,6 +20,7 @@ export const getInitialState = (): ClientState => ({
   // local state
   username: "",
   gameCode: "",
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   thisPlayer: undefined as any,
   isMyTurn: false,
 
