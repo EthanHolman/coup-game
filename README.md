@@ -1,23 +1,45 @@
 # Coup-Game
 
-This is a monorepo containing both a node-based server application and react-based webui. These are intended to be built and released together, and as such, share code where possible. (Shared code is in the `/shared` directory).
+Coup is a card game of deception. This is a fan project to digitalize the original game. Please support the original creator by purchasing a physical copy of Coup:
+https://www.amazon.com/Indie-Boards-and-Cards-COU1IBC/dp/B00GDI4HX4
 
-Eventually this application will be dockerized to make it quick and easy to host a game! The end goal is to be able to run a single docker command and have an entire game server ready to go -- all you'll have to do is port forward if you're playing with people across the internet.
+This is a monorepo containing both a Node-based server application (in `/server`) and React-based webui (in `/webui`). These are intended to be built and released together, and as such, share code and types where possible. Shared code is in the `/shared` directory. Most client-server communication is handled via a websocket, but initial game creation is handled via a lightweight REST API. For simplicity of hosting, the server will also serve up static bundled UI files.
 
-The application is very server-centric, in that the server handles most all game logic. The UI and server communicate via a websocket. Server will send state out to each client, and clients will send actions to the server.
+The game logic is largely handled by the server. Everything is driven based on a state object, and events received over the websocket from the client mutate the state. For most all events sent into the server, a response event and game state update event will be sent to clients. The state object contains everything the client/webui will need to determine what to show the user. For instance, the absense of the `currentAction` field in state signifies that there is no current action, and that the current user should be prompted to select one.
 
-## DEV Quick Start
+## Running
+
+Ensure you have docker and docker compose (2.x.x) installed
+
+Then, simply run `docker compose up -d` in the root of the project. This will build the docker image and start the game on port 20600 on your host.
+
+Alternatively, if you don't wish to use docker compose:
+
+Build image: `docker build -t coup-game .`
+Run image: `docker run --rm -p 20600:20600 coup-game`
+
+## Development Quick Start
 
 In both the `/webui` and `/server` directory:
 
-- install packages: `yarn install`
-- run development server: `yarn dev`
+- install packages: `npm install`
+- run development server: `npm run dev`
+
+Note: The server's hosting of UI build files is not intended for development.
 
 ## Testing
 
-Run `yarn test` in the `/webui` and `/server` directories to execute unit and integration tests.
+Run `npm run test` in the `/webui` and `/server` directories to execute unit tests.
 
-# About the Game
+# Contributing
+
+Feel free to submit PR's for bugfixes or features!
+
+# License
+
+This project and its source code are a fan derivative work. The original card game "Coup" was designed by Rikki Tahta, and published by Indie Boards & Cards and La Mame Games. Please support the original game by purchasing a physical copy. This derivative work is licensed under GPLv3 (see more details in the LICENSE file).
+
+# Architecture
 
 ## The Deck
 
