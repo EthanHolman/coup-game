@@ -126,10 +126,12 @@ wss.on("connection", function connection(ws, req) {
   });
 });
 
-// setup rest api
-expressApp.use(cors());
+expressApp.options(
+  "*",
+  cors({ allowedHeaders: "*", optionsSuccessStatus: 200 })
+);
 
-expressApp.options("*", cors());
+expressApp.use(cors({ allowedHeaders: "*", optionsSuccessStatus: 200 }));
 
 expressApp.get("/games", (req, res) => {
   const games = gameStateStore.listGameCodes();
