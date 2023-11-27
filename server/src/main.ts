@@ -3,7 +3,6 @@ import WebSocket from "ws";
 import { parse } from "url";
 import { GameEventType } from "../../shared/enums";
 import { GameRunner } from "./Game";
-import { SERVER_PORT } from "../../shared/globals";
 import express from "express";
 import { InMemoryUserConnectionStore } from "./InMemoryUserConnectionStore";
 import { InMemoryGameStateStore } from "./InMemoryGameStateStore";
@@ -15,6 +14,7 @@ import {
   WebsocketNotExistsError,
 } from "./errors";
 import { sendCurrentState } from "./actions/sendCurrentState";
+import settings from "../settings";
 
 const expressApp = express();
 const server = createServer(expressApp);
@@ -145,6 +145,6 @@ expressApp.post("/game", (req, res) => {
 
 expressApp.use("/", express.static("dist/webui"));
 
-console.log(`Starting server on port ${SERVER_PORT}`);
+console.log(`Starting server on port ${settings.serverPort}`);
 
-server.listen(SERVER_PORT);
+server.listen(settings.serverPort);

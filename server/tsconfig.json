@@ -10,5 +10,5 @@
     "resolveJsonModule": true,
     "types": ["mocha", "node"]
   },
-  "include": ["./src/**/*", "./test/**/*", "../shared/**/*"]
+  "include": ["./src/**/*", "./test/**/*", "../shared/**/*", "settings.ts"]
 }

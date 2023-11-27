@@ -6,18 +6,20 @@ const dotenv = require("dotenv");
 
 const REACT_APP = /^REACT_APP_/i;
 
+const NODE_ENV = process.env.NODE_ENV ?? "development"; // define default if none provided
+
 function getClientEnvironment() {
   // Pulls in REACT_APP_ variables from local system
   const systemEnv = Object.keys(process.env)
-    .filter(key => REACT_APP.test(key))
+    .filter((key) => REACT_APP.test(key))
     .reduce((env, key) => {
       env[key] = process.env[key];
       return env;
     }, {});
 
   const env = {
-    NODE_ENV: process.env.NODE_ENV ?? "development", // define default if none provided
-    ...dotenv.config().parsed, // Pulls in variables defined in .env file
+    NODE_ENV,
+    ...dotenv.config({ path: `.env.${NODE_ENV.toLowerCase()}` }).parsed, // Pulls in variables defined in .env file
     ...systemEnv, // system env vars will override what's in .env
   };
 
