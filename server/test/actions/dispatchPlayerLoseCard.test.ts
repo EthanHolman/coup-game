@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { dispatchPlayerLoseCard } from "../../src/actions/dispatchPlayerLoseCard";
-import { GameStatus } from "../../../shared/enums";
+import { GameEventType, GameStatus } from "../../../shared/enums";
 import { generateStateWithNPlayers } from "../testHelpers/stateGenerators";
 import Sinon from "sinon";
 import { Card } from "../../../shared/Card";
@@ -70,7 +70,7 @@ describe("dispatchPlayerLoseCard action", function () {
         reason: "here lose a card dude",
         targetPlayer: "tester-0",
       },
-      event: "PLAYER_LOSE_CARD",
+      event: GameEventType.PLAYER_LOSE_CARD,
       user: "__server",
     };
     assert.deepEqual(call, expectedEvent as any);
