@@ -11,7 +11,7 @@ The game logic is largely handled by the server. Everything is driven based on a
 
 Ensure you have docker and docker compose (2.x.x) installed
 
-Then, simply run `docker compose up -d` in the root of the project. This will build the docker image and start the game on port 20600 on your host.
+Then, simply run `docker compose up -d --build` in the root of the project. This will build the docker image and start the game on port 20600 on your host.
 
 Alternatively, if you don't wish to use docker compose:
 
